@@ -5,19 +5,76 @@ dotenv.load();
 
 /**
    * @description gnerate jwt token
-   * 
+   *
    * @param  {object} currentUser userdetails to be encrypted
    * @param  {string} secret a secret key to be used to encrypt user details
-   * 
+   *
    * @return {string} token generated from user details
 */
 
 export const generateToken = (currentUser, secret) => {
-  const token = jwt.sign(
-    {
-      currentUser,
-      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
-    }, secret
-  );
+  const token = jwt.sign({
+    currentUser,
+    exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
+  }, secret);
   return token;
 };
+
+/**
+ * @description checks if the string pass in is a digit.
+ * Means all the charcters are digit
+ *
+ * @param  {string} str the string to be checked
+ *
+ * @return {boolean} true or false
+ */
+
+export const isDigit = (str) => {
+  const num = str.toString();
+  if (num.length === 0) {
+    return false;
+  }
+  for (let i = 0; i < num.length; i += 1) {
+    if (/[0-9]/.test(num[i]) === false) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const isText = (str) => {
+  if (str.length === 0) {
+    return false;
+  }
+  for (let i = 0; i < str.length; i += 1) {
+    if (/[a-z A-Z ' ']/.test(str[i]) === false) {
+      return false;
+    }
+  }
+  return true;
+};
+
+/**
+ *@description checks if a field is null, undefined or empty
+ *
+ * @param  {type} fieldData the value to be checked if it is invalid
+ *
+ * @return {boolean} true or false
+ */
+
+export const isInValidField = (fieldData) => {
+  if (typeof (fieldData) !== 'string' || fieldData.length === 0) {
+    return true;
+  }
+  let hasValue = false;
+  fieldData.split().forEach((value) => {
+    if (value !== ' ') {
+      hasValue = true;
+    }
+  });
+  if (!hasValue) {
+    return true;
+  }
+  return false;
+};
+

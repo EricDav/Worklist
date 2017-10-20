@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 
-import User from '../models/User';
-import { generateToken } from '../helpers'
+import user from '../models/user';
+import { generateToken } from '../helpers';
 
 dotenv.load();
 const secret = process.env.secretKey;
@@ -23,14 +23,29 @@ export default class UserControllers {
   static createUser(req, res) {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(req.body.password, salt);
-    const newUser = User({
-      name: req.body.name,
+    const newUser = user({
+      fullName: req.body.fullName,
       userName: req.body.userName,
       email: req.body.email,
       password: hashedPassword
     });
     newUser.save((err, currentUser) => {
       if (err) {
+        if (err.errmsg.slice(39, 62) === 'will.users index: email') {
+          return res.status(409).json({
+            success: false,
+            error: {
+              message: 'email already exist'
+            }
+          });
+        } else if (err.errmsg.slice(39, 65) === 'will.users index: userName') {
+          return res.status(409).json({
+            success: false,
+            error: {
+              message: 'username already exist'
+            }
+          });
+        }
         return res.status(500).json({
           success: false,
           error: {
@@ -42,8 +57,7 @@ export default class UserControllers {
       const token = generateToken(currentUser, secret);
       res.status(201).json({
         success: true,
-        token,
-        currentUser
+        token
       });
     });
   }

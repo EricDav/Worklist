@@ -5,11 +5,12 @@ import moongose from 'mongoose';
 import dotenv from 'dotenv';
 
 import user from './routes/user';
+
 dotenv.load();
 
 const port = process.env.PORT || 8000;
 const app = express();
-const url = process.env.MONGOHQ_URL
+const url = process.env.MONGOHQ_URL;
 moongose.connect(url);
 
 app.use(logger('dev'));
