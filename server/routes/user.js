@@ -10,4 +10,6 @@ users.post(
   UserControllers.createUser
 );
 
+users.post('/api/v1/signin', UserControllers.authenticateUser);
+
 export default users;
