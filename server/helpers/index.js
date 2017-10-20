@@ -2,6 +2,24 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 dotenv.load();
+/**
+ * @description removes password from user information
+ *
+ * @param  {array} users array of users oject
+ *
+ * @return {object} return array of users object without their password
+ */
+
+export const removePassword = (users) => {
+  if (!users.length) {
+    users.password = '';
+    return users;
+  }
+  users.forEach((user) => {
+    user.password = '';
+  });
+  return users;
+};
 
 /**
    * @description gnerate jwt token
