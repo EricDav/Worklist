@@ -5,7 +5,7 @@ dotenv.load();
 const secret = process.env.secretKey;
 
 /**
- * class TodoListController: controls all user routes
+ * class Authorization: authenticate users
  * @class
  */
 export default class Authorization {

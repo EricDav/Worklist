@@ -1,7 +1,7 @@
 import todoList from '../models/todoList';
 
 /**
- * class TodoListController: controls all user routes
+ * class TodoListController: controls all todos routes
  * @class
  */
 export default class TodoListControllers {
@@ -15,6 +15,7 @@ export default class TodoListControllers {
  */
   static createTodoList(req, res) {
     todoList.create({
+      internalName: req.body.name.toUpperCase(),
       name: req.body.name,
       collaborators: [req.currentUser.currentUser.userName],
       creatorId: req.currentUser.currentUser._id
@@ -25,6 +26,7 @@ export default class TodoListControllers {
           error: {
             message: 'Internal server error'
           },
+          err
         });
       }
       return res.status(200).json({

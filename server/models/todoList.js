@@ -4,10 +4,9 @@ const { Schema } = mongoose;
 
 const taskSchema = new Schema(
   {
-    name: {
+    taskName: {
       type: String,
       required: true,
-      unique: true
     },
     piority: {
       type: String,
@@ -29,6 +28,10 @@ const taskSchema = new Schema(
 );
 
 const todoListSchema = new Schema({
+  internalName: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     required: true
