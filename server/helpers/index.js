@@ -96,3 +96,18 @@ export const isInValidField = (fieldData) => {
   return false;
 };
 
+export const apiResponse = (res, statusCode, message, success, data = null) => {
+  if (data) {
+    return res.status(statusCode).json({
+      success,
+      data
+    });
+  }
+  return res.status(statusCode).json({
+    success,
+    error: {
+      message
+    }
+  });
+};
+

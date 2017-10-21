@@ -8,7 +8,7 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
-    piority: {
+    priority: {
       type: String,
       required: true
     },
@@ -18,8 +18,9 @@ const taskSchema = new Schema(
       default: false,
     },
     dueDate: {
-      type: String,
-      required: true
+      type: Date,
+      required: true,
+      default: Date.now()
     }
   },
   {
