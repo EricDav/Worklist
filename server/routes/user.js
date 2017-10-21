@@ -3,13 +3,13 @@ import express from 'express';
 import UserControllers from '../controllers/UserControllers';
 import UserValidations from '../middlewares/UserValidations';
 
-const users = express.Router();
+const user = express.Router();
 
-users.post(
+user.post(
   '/api/v1/users', UserValidations.createUserValidation,
   UserControllers.createUser
 );
 
-users.post('/api/v1/signin', UserControllers.authenticateUser);
+user.post('/api/v1/signin', UserControllers.authenticateUser);
 
-export default users;
+export default user;

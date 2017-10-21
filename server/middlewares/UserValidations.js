@@ -1,7 +1,7 @@
 import { isInValidField, isDigit, isText } from '../helpers';
 
 /**
- * class createUserValidation: controls all user validations
+ * class UserValidation: controls all user validations
  * @class
  */
 export default class UserValidations {
@@ -9,7 +9,7 @@ export default class UserValidations {
    * @description: validate inputs field for username, name, email and password
    *
    * @param  {object} req request object
-   * @param  {object} res respond object
+   * @param  {object} res response object
    * @param  {function} next a call back function
    *
    * @return {object} response object
