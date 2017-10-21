@@ -1,4 +1,5 @@
 import todoList from '../models/todoList';
+import { apiResponse } from '../helpers';
 
 /**
  * class TodoListController: controls all todos routes
@@ -21,16 +22,31 @@ export default class TodoListControllers {
       creatorId: req.currentUser.currentUser._id
     }, (err, todo) => {
       if (err) {
-        return res.status(500).json({
-          success: false,
-          error: {
-            message: 'Internal server error'
-          },
-          err
-        });
+        return apiResponse(res, 500, 'Internal server error', false);
       }
-      return res.status(200).json({
-        todo
+      return apiResponse(res, 201, null, true, todo);
+    });
+  }
+  /**
+ * @description: add a task to  a todo list through route
+ * POST: /api/v1/todos/:todoId/tasks
+ *
+ * @param {Object} req request object
+ * @param {Object} res response object
+ *
+ * @return {Object} response containing the created task
+ */
+  static addTaskToTodoList(req, res) {
+    todoList.findById(req.params.todoId, (err, todo) => {
+      if (err) {
+        return apiResponse(res, 500, 'Internal server error', false);
+      }
+      todo.tasks.push(req.body);
+      todo.save((err, updatedTodo) => {
+        if (err) {
+          return apiResponse(res, 500, 'Internal server error', false);
+        }
+        return apiResponse(res, 200, null, true, updatedTodo);
       });
     });
   }
@@ -41,24 +57,67 @@ export default class TodoListControllers {
  * @param {Object} req request object
  * @param {Object} res response object
  *
- * @return {Object} response containing the created task
+ * @return {Object} response containing the updated todo
  */
-  static addTaskToTodoList(req, res) {
+  static addContributorToTodolist(req, res) {
     todoList.findById(req.params.todoId, (err, todo) => {
       if (err) {
-        return res.status(500).json({
-          success: false,
-          error: {
-            message: 'Internal server error'
-          },
-        });
+        return apiResponse(res, 500, 'Internal server error', false);
       }
-      todo.tasks.push(req.body);
-      todo.save((err, updatedTodo) =>
-        res.status(200).json({
-          success: true,
-          updatedTodo
-        }));
+      todo.collaborators.push(req.body.username);
+      todo.save((err, updatedTodo) => {
+        if (err) {
+          return apiResponse(res, 500, 'Internal server error', false);
+        }
+        return apiResponse(res, 200, null, true, updatedTodo);
+      });
+    });
+  }
+  /**
+ * @description: fetch all todolist through route
+ * GET: api/v1/todos
+ *
+ * @param {Object} req request object
+ * @param {Object} res response object
+ *
+ * @return {Object} response containing the updated todo
+ */
+  static getTodolist(req, res) {
+    todoList.find(
+      { creatorId: req.currentUser.currentUser._id},
+      (err, todolists) => {
+        if (err) {
+          return apiResponse(res, 500, 'Internal server error', false);
+        }
+        return apiResponse(res, 200, null, true, todolists);
+      }
+    );
+  }
+  /**
+ * @description: fetch all todolist through route
+ * PATCH: api/v1/todos/:todoId/tasks/:taskId
+ *
+ * @param {Object} req request object
+ * @param {Object} res response object
+ *
+ * @return {Object} response containing the updated todo
+ */
+  static updateTaskInTodolist(req, res) {
+    todoList.findById(req.params.todoId, (err, todolist) => {
+      if (err) {
+        return apiResponse(res, 500, 'Internal server error', false);
+      }
+      todolist.tasks.forEach((task) => {
+        if (task._id == req.params.taskId) {
+          task.done = true;
+        }
+      });
+      todolist.save((err, updatedTodolist) => {
+        if (err) {
+          return apiResponse(res, 500, 'Internal server error', false);
+        }
+        return apiResponse(res, 200, null, true, updatedTodolist);
+      });
     });
   }
 }

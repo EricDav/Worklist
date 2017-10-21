@@ -1,4 +1,4 @@
-import { isInValidField, isDigit, isText } from '../helpers';
+import { isInValidField, isDigit, isText, errorMessage } from '../helpers';
 
 /**
  * class UserValidation: controls all user validations
