@@ -51,7 +51,6 @@ export default class UserControllers {
           error: {
             message: 'Internal server error'
           },
-          err
         });
       }
       const token = generateToken(removePassword(currentUser), secret);

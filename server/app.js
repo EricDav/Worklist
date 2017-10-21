@@ -5,6 +5,7 @@ import moongose from 'mongoose';
 import dotenv from 'dotenv';
 
 import user from './routes/user';
+import todo from './routes/todo';
 
 dotenv.load();
 
@@ -17,6 +18,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(user);
+app.use(todo);
 
 app.listen(port, () => {
   console.log(`server started on ${port}`);
