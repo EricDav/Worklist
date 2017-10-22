@@ -19,14 +19,14 @@ export default class TodoListValidations {
   static createTodoListValidation(req, res, next) {
     const error = {};
     if (isInValidField(req.body.name)) {
-      error.name = 'This field is required';
+      error.name = 'name field is required';
     } else if (!isText(req.body.name)) {
-      error.name = 'todo names must be letters';
+      error.name = 'todo names must be in letters';
     } else if (req.body.name.length < 2) {
       error.name = 'a character can not be a name of a todo';
     }
     if (error.name) {
-      api.apiResponse(res, 400, error.name, false);
+      return apiResponse(res, 400, error.name, false);
     }
     todoList.findOne({
       $and:
@@ -38,7 +38,7 @@ export default class TodoListValidations {
         error.name = 'name already taken';
       }
       if (error.name) {
-        api.apiResponse(res, 409, error.name, false);
+        return apiResponse(res, 409, error.name, false);
       }
       next();
     });

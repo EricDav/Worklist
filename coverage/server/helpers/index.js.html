@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for server/helpers/index.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">server/helpers</a> index.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">74.14% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>43/58</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">54.76% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>23/42</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">70% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>7/10</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">73.68% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>42/57</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">147x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+&nbsp;
+dotenv.load();
+/**
+ * @description removes password from user information
+ *
+ * @param  {array} users array of users oject
+ *
+ * @return {object} return array of users object without their password
+ */
+&nbsp;
+export const removePassword = (users) =&gt; {
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (!users.length) {
+    users.password = '';
+    return users;
+  }
+<span class="cstat-no" title="statement not covered" >  users.forEach(<span class="fstat-no" title="function not covered" >(</span>user) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    user.password = '';</span>
+  });
+<span class="cstat-no" title="statement not covered" >  return users;</span>
+};
+&nbsp;
+/**
+   * @description gnerate jwt token
+   *
+   * @param  {object} currentUser userdetails to be encrypted
+   * @param  {string} secret a secret key to be used to encrypt user details
+   *
+   * @return {string} token generated from user details
+*/
+&nbsp;
+export const generateToken = (currentUser, secret) =&gt; {
+  const token = jwt.sign({
+    currentUser,
+    exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
+  }, secret);
+  return token;
+};
+&nbsp;
+/**
+ * @description checks if the string pass in is a digit.
+ * Means all the charcters are digit
+ *
+ * @param  {string} str the string to be checked
+ *
+ * @return {boolean} true or false
+ */
+&nbsp;
+export const isDigit = (str) =&gt; {
+  const num = str.toString();
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (num.length === 0) {
+<span class="cstat-no" title="statement not covered" >    return false;</span>
+  }
+  for (let i = 0; i &lt; num.length; i += 1) {
+    if (/[0-9]/.test(num[i]) === false) {
+      return false;
+    }
+  }
+  return true;
+};
+&nbsp;
+export const isText = (str) =&gt; {
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (str.length === 0) {
+<span class="cstat-no" title="statement not covered" >    return false;</span>
+  }
+  for (let i = 0; i &lt; str.length; i += 1) {
+    if (/[a-z A-Z ' ']/.test(str[i]) === false) {
+      return false;
+    }
+  }
+  return true;
+};
+&nbsp;
+/**
+ *@description checks if a field is null, undefined or empty
+ *
+ * @param  {type} fieldData the value to be checked if it is invalid
+ *
+ * @return {boolean} true or false
+ */
+&nbsp;
+export const isInValidField = (fieldData) =&gt; {
+  if (typeof (fieldData) !== 'string' || fieldData.length === 0) {
+    return true;
+  }
+  let hasValue = false;
+  fieldData.split().forEach((value) =&gt; {
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (value !== ' ') {
+      hasValue = true;
+    }
+  });
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!hasValue) {
+<span class="cstat-no" title="statement not covered" >    return true;</span>
+  }
+  return false;
+};
+&nbsp;
+export const apiResponse = (res, statusCode, message, success, data = null) =&gt; {
+  if (message === 'error') {
+    return res.status(statusCode).json({
+      success,
+      error: data
+    });
+  }
+  if (message === 'token') {
+    return res.status(statusCode).json({
+      success,
+      token: data
+    });
+  }
+  if (data) {
+    return res.status(statusCode).json({
+      success,
+      data
+    });
+  }
+  return res.status(statusCode).json({
+    success,
+    error: {
+      message
+    }
+  });
+};
+&nbsp;
+export const <span class="fstat-no" title="function not covered" >isValidEmail = (</span>email) =&gt; {
+<span class="cstat-no" title="statement not covered" >  if (isInValidField(email) || email.length &lt; 7) {</span>
+<span class="cstat-no" title="statement not covered" >    return false;</span>
+  } else <span class="cstat-no" title="statement not covered" >if ((email.slice(email.length - 4, email.length)</span>
+     !== '.com' || !(/[@]/.test(email)))) {
+<span class="cstat-no" title="statement not covered" >    return false;</span>
+  }
+<span class="cstat-no" title="statement not covered" >  return true;</span>
+};
+&nbsp;
+export const <span class="fstat-no" title="function not covered" >isValidName = (</span>name) =&gt; {
+<span class="cstat-no" title="statement not covered" >  if (isInValidField(name)) {</span>
+<span class="cstat-no" title="statement not covered" >    return false;</span>
+  } else <span class="cstat-no" title="statement not covered" >if (!isText(name) || name.length &lt; 5) {</span>
+<span class="cstat-no" title="statement not covered" >    return false;</span>
+  }
+};
+&nbsp;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sun Oct 22 2017 21:55:13 GMT+0100 (WAT)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

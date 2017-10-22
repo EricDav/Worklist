@@ -1,4 +1,4 @@
-import { isInValidField, isDigit, isText, errorMessage } from '../helpers';
+import { isInValidField, isDigit, isText, apiResponse } from '../helpers';
 
 /**
  * class UserValidation: controls all user validations
@@ -51,35 +51,26 @@ export default class UserValidations {
       canVerify.email = false;
       error.email = 'Invalid email address';
       if (Object.keys(error).length === 5) {
-        return res.status(400).json({
-          error,
-          success: false
-        });
+        return apiResponse(res, 400, 'error', false, error);
       }
     }
     if (canVerify.fullName && (!isText(req.body.fullName)
      || req.body.fullName.length < 2)) {
       if (isInValidField(error.fullName)) {
-        error.fullName = `Name should contain alphabet and space 
+        error.fullName = `Name should contain alphabet and space
       alone and should contain at least 5 characters`;
       }
       if (Object.keys(error).length === 5) {
-        return res.status(400).json({
-          error,
-          success: false
-        });
+        return apiResponse(res, 400, 'error', false, error);
       }
     }
     if (canVerify.userName && (isDigit(req.body.userName) ||
     isDigit(req.body.userName[0]))) {
       canVerify.userName = false;
-      error.userName = `Invalid username. username must
-      contain an alphabet and must not begin with a number`;
+      error.userName = `username must contain an alphabet
+              and must not begin with a number`;
       if (Object.keys(error).length === 5) {
-        return res.status(400).json({
-          error,
-          success: false
-        });
+        return apiResponse(res, 400, 'error', false, error);
       }
     }
     if (canVerify.password && (req.body.password.length < 9 ||
@@ -92,17 +83,11 @@ export default class UserValidations {
         at least 8 characters including at least one number and alphabet`;
       }
       if (Object.keys(error).length === 5) {
-        return res.status(400).json({
-          error,
-          success: false
-        });
+        return apiResponse(res, 400, 'error', false, error);
       }
     }
     if (Object.keys(error).length > 0) {
-      return res.status(400).json({
-        error,
-        success: false
-      });
+      return apiResponse(res, 400, 'error', false, error);
     }
     next();
   }
