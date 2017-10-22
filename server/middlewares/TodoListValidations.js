@@ -1,4 +1,4 @@
-import { isInValidField, isText, apiResponse } from '../helpers';
+import { isInValidField, isText, isDigit, apiResponse } from '../helpers';
 import todoList from '../models/todoList';
 import user from '../models/user';
 
@@ -19,14 +19,14 @@ export default class TodoListValidations {
   static createTodoListValidation(req, res, next) {
     const error = {};
     if (isInValidField(req.body.name)) {
-      error.name = 'This field is required';
+      error.name = 'name field is required';
     } else if (!isText(req.body.name)) {
-      error.name = 'todo names must be letters';
+      error.name = 'todo names must be in letters';
     } else if (req.body.name.length < 2) {
       error.name = 'a character can not be a name of a todo';
     }
     if (error.name) {
-      api.apiResponse(res, 400, error.name, false);
+      return apiResponse(res, 400, error.name, false);
     }
     todoList.findOne({
       $and:
@@ -38,7 +38,7 @@ export default class TodoListValidations {
         error.name = 'name already taken';
       }
       if (error.name) {
-        api.apiResponse(res, 409, error.name, false);
+        return apiResponse(res, 409, error.name, false);
       }
       next();
     });
@@ -163,15 +163,69 @@ export default class TodoListValidations {
       }
       if (todolist) {
         let hasValidTaskId = false;
+        let taskToBeUpdated;
         todolist.tasks.forEach((task) => {
           if (task._id == req.params.taskId) {
             hasValidTaskId = true;
+            taskToBeUpdated = task;
           }
         });
         if (!hasValidTaskId) {
           return apiResponse(res, 404, 'task not found', false);
         }
-        next();
+        if (req.body.userName) {
+          if (taskToBeUpdated.assignTo) {
+            return apiResponse(
+              res, 403,
+              'Task already assign to a user', false
+            );
+          }
+          if (isDigit(req.body.userName) || isDigit(req.body.userName[0])) {
+            return apiResponse(res, 400, 'Invalid userName', false);
+          }
+          user.findOne(
+            { userName: req.body.userName },
+            (err, userToBeAssignToTask) => {
+              if (err) {
+                return apiResponse(res, 500, 'Internal server error', false);
+              }
+              if (userToBeAssignToTask) {
+                if (todolist.creatorId !== req.currentUser.currentUser._id && 
+                req.currentUser.currentUser !== userToBeAssignToTask.userName) {
+                  return apiResponse(res, 403,
+                    'user not permitted to perform this operation', false);
+                }
+                if (todolist.collaborators
+                  .includes(userToBeAssignToTask.userName)) {
+                  next();
+                } else {
+                  return apiResponse(
+                    res, 403,
+                    'user can not be assigned to task', false
+                  );
+                }
+              } else {
+                return apiResponse(
+                  res, 404,
+                  'user to be assigned to task not found', false
+                );
+              }
+            }
+          );
+        } else if (!taskToBeUpdated.assignTo) {
+          return apiResponse(
+            res, 400,
+            'todo not assigned to a user yet', false
+          );
+        } else if (req.currentUser.currentUser._id !== todolist.creatorId &&
+          taskToBeUpdated.assignTo !== req.currentUser.currentUser.userName) {
+          return apiResponse(
+            res, 403,
+            'user not permitted to perform this operation', false
+          );
+        } else {
+          next();
+        }
       } else {
         return apiResponse(res, 404, 'todolist not found', false);
       }

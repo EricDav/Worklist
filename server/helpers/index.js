@@ -97,6 +97,18 @@ export const isInValidField = (fieldData) => {
 };
 
 export const apiResponse = (res, statusCode, message, success, data = null) => {
+  if (message === 'error') {
+    return res.status(statusCode).json({
+      success,
+      error: data
+    });
+  }
+  if (message === 'token') {
+    return res.status(statusCode).json({
+      success,
+      token: data
+    });
+  }
   if (data) {
     return res.status(statusCode).json({
       success,
@@ -109,5 +121,24 @@ export const apiResponse = (res, statusCode, message, success, data = null) => {
       message
     }
   });
+};
+
+export const isValidEmail = (email) => {
+  if (isInValidField(email) || email.length < 7) {
+    return false;
+  } else if ((email.slice(email.length - 4, email.length)
+     !== '.com' || !(/[@]/.test(email)))) {
+    return false;
+  }
+  return true;
+};
+
+export const isValidName = (name) => {
+  if (isInValidField(name)) {
+    return false;
+  } else if (!isText(name) || name.length < 5) {
+    return false;
+  }
+  return true;
 };
 
