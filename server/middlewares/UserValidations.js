@@ -1,5 +1,6 @@
-import { isInValidField, isDigit, isText, errorMessage } from '../helpers';
-
+import { isInValidField, isDigit, isText, apiResponse,
+  isValidEmail, isValidName } from '../helpers';
+import user from '../models/user';
 /**
  * class UserValidation: controls all user validations
  * @class
@@ -51,35 +52,26 @@ export default class UserValidations {
       canVerify.email = false;
       error.email = 'Invalid email address';
       if (Object.keys(error).length === 5) {
-        return res.status(400).json({
-          error,
-          success: false
-        });
+        return apiResponse(res, 400, 'error', false, error);
       }
     }
     if (canVerify.fullName && (!isText(req.body.fullName)
      || req.body.fullName.length < 2)) {
       if (isInValidField(error.fullName)) {
-        error.fullName = `Name should contain alphabet and space 
+        error.fullName = `Name should contain alphabet and space
       alone and should contain at least 5 characters`;
       }
       if (Object.keys(error).length === 5) {
-        return res.status(400).json({
-          error,
-          success: false
-        });
+        return apiResponse(res, 400, 'error', false, error);
       }
     }
     if (canVerify.userName && (isDigit(req.body.userName) ||
     isDigit(req.body.userName[0]))) {
       canVerify.userName = false;
-      error.userName = `Invalid username. username must
-      contain an alphabet and must not begin with a number`;
+      error.userName = `username must contain an alphabet
+              and must not begin with a number`;
       if (Object.keys(error).length === 5) {
-        return res.status(400).json({
-          error,
-          success: false
-        });
+        return apiResponse(res, 400, 'error', false, error);
       }
     }
     if (canVerify.password && (req.body.password.length < 9 ||
@@ -92,18 +84,55 @@ export default class UserValidations {
         at least 8 characters including at least one number and alphabet`;
       }
       if (Object.keys(error).length === 5) {
-        return res.status(400).json({
-          error,
-          success: false
-        });
+        return apiResponse(res, 400, 'error', false, error);
       }
     }
     if (Object.keys(error).length > 0) {
-      return res.status(400).json({
-        error,
-        success: false
-      });
+      return apiResponse(res, 400, 'error', false, error);
     }
     next();
+  }
+  /**
+   * @description: validate updated field for name and email
+   *
+   * @param  {object} req request object
+   * @param  {object} res response object
+   * @param  {function} next a call back function
+   *
+   * @return {object} response object
+   */
+  static updateUserValidation(req, res, next) {
+    const updatedField = {};
+    const error = {};
+    if (req.body.fullName) {
+      if (isValidName(req.body.fullName)) {
+        updatedField.fullName = req.body.fullName;
+      } else {
+        return apiResponse(res, 400, 'Invalid fullName', false);
+      }
+    }
+    if (req.body.email) {
+      if (isValidEmail(req.body.email)) {
+        user.findOne({ email: req.body.email }, (err, updatedUser) => {
+          if (err) {
+            return apiResponse(res, 500, 'Internal server error', false);
+          }
+          if (updatedUser) {
+            return apiResponse(res, 409, 'email already exist', false);
+          }
+          updatedField.email = req.body.email;
+          req.updatedField = updatedField;
+          next();
+        });
+      } else {
+        return apiResponse(res, 400, 'Invalid email', false);
+      }
+    } else if (updatedField.fullName) {
+      req.updatedField = updatedField;
+      next();
+    } else {
+      return apiResponse(res, 400,
+        'either fullName or email is required', false);
+    }
   }
 }

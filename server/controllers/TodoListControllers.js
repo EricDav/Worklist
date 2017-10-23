@@ -94,8 +94,8 @@ export default class TodoListControllers {
     );
   }
   /**
- * @description: fetch all todolist through route
- * PATCH: api/v1/todos/:todoId/tasks/:taskId
+ * @description: update todolist by assigning a user to  a task
+ * or mark as done through route PATCH: /api/v1/todos/:todoId/tasks/:taskId
  *
  * @param {Object} req request object
  * @param {Object} res response object
@@ -109,7 +109,11 @@ export default class TodoListControllers {
       }
       todolist.tasks.forEach((task) => {
         if (task._id == req.params.taskId) {
-          task.done = true;
+          if (req.body.userName) {
+            task.assignTo = req.body.userName;
+          } else {
+            task.done = true;
+          }
         }
       });
       todolist.save((err, updatedTodolist) => {
