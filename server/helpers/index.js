@@ -139,5 +139,6 @@ export const isValidName = (name) => {
   } else if (!isText(name) || name.length < 5) {
     return false;
   }
+  return true;
 };
 
