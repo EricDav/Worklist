@@ -4,7 +4,6 @@ import UserControllers from '../controllers/UserControllers';
 import UserValidations from '../middlewares/UserValidations';
 
 const user = express.Router();
-console.log(UserControllers.googleSignin);
 user.post(
   '/api/v1/users', UserValidations.createUserValidation,
   UserControllers.createUser

@@ -1,5 +1,6 @@
 import { SET_CURRENT_USER, SET_ERROR_MESSAGE,
-  SET_IS_API_CALL_IN_PROGRESS } from '../actions/ActionTypes';
+  SET_IS_API_CALL_IN_PROGRESS,
+  SET_HOME_PAGE_FORM } from '../actions/ActionTypes';
 
 const initialState = {
   isAuthenticated: false,
@@ -38,3 +39,11 @@ export const isApiCallInProgress = (state = false, action = {}) => {
   }
 };
 
+export const homePageFormNumber = (state = 1, action = {}) => {
+  switch (action.type) {
+    case SET_HOME_PAGE_FORM:
+      return action.formNumber;
+    default:
+      return state;
+  }
+};

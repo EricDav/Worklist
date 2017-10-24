@@ -22,6 +22,7 @@ class SignupForm extends React.Component {
       password: '',
       errors: {},
     };
+    this.onClick = this.onClick.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onBlur = this.onBlur.bind(this);
@@ -36,6 +37,18 @@ class SignupForm extends React.Component {
     this.setState({
       [event.target.name]: event.target.value
     });
+  }
+
+  /**
+     * @description - handles the onclick event
+     *
+     * @param  {object} event the event for the content field
+     * @return {void} no return or void
+     */
+  onClick(event) {
+    if (event.target.textContent === ' Login') {
+      this.props.homePageFormNumber(1);
+    }
   }
   /**
      * @description - handles the onblur event
@@ -98,9 +111,8 @@ class SignupForm extends React.Component {
       textContent = 'REGISTER NOW';
     }
     return (
-      <div className="body-container">
          <div id="reset" className="row" >
-      <div className="col l6 offset-l3 m10 offset-m1 s12 valign">
+      <div className="col l4 offset-l4 m10 offset-m1 s12 valign">
         <div className="row">
     <div className="col s12 z-depth-4 card-panel">
       <form onSubmit={this.onSubmit}>
@@ -167,12 +179,19 @@ class SignupForm extends React.Component {
               {textContent}
             </button></a>
         </div>
+        <div className="row">
+          <div className="input-field col s12">
+            <p className="margin center medium-small sign-up">
+              <i>have an account?</i>
+              <a id="clickMe" onClick={this.onClick} href="#!"> Login</a>
+            </p>
+          </div>
+          </div>
         </form>
       </div>
     </div>
   </div>
- </div>
-</div>);
+ </div>);
   }
 }
 

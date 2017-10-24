@@ -5,27 +5,40 @@ import { bindActionCreators } from 'redux';
 
 import SignupForm from './SignupForm.jsx';
 import LoginForm from './LoginForm.jsx';
+import HomeNavbar from './HomeNavbar.jsx';
 import * as AuthActions from '../../actions/AuthActions';
 
 /** @class HomePage
  * @classdesc component for HomePage
  */
 class HomePage extends React.Component {
-//   constructor(props) {
-//     super(props);
-//   }
   /**
    *@description render - renders the signup component
    * @return {object} returns an object
    */
   render() {
+    const { formNumber } = this.props;
     return (
-        // <SignupForm
-        //   userSignupRequest = {this.props.actions.userSignupRequest}
-        //   errorMessage = {this.props.errorMessage}
-        //   isApiCallInProgress = {this.props.isApiCallInProgress}
-        // />
-        <LoginForm/>
+        <div>
+        <HomeNavbar/>
+        <div className="container">
+         { formNumber === 2 &&
+         <SignupForm
+           homePageFormNumber = {this.props.actions.showHomePageForm}
+           userSignupRequest = {this.props.actions.userSignupRequest}
+           errorMessage = {this.props.errorMessage}
+           isApiCallInProgress = {this.props.isApiCallInProgress}
+         /> }
+
+        { formNumber === 1 &&
+        <LoginForm
+          homePageFormNumber = {this.props.actions.showHomePageForm}
+          userSigninRequest = {this.props.actions.userSigninRequest}
+          errorMessage = {this.props.errorMessage}
+          isApiCallInProgress = {this.props.isApiCallInProgress}
+        /> }
+        </div>
+    </div>
     );
   }
 }
@@ -51,7 +64,8 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     errorMessage: state.errorMessage.message,
-    isApiCallInProgress: state.isApiCallInProgress
+    isApiCallInProgress: state.isApiCallInProgress,
+    formNumber: state.homePageFormNumber
   };
 }
 

@@ -16,6 +16,7 @@ const port = process.env.PORT || 8000;
 const app = express();
 const url = process.env.MONGOHQ_TEST_URL;
 moongose.connect(url);
+app.use(express.static(path.join(__dirname, '../client')));
 
 app.use(webpackMiddleware(webpack(webpackConfig)));
 app.use(express.static(path.join(__dirname, '../client')));

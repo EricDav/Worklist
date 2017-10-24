@@ -1,7 +1,7 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
 
-import GoogleLogInButton from './GoogleLogInButton.jsx';
+import GoogleLogInButton from './GoogleLoginButton.jsx';
 
 /** @class LogIn
  * @classdesc component for LogIn
@@ -10,13 +10,13 @@ export class LoginForm extends React.Component {
   /**
    * constructor - contains the constructor
    * @param  {object} props the properties of the class component
-   * 
+   *
    * @return {void} no return or void
    */
   constructor(props) {
     super(props);
     this.state = {
-      shouldClearError: false,
+      showError: false,
       userName: '',
       password: '',
       buttonStatus: 'Login',
@@ -26,17 +26,10 @@ export class LoginForm extends React.Component {
     this.onFocus = this.onFocus.bind(this);
     this.onClick = this.onClick.bind(this);
   }
-  /**
-  * description: controls what happens after component get unrendered
-  *
-  * @return {void} void
-  */
-  componentWillUnmount() {
-    this.props.userSigninRequest({}, true);
-  }
+
   /**
      * @description - handles the onchange event
-     * 
+     *
      * @param  {object} event the event for the content field
      * @return {void} no return or void
      */
@@ -47,45 +40,40 @@ export class LoginForm extends React.Component {
   }
   /**
      * @description - handles the onclick event
-     * 
+     *
      * @param  {object} event the event for the content field
      * @return {void} no return or void
      */
   onClick(event) {
-    if (event.target.textContent === 'Forgot password ?') {
-      browserHistory.push('forgotPassword');
-      this.props.setPage(3);
-    } else if (event.target.textContent === ' Signup') {
-      browserHistory.push('signup');
-      this.props.setPage(2);
+    if (event.target.textContent === ' Signup') {
+      this.props.homePageFormNumber(2);
     }
   }
   /**
      * @description - handles the onsubmit event
-     * 
+     *
      * @param  {object} event the event for the content field
      * @return {void} no return or void
      */
   onSubmit(event) {
     event.preventDefault();
     this.setState({
-      shouldClearError: true
+      showError: true
     });
-    this.props.userSigninRequest({ password: this.state.password,
-      userName: this.state.userName });
+    this.props.userSigninRequest({
+      password: this.state.password,
+      userName: this.state.userName
+    });
   }
   /**
      * @description - handles the onfocus event
-     * 
+     *
      * @param  {object} event the event for the content field
      * @return {void} no return or void
      */
   onFocus() {
-    if (this.state.shouldClearError) {
-      this.props.userSigninRequest({}, true);
-    }
     this.setState({
-      shouldClearError: false
+      showError: false
     });
   }
   /**
@@ -94,17 +82,21 @@ export class LoginForm extends React.Component {
    * @return {object} returns an object
    */
   render() {
-    const { userName, password, clearError } = this.state;
-    return (<div id="login-page" className="col s12 z-depth-4 card-panel">
+    const { userName, password, showError } = this.state;
+    return (
+    <div className="row" >
+      <div className="col m6 l4 offset-l4 offset-m3 s12 valign">
+        <div className="row">
+    <div id="login-page" className="col s12 z-depth-4 card-panel">
       <form id="login" className="login-form" onSubmit={this.onSubmit}>
         <div className="row">
           <div className="input-field col s12 center">
             <h5
               className="center login-form-text">
               Welcome, Login to get started</h5><br/>
-            {this.props.error.errorType && !clearError &&
-            <div className="mes"><i>
-              <b>{this.props.error.errorMessage}</b></i></div>}
+            {showError && <div className="mes">
+                <i>{this.props.errorMessage}</i>
+            </div>}
           </div>
         </div>
         <div className="row margin">
@@ -153,6 +145,9 @@ export class LoginForm extends React.Component {
           </div>
         </div>
       </form>
+    </div>
+    </div>
+    </div>
     </div>);
   }
 }
