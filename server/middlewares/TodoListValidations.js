@@ -121,6 +121,10 @@ export default class TodoListValidations {
         return apiResponse(res, 500, 'Internal server error', false);
       }
       if (todolist) {
+        if (todolist.creatorId !== req.currentUser.currentUser._id) {
+          return apiResponse(res, 403,
+            'You are not permited to perform this operation', false);
+        }
         let isTaken = false;
         todolist.tasks.forEach((task) => {
           if (task.taskName.toLowerCase() === req.body.taskName.toLowerCase()) {
