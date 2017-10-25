@@ -4,7 +4,6 @@ import 'chai';
 import expect from 'expect';
 
 import app from '../../app';
-import todoList from '../../models/todoList'
 
 const server = supertest.agent(app);
 let regUserToken = 'bearer ';
@@ -162,7 +161,7 @@ describe('Todolist API', () => {
           if (err) return done(err);
           done();
         });
-  });
+    });
     it('should reject request if todoId is invalid', (done) => {
       server
         .post(`/api/v1/todos/${invalidId}/tasks`)
@@ -180,8 +179,8 @@ describe('Todolist API', () => {
           if (err) return done(err);
           done();
         });
-  });
-it('should reject request for invalid priority level', (done) => {
+    });
+    it('should reject request for invalid priority level', (done) => {
       server
         .post(`/api/v1/todos/${todoId}/tasks`)
         .set('Connection', 'keep alive')
@@ -235,7 +234,7 @@ it('should reject request for invalid priority level', (done) => {
           done();
         });
     });
-     it('should reject request if todolist does not exist', (done) => {
+    it('should reject request if todolist does not exist', (done) => {
       server
         .post(`/api/v1/todos/${notFoundId}/tasks`)
         .set('Connection', 'keep alive')
@@ -245,7 +244,6 @@ it('should reject request for invalid priority level', (done) => {
         .send({taskName: 'create login', priority: 'normal'})
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          //console.log(res);
           expect(res.status).toEqual(404);
           expect(res.body.success).toEqual(false);
           expect(res.body.error.message)
@@ -268,8 +266,8 @@ it('should reject request for invalid priority level', (done) => {
           expect(res.body.success).toEqual(true);
           expect(res.body.data.name)
             .toEqual('postIt');
-         expect(res.body.data.tasks[0].done).toEqual(true)
-         expect(res.body.data.tasks[0].taskName)
+          expect(res.body.data.tasks[0].done).toEqual(true)
+          expect(res.body.data.tasks[0].taskName)
             .toEqual('create login');       
           if (err) return done(err);
           done();

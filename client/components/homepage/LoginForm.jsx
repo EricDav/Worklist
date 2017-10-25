@@ -28,6 +28,13 @@ export class LoginForm extends React.Component {
   }
 
   /**
+   * componentWillUnmount - componentWilldMount function
+   * @return {void} no return
+   */
+  componentWillUnmount() {
+    this.props.setError('');
+  }
+  /**
      * @description - handles the onchange event
      *
      * @param  {object} event the event for the content field
@@ -47,6 +54,8 @@ export class LoginForm extends React.Component {
   onClick(event) {
     if (event.target.textContent === ' Signup') {
       this.props.homePageFormNumber(2);
+    } else if (event.target.textContent === 'Forgot password ?') {
+      this.props.homePageFormNumber(3);
     }
   }
   /**
@@ -85,7 +94,7 @@ export class LoginForm extends React.Component {
     const { userName, password, showError } = this.state;
     return (
     <div className="row" >
-      <div className="col m6 l4 offset-l4 offset-m3 s12 valign">
+      <div id="image" className="col m6 l4 offset-l4 offset-m3 s12 valign">
         <div className="row">
     <div id="login-page" className="col s12 z-depth-4 card-panel">
       <form id="login" className="login-form" onSubmit={this.onSubmit}>

@@ -83,15 +83,14 @@ export default class TodoListControllers {
  * @return {Object} response containing the updated todo
  */
   static getTodolist(req, res) {
-    todoList.find(
-      { creatorId: req.currentUser.currentUser._id},
-      (err, todolists) => {
-        if (err) {
-          return apiResponse(res, 500, 'Internal server error', false);
-        }
-        return apiResponse(res, 200, null, true, todolists);
+    todoList.find({ collaborators: {
+      $in: [req.currentUser.currentUser.userName]
+    } }).exec((err, todolists) => {
+      if (err) {
+        return apiResponse(res, 500, 'Internal server error', false);
       }
-    );
+      return apiResponse(res, 200, null, true, todolists);
+    });
   }
   /**
  * @description: fetch all todolist through route

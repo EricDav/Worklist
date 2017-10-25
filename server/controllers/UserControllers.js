@@ -2,8 +2,8 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 
 import user from '../models/user';
-import { generateToken, removePassword, isInValidField, apiResponse }
-  from '../helpers';
+import { generateToken, removePassword, isInValidField, apiResponse,
+  isValidEmail, isValidPassword, generateCode, mailSender } from '../helpers';
 
 dotenv.load();
 const secret = process.env.secretKey;
@@ -125,7 +125,7 @@ export default class UserControllers {
    */
   static updateUserProfile(req, res) {
     user.findByIdAndUpdate(
-      req.body.userId,
+      req.currentUser.currentUser._id,
       { $set: req.body }, (err, updatedUser) => {
         if (err) {
           return apiResponse(res, 500, 'Internal server error', false);
@@ -137,7 +137,7 @@ export default class UserControllers {
 
   /**
    *@description controls a user google signup through the route
-   * POST: /api/v1/user/googleSignin
+   * POST: /api/v1/user/google-signin
    *
    * @param  {object} req  request object
    * @param  {object} res  response object
@@ -145,8 +145,7 @@ export default class UserControllers {
    * @return {object} response containing the user token or action status
    */
   static googleSignin(req, res) {
-    if ((req.body.email.slice(req.body.email.length - 4, req.body.email.length)
-     !== '.com' || !(/[@]/.test(req.body.email)))) {
+    if (isValidEmail(!req.body.email)) {
       return apiResponse(res, 400, 'Invalid email', false);
     }
     user.findOne({ email: req.body.email }, (err, googleUser) => {
@@ -158,6 +157,81 @@ export default class UserControllers {
       }
       const token = generateToken(removePassword(googleUser), secret);
       return apiResponse(res, 200, 'token', true, token);
+    });
+  }
+  /**
+   * @description send secret code to users that has forgoten their password
+   * through POST: /api/v1/users/sendSecretCode
+   *
+   *
+   * @param  {object} req request object
+   * @param  {object} res response object
+   *
+   * @return {object} an object containing the status of the response
+   */
+  static sendsecretCode(req, res) {
+    if (!isValidEmail(req.body.email)) {
+      return apiResponse(res, 400, 'Invalid email', false);
+    }
+    user.findOne({ email: req.body.email }, (err, requester) => {
+      if (err) {
+        return apiResponse(res, 500, 'Internal server error', false);
+      } else if (!requester) {
+        return apiResponse(res, 404, 'User not found', false);
+      }
+      const generatedCode = generateCode();
+      const { email } = req.body;
+      const message = `Your Secrete code is: ${generatedCode}`;
+      bcrypt.hash(generatedCode, 10, (err, hashSecret) => {
+        if (err) {
+          return apiResponse(res, 500, 'Internal server error', false);
+        }
+        mailSender(
+          req, res, message, 'A code has been sent to your mail',
+          hashSecret, email
+        );
+      });
+    });
+  }
+  /**
+   * @description Verify secrete code sent to users and reset their password
+   *
+   * @param  {object} req request object
+   * @param  {object} res response object
+   *
+   * @return {object} response containing status of the action
+   */
+  static verifyCodeAndUpdatePassword(req, res) {
+    if (isInValidField(req.body.password)) {
+      return apiResponse(res, 400, 'Invalid password', false);
+    } else if (!isValidPassword(req.body.password)) {
+      return apiResponse(res, 400, `password should be up to
+      8 characters including alphabet and number`, false);
+    }
+    bcrypt.compare(req.body.secretCode, req.body.hash, (err, response) => {
+      if (response) {
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+          user.findOne({ email: req.body.email },
+            (err, forgetPasswordUser) => {
+              if (err) {
+                return apiResponse(res, 500, 'Internal server error', false);
+              } else if (!forgetPasswordUser) {
+                return apiResponse(res, 404, 'User does not exist', false);
+              }
+              forgetPasswordUser.password = hash;
+              forgetPasswordUser.save((err, updatedUser) => {
+                if (err) {
+                  return apiResponse(res, 500, 'Internal server error', false);
+                }
+                return apiResponse(res, 200, 'Your password has been reset successfully',
+                  true);
+              });
+            }
+          );
+        });
+      } else {
+        return apiResponse(res, 400, 'Invalid code', false);
+      }
     });
   }
 }

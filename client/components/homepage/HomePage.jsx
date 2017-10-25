@@ -5,8 +5,13 @@ import { bindActionCreators } from 'redux';
 
 import SignupForm from './SignupForm.jsx';
 import LoginForm from './LoginForm.jsx';
+import ForgetPasswordVerificationForm from
+  './ForgetPasswordVerificationForm.jsx';
+import ForgetPasswordConfirmationForm from
+  './ForgetPasswordConfirmationForm.jsx';
 import HomeNavbar from './HomeNavbar.jsx';
 import * as AuthActions from '../../actions/AuthActions';
+import * as UserActions from '../../actions/UserActions';
 
 /** @class HomePage
  * @classdesc component for HomePage
@@ -19,11 +24,14 @@ class HomePage extends React.Component {
   render() {
     const { formNumber } = this.props;
     return (
-        <div>
-        <HomeNavbar/>
+    <div className="image">
+        <HomeNavbar
+          homePageFormNumber = {this.props.actions.showHomePageForm}
+        />
         <div className="container">
          { formNumber === 2 &&
          <SignupForm
+          setError = {this.props.actions.setError}
            homePageFormNumber = {this.props.actions.showHomePageForm}
            userSignupRequest = {this.props.actions.userSignupRequest}
            errorMessage = {this.props.errorMessage}
@@ -32,11 +40,29 @@ class HomePage extends React.Component {
 
         { formNumber === 1 &&
         <LoginForm
+         setError = {this.props.actions.setError}
           homePageFormNumber = {this.props.actions.showHomePageForm}
           userSigninRequest = {this.props.actions.userSigninRequest}
           errorMessage = {this.props.errorMessage}
           isApiCallInProgress = {this.props.isApiCallInProgress}
         /> }
+        { formNumber === 3 &&
+         <ForgetPasswordVerificationForm
+          setError = {this.props.actions.setError}
+          sendSecretCode={this.props.UserActions.sendSecretCode}
+          errorMessage = {this.props.errorMessage}
+          isApiCallInProgress = {this.props.isApiCallInProgress}
+         />
+        }
+        { formNumber === 4 &&
+          <ForgetPasswordConfirmationForm
+           setError = {this.props.actions.setError}
+            resetPasswordUser = {this.props.resetPasswordUser}
+            errorMessage = {this.props.errorMessage}
+            resetPassword={this.props.UserActions.resetPassword}
+            isApiCallInProgress = {this.props.isApiCallInProgress}
+          />
+        }
         </div>
     </div>
     );
@@ -50,7 +76,8 @@ class HomePage extends React.Component {
  */
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(AuthActions, dispatch)
+    actions: bindActionCreators(AuthActions, dispatch),
+    UserActions: bindActionCreators(UserActions, dispatch)
   };
 }
 
@@ -65,7 +92,8 @@ function mapStateToProps(state) {
   return {
     errorMessage: state.errorMessage.message,
     isApiCallInProgress: state.isApiCallInProgress,
-    formNumber: state.homePageFormNumber
+    formNumber: state.homePageFormNumber,
+    resetPasswordUser: state.resetPasswordUser
   };
 }
 

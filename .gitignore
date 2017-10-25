@@ -1,2 +1,6 @@
 node_modules
 package-lock.json
+coverage
+npm-debug.log
+.nyc_output/
+.env

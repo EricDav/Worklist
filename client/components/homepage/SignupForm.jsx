@@ -21,11 +21,19 @@ class SignupForm extends React.Component {
       email: '',
       password: '',
       errors: {},
+      showError: false
     };
     this.onClick = this.onClick.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onBlur = this.onBlur.bind(this);
+  }
+  /**
+   * componentWillUnmount - componentWilldMount function
+   * @return {void} no return
+   */
+  componentWillUnmount() {
+    this.props.setError('');
   }
   /**
      * @description - handles the onchange event
@@ -92,10 +100,14 @@ class SignupForm extends React.Component {
      * @description - handles the onsubmit event
      *
      * @param  {object} event the event for the content field
+     *
      * @return {void} no return or void
      */
   onSubmit(event) {
     event.preventDefault();
+    this.setState({
+      showError: true
+    });
     this.props.userSignupRequest(this.state);
   }
   /**
@@ -120,7 +132,7 @@ class SignupForm extends React.Component {
           <div className="input-field col s12 center">
             <h4>Register</h4>
             <p className="center">Join our community now!</p>
-            { this.props.errorMessage &&
+            { this.state.showError &&
             <div className="mes reduce"><i>
               <h6>{this.props.errorMessage}</h6>
             </i>
