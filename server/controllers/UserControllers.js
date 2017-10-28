@@ -1,5 +1,8 @@
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
+import fs from 'fs';
+import del from 'del';
+import cloudinary from 'cloudinary';
 
 import user from '../models/user';
 import { generateToken, removePassword, isInValidField, apiResponse,
@@ -24,7 +27,7 @@ export default class UserControllers {
   static createUser(req, res) {
     user.findOne({
       $or: [{ email: req.body.email },
-        { userName: req.body.userName }]
+        { userName: req.body.userName.toLowerCase }]
     }, (err, currentUser) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
@@ -51,6 +54,7 @@ export default class UserControllers {
       });
       newUser.save((err, savedUser) => {
         if (err) {
+          console.log(err);
           return apiResponse(res, 500, 'Internal server error', false);
         }
         const token = generateToken(removePassword(savedUser), secret);
@@ -130,7 +134,7 @@ export default class UserControllers {
         if (err) {
           return apiResponse(res, 500, 'Internal server error', false);
         }
-        return apiResponse(res, 200, null, true, removePassword(updatedUser));
+        return apiResponse(res, 200, 'token', true, removePassword(updatedUser));
       }
     );
   }
@@ -211,7 +215,8 @@ export default class UserControllers {
     bcrypt.compare(req.body.secretCode, req.body.hash, (err, response) => {
       if (response) {
         bcrypt.hash(req.body.password, 10, (err, hash) => {
-          user.findOne({ email: req.body.email },
+          user.findOne(
+            { email: req.body.email },
             (err, forgetPasswordUser) => {
               if (err) {
                 return apiResponse(res, 500, 'Internal server error', false);
@@ -223,8 +228,10 @@ export default class UserControllers {
                 if (err) {
                   return apiResponse(res, 500, 'Internal server error', false);
                 }
-                return apiResponse(res, 200, 'Your password has been reset successfully',
-                  true);
+                return apiResponse(
+                  res, 200, 'Your password has been reset successfully',
+                  true
+                );
               });
             }
           );
@@ -232,6 +239,60 @@ export default class UserControllers {
       } else {
         return apiResponse(res, 400, 'Invalid code', false);
       }
+    });
+  }
+  /**
+ * @description: update profile picture through the route
+ * PATCH: api/v1/users/:userId
+ *
+ * @param {Object} req request object
+ * @param {Object} res response object
+ *
+ * @return {Object} response containing the updated todo
+ */
+  static uploadProfilePicture(req, res) {
+    cloudinary.config({
+      cloud_name: process.env.CLOUD_NAME,
+      api_key: process.env.API_KEY,
+      api_secret: process.env.API_SECRET
+    });
+    if (!req.files) {
+      return apiResponse(res, 400, 'No image found', false);
+    }
+    const uploadDir = 'server/uploads';
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir);
+    }
+
+    const { file } = req.files;
+    file.mv(`${uploadDir}/${file.name}`).then(() => {
+      cloudinary.v2.uploader.upload(`${uploadDir}/${file.name}`)
+        .then((cloudinaryImage) => {
+          const { url } = cloudinaryImage;
+          user.findOne(
+            { _id: req.currentUser.currentUser._id },
+            (err, currentUser) => {
+              if (err) {
+                return apiResponse(res, 500, 'Internal server error', false);
+              }
+              currentUser.imageUrl = url;
+              currentUser.save((err, updatedUser) => {
+                if (err) {
+                  return apiResponse(res, 500, 'Internal server error', false);
+                }
+                return apiResponse(
+                  res, 200, 'token', true,
+                  generateToken(removePassword(updatedUser), secret)
+                );
+              });
+            }
+          );
+        });
+    }).catch(() => {
+      apiResponse(
+        res, 500,
+        'An error occured while uploading image', false
+      );
     });
   }
 }

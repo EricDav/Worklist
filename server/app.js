@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 import path from 'path';
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
+import fileUpload from 'express-fileupload';
+
 import webpackConfig from '../webpack.config.dev';
 import user from './routes/user';
 import todo from './routes/todo';
@@ -22,6 +24,7 @@ app.use(webpackMiddleware(webpack(webpackConfig)));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(fileUpload());
 app.use(user);
 app.use(todo);
 

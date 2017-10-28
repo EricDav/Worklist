@@ -11,7 +11,7 @@ export const user = (state = initialState, action = {}) => {
   switch (action.type) {
     case SET_CURRENT_USER:
       return {
-        isAuthenticated: action.user.email !== undefined,
+        isAuthenticated: action.user.currentUser.email !== undefined,
         user: action.user
       };
     default:

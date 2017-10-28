@@ -20,6 +20,11 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  imageUrl: {
+    type: String,
+    unique: true,
+    default: 'http://res.cloudinary.com/dbczzmftw/image/upload/v1509127904/pojdk9ajmdgase3esgg2.png'
   }
 }, {
   timestamps: true

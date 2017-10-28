@@ -1,8 +1,11 @@
 import axios from 'axios';
+import FormData from 'form-data';
+import jwt from 'jsonwebtoken';
 
 import { setIsApiCallInProgress, setError,
-  showHomePageForm } from './AuthActions';
+  showHomePageForm, setCurrentUser } from './AuthActions';
 import { RESET_PASSWORD_USER } from './ActionTypes';
+import setAuthorizationToken from '../utils/setAuthorizationToken';
 
 /**
  * @description set the user requesting for reset password
@@ -55,7 +58,8 @@ export function resetPassword(payload) {
   return (dispatch) => {
     dispatch(setIsApiCallInProgress(true));
     axios.put('/api/v1/users/reset-password', payload).then((res) => {
-      Materialize.toast('Password reset successfully', 2000, 'green',
+      Materialize.toast(
+        'Password reset successfully', 2000, 'green',
         () => {
           dispatch(showHomePageForm(1));
           dispatch(setForgetPasswordUser({}));
@@ -75,3 +79,54 @@ export function resetPassword(payload) {
   };
 }
 
+/**
+ * @description reset user password
+ *
+ * @param  {object} payload user payload
+ *
+ * @return {object} returns dispatch object
+ */
+export function updateProfilePicture(payload) {
+  const data = new FormData();
+  data.append('file', payload, payload.name);
+  return (dispatch) => {
+    axios.patch('/api/v1/users', data, {
+      headers: {
+        accept: 'application/json',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+      }
+    }).then((res) => {
+      const { token } = res.data;
+      localStorage.setItem('jwtToken', token);
+      console.log(token, res);
+      setAuthorizationToken(token);
+      dispatch(setCurrentUser(jwt.decode(token)));
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
+}
+
+/**
+ * @description reset user password
+ *
+ * @param  {object} payload user payload
+ *
+ * @return {object} returns dispatch object
+ */
+export function getUser() {
+  return (dispatch) => {
+    axios.get('/api/v1/users/current-user').then((res) => {
+      currentUser = {
+        currentUser: {
+          fullName: res.data.data.fullName,
+          email: res.data.data.email,
+          imageUrl: res.data.data.imageUrl,
+          userName: res.data.data.userName
+        }
+      };
+      dispatch(setCurrentUser(currentUser));
+    });
+  };
+}

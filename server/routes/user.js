@@ -12,16 +12,19 @@ user.post(
 
 user.post('/api/v1/users/signin', UserControllers.authenticateUser);
 
-user.patch('/api/v1/users', Authorization.verifyToken,
+user.put('/api/v1/users', Authorization.verifyToken,
   UserControllers.updateUserProfile);
 
 user.post('/api/v1/users/google-signin', UserControllers.googleSignin);
 
 user.post('/api/v1/users/send-secret-code', UserControllers.sendsecretCode);
 
-user.put(
+user.patch(
   '/api/v1/users/reset-password',
   UserControllers.verifyCodeAndUpdatePassword
 );
+
+user.patch('/api/v1/users', Authorization.verifyToken,
+  UserControllers.uploadProfilePicture);
 
 export default user;

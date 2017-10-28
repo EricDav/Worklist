@@ -33,7 +33,6 @@ class HomeNavbar extends React.Component {
       <div className="nav-wrapper">
         <a href="#!" className="brand-logo"><i>WorkList</i></a>
         <ul className="right hide-on-med-and-down">
-          <li><a href="sass.html">Sass</a></li>
           <li><a onClick={this.onClick} href="#!">Home</a></li>
         </ul>
       </div>

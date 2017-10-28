@@ -78,6 +78,7 @@ export function userSignupRequest(payload) {
       setAuthorizationToken(token);
       dispatch(setCurrentUser(jwt.decode(token)));
       dispatch(setIsApiCallInProgress(false));
+      window.location = '/dashboard';
     }).catch(({ response }) => {
       const { message } = response.data.error;
       if (message) {
