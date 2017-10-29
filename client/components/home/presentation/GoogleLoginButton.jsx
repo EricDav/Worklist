@@ -2,8 +2,8 @@ import React from 'react';
 import ReactGoogleLogin from 'react-google-login';
 import PropTypes from 'prop-types';
 
-/** @class GoogleLogIn
- * @classdesc component for Login with google+
+/** @class GoogleLoginButton
+ * @classdesc component for GoogleLoginButton
  */
 class GoogleLoginButton extends React.Component {
   /**

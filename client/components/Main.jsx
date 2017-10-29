@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import HomePage from './homepage/HomePage.jsx';
-import Dashboard from './dashboard/Dashboard.jsx';
+import HomePage from './home/container/HomePage.jsx';
+import Dashboard from './dashboard/container/Dashboard.jsx';
 
 const Main = () => (
   <div>

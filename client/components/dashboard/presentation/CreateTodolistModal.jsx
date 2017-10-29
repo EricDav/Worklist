@@ -24,19 +24,6 @@ export class CreateGroupModal extends React.Component {
   }
 
   /**
-   * componentWillUnmount - componentWilldMount function
-   * @return {void} no return
-   */
-  componentWillMount() {
-    this.props.setError('');
-    this.setState({
-      name: '',
-      showError: false,
-      nameError: ''
-    });
-  }
-
-  /**
    * componentDidlMount - componentDiddMount function
    * @return {void}
    */
@@ -50,7 +37,7 @@ export class CreateGroupModal extends React.Component {
      * @description - handles the onchange event
      *
      * @param  {object} event the event for the content field
-     * @return {void} no return or void
+     * @return {void}
      */
   onChange(event) {
     this.setState({
@@ -80,7 +67,8 @@ export class CreateGroupModal extends React.Component {
      */
   onFocus() {
     this.setState({
-      showError: false
+      showError: false,
+      nameError: ''
     });
   }
   /**
@@ -106,7 +94,23 @@ export class CreateGroupModal extends React.Component {
             showError: false,
             nameError: ''
           });
-        });
+          $('#modal1').modal('close');
+        },
+        ({ response }) => {
+          this.props.setIsApiCallInProgress(false);
+          const { message } = response.data.error;
+          if (message) {
+            this.setState({
+              nameError: message
+            });
+          } else {
+            this.setState({
+              nameError: `An unexpected error occured.
+         You can check your internet connection`
+            });
+          }
+        }
+      );
     }
   }
   /**
@@ -129,7 +133,8 @@ export class CreateGroupModal extends React.Component {
               <div className="left col s12 m5 l4">
                 <ul>
                   <li><a className="email-menu">
-                    <i onClick ={this.onClick} className="material-icons">close</i></a>
+                    <i onClick={this.onClick}
+                    className="material-icons">close</i></a>
                   </li>
                   <li>
                     Create a New Todolist

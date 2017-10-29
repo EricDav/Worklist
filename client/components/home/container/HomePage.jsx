@@ -1,22 +1,43 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 
-import SignupForm from './SignupForm.jsx';
-import LoginForm from './LoginForm.jsx';
+import SignupForm from '../presentation/SignupForm.jsx';
+import LoginForm from '../presentation/LoginForm.jsx';
 import ForgetPasswordVerificationForm from
-  './ForgetPasswordVerificationForm.jsx';
+  '../presentation/ForgetPasswordVerificationForm.jsx';
 import ForgetPasswordConfirmationForm from
-  './ForgetPasswordConfirmationForm.jsx';
-import HomeNavbar from './HomeNavbar.jsx';
-import * as AuthActions from '../../actions/AuthActions';
-import * as UserActions from '../../actions/UserActions';
+  '../presentation/ForgetPasswordConfirmationForm.jsx';
+import HomeNavbar from '../presentation/HomeNavbar.jsx';
+import * as AuthActions from '../../../actions/AuthActions';
+import * as UserActions from '../../../actions/UserActions';
 
 /** @class HomePage
  * @classdesc component for HomePage
  */
 class HomePage extends React.Component {
+  /**
+   * constructor - contains the constructor
+   * @param  {object} props the properties of the class component
+   * @return {void} no return or void
+   */
+  constructor(props) {
+    super(props);
+    // this.state = {
+
+    // }
+    this.handleOnclickForNavbar = this.handleOnclickForNavbar.bind(this);
+  }
+
+  /**
+   *@description render - renders the signup component
+   * @return {object} returns an object
+   */
+  handleOnclickForNavbar(event) {
+    console.log(event.target.name);
+    this.props.actions.showHomePageForm(1);
+  }
   /**
    *@description render - renders the signup component
    * @return {object} returns an object
@@ -26,7 +47,7 @@ class HomePage extends React.Component {
     return (
     <div className="image">
         <HomeNavbar
-          homePageFormNumber = {this.props.actions.showHomePageForm}
+          handleOnclick={this.handleOnclickForNavbar}
         />
         <div className="container">
          { formNumber === 2 &&
@@ -97,4 +118,9 @@ function mapStateToProps(state) {
   };
 }
 
+HomePage.propTypes = {
+  userSignupRequest: propTypes.func.isRequired,
+  errorMessage: propTypes.string.isRequired,
+  isApiCallInProgress: propTypes.bool.isRequired
+};
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon --watch server --exec babel-node -- server/app.js",
     "server:test": "NODE_ENV=test mocha --timeout 40000 --compilers js:babel-core/register ./server/test/**/*.spec.js",
-    "coverage": "NODE_ENV=test ./node_modules/.bin/nyc --reporter=html --reporter=text mocha --reporter spec --compilers js:babel-register ./server/test/**/*.spec.js --timeout 600000 --exit"
+    "coverage": "NODE_ENV=test ./node_modules/.bin/nyc --reporter=html --reporter=text mocha --reporter spec --compilers js:babel-register ./server/test/**/*.spec.js --timeout 600000 --exit",
+    "client:test": "jest --coverage cli"
   },
   "repository": {
     "type": "git",
@@ -49,6 +50,7 @@
     "form-data": "^2.3.1",
     "history": "^4.7.2",
     "istanbul": "^0.4.5",
+    "jest": "^21.2.1",
     "jquery": "^3.2.1",
     "jsonwebtoken": "^8.1.0",
     "material-icons": "^0.1.0",

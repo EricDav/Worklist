@@ -10,7 +10,7 @@ import { setIsApiCallInProgress, setError } from './AuthActions';
  */
 export function getTodolist() {
   return (dispatch) => {
-    axios.get('/api/v1/todos').then((res) => {
+    return axios.get('/api/v1/todos').then((res) => {
       const { data } = res.data;
       dispatch({
         type: SET_TODOLISTS,
@@ -37,17 +37,8 @@ export function createTodolist(payload) {
         type: ADD_TODOLIST,
         todolist: data
       });
-      $('#modal1').modal('close');
+      dispatch(setError(''));
       Materialize.toast('Todolist created successfully', 2000, 'green');
-    }).catch(({ response }) => {
-      const { message } = response.data.error;
-      if (message) {
-        dispatch(setError(message));
-      } else {
-        dispatch(setError(`An unexpected error occured.
-         You can check your internet connection`));
-      }
-      dispatch(setIsApiCallInProgress(false));
     });
   };
 }

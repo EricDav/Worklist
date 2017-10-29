@@ -2,9 +2,9 @@ import React from 'react';
 import propTypes from 'prop-types';
 
 import { isValidEmail, isValidName, isValidPassword,
-  isInValidField, isValidUsername } from '../../helpers';
+  isInValidField, isValidUsername } from '../../../helpers';
 
-/** @class Signup
+/** @class SignupForm
  * @classdesc component for SignupForm
  */
 class SignupForm extends React.Component {
@@ -48,7 +48,8 @@ class SignupForm extends React.Component {
   }
 
   /**
-     * @description - handles the onclick event
+     * @description - handles the onclick event by changing the
+     * form in home page to login form
      *
      * @param  {object} event the event for the content field
      * @return {void} no return or void
@@ -59,7 +60,7 @@ class SignupForm extends React.Component {
     }
   }
   /**
-     * @description - handles the onblur event
+     * @description - handles the onblur event by validating user input
      *
      * @param  {object} event the event for the content field
      *
@@ -207,7 +208,8 @@ class SignupForm extends React.Component {
   }
 }
 
-SignupForm.propType = {
+SignupForm.propTypes = {
+  homePageFormNumber: propTypes.func.isRequired,
   userSignupRequest: propTypes.func.isRequired,
   errorMessage: propTypes.string.isRequired,
   isApiCallInProgress: propTypes.bool.isRequired

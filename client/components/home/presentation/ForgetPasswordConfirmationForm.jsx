@@ -1,8 +1,9 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
-import { isValidPassword } from '../../helpers';
+import { isValidPassword } from '../../../helpers';
 
-/** @class Confirm
+/** @class ForgetPasswordConfirmationForm
  * @classdesc component to confirm secret code
  */
 class ForgetPasswordConfirmationForm extends React.Component {
@@ -31,7 +32,8 @@ class ForgetPasswordConfirmationForm extends React.Component {
     this.props.setError('');
   }
   /**
-     * @description - handles the onchange event
+     * @description - handles the onclick event by changing the
+     * form in home page to login form
      *
      * @param  {object} event the event for the content field
      * @return {void} no return or void
@@ -154,5 +156,13 @@ class ForgetPasswordConfirmationForm extends React.Component {
     );
   }
 }
+
+ForgetPasswordConfirmationForm.propTypes = {
+  setError: propTypes.func.isRequired,
+  resetPasswordUser: propTypes.object.isRequired,
+  errorMessage: propTypes.string.isRequired,
+  isApiCallInProgress: propTypes.bool.isRequired,
+  resetPassword: propTypes.func.isRequired
+};
 
 export default ForgetPasswordConfirmationForm;

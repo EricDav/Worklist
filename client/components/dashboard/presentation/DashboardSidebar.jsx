@@ -1,49 +1,14 @@
 import React from 'react';
 
-import Todolist from './Todolist.jsx';
-
 /** @class DashboardSidebar
- * @classdesc component for Nav bar
+ * @classdesc component for sidebar
  */
 class DashboardSidebar extends React.Component {
   /**
-   * constructor - contains the constructor
-   * @param  {object} props the properties of the class component
-   * @return {void} no return or void
-   */
-//   constructor(props) {
-//     super(props);
-//     this.getTodolists = this.getTodolists.bind(this);
-//   }
-  /**
-   * componentDidlMount - componentDiddMount function
-   * @return {void}
-   */
-  componentDidMount() {
-    $(document).ready(() => {
-      $('.button-collapse').sideNav();
-    });
-    $('.dropdown-button').dropdown({
-      hover: true,
-      belowOrigin: true
-    });
-    this.props.getTodolists();
-  }
-  getTodolists() {
-    console.log(this.props.todolists, '++++++++++++++++');
-    return this.props.todolists.map(todolist => (
-        <Todolist
-          name={todolist.name}
-          key={todolist._id}
-        />
-    ));
-  }
-  /**
-   *@description render - renders the Google Login component
+   *@description render - renders the Dashboard sidebar component
    * @return {object} returns an object
    */
   render() {
-    const todolists = this.getTodolists();
     return (
 <header className="imag">
     <div className="navbar-fixed">
@@ -70,8 +35,12 @@ class DashboardSidebar extends React.Component {
       <div className="avatar">
          <img
            style={{
- position: 'relative', width: 200, height: 200, marginLeft: 20, marginTop: 10
-}}
+            position: 'relative',
+            width: 200,
+            height: 200,
+            marginLeft: 20,
+            marginTop: 10
+          }}
            src={this.props.imageUrl}
             className="circle darken-1"
      />
@@ -79,12 +48,23 @@ class DashboardSidebar extends React.Component {
              <span
              style={{ marginLeft: 20, marginRight: 10 }}>Solomon Kingsley
             </span>
-              <a style={{ marginTop: -100, marginRight: 50 }} href="#modal2" className="modal-trigger"><i className="small material-icons">add_a_photo</i></a>
+              <a style={{
+                marginTop: -100,
+                marginRight: 50
+                }}
+                href="#modal2"
+                className="modal-trigger">
+                <i className="small material-icons">add_a_photo
+                </i>
+                </a>
          </a>
       </div>
       <ul>
-        <li><a href="#modal1" className="modal-trigger"><i className="material-icons prefix red-text">add</i><b>Todolists</b></a></li>
-        {todolists}
+        <li><a href="#modal1"
+        className="modal-trigger">
+        <i className="material-icons prefix red-text">add</i>
+        <b>Todolists</b></a></li>
+        {this.props.todolists}
       </ul>
 
     </div>

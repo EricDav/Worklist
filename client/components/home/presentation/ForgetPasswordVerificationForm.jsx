@@ -1,7 +1,8 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
-/** @class Details
- * @classdesc component to confirm secret code
+/** @class ForgetPasswordVerificationForm
+ * @classdesc component for orgetPasswordVerificationForm
  */
 class ForgetPasswordVerificationForm extends React.Component {
   /**
@@ -38,7 +39,7 @@ class ForgetPasswordVerificationForm extends React.Component {
     });
   }
   /**
-     * @description - handles the onfocus event
+     * @description - handles the onfocus event by resetting setRrror state
      *
      * @param  {object} event the event for the content field
      *
@@ -120,6 +121,13 @@ class ForgetPasswordVerificationForm extends React.Component {
     );
   }
 }
+
+ForgetPasswordVerificationForm.propTypes = {
+  setError: propTypes.func.isRequired,
+  errorMessage: propTypes.string.isRequired,
+  isApiCallInProgress: propTypes.bool.isRequired,
+  sendSecretCode: propTypes.func.isRequired
+};
 
 
 export default ForgetPasswordVerificationForm;

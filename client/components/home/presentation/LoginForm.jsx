@@ -1,10 +1,10 @@
 import React from 'react';
-import { browserHistory } from 'react-router';
+import propTypes from 'prop-types';
 
 import GoogleLogInButton from './GoogleLoginButton.jsx';
 
-/** @class LogIn
- * @classdesc component for LogIn
+/** @class LoginForm
+ * @classdesc component for LoginForm
  */
 export class LoginForm extends React.Component {
   /**
@@ -46,9 +46,11 @@ export class LoginForm extends React.Component {
     });
   }
   /**
-     * @description - handles the onclick event
+     * @description - handles the onclick event by changing the
+     * form in home page to either signup or forget password form
      *
      * @param  {object} event the event for the content field
+     *
      * @return {void} no return or void
      */
   onClick(event) {
@@ -75,7 +77,7 @@ export class LoginForm extends React.Component {
     });
   }
   /**
-     * @description - handles the onfocus event
+     * @description - handles the onfocus event by resetting showError state
      *
      * @param  {object} event the event for the content field
      * @return {void} no return or void
@@ -161,5 +163,11 @@ export class LoginForm extends React.Component {
   }
 }
 
+LoginForm.propTypes = {
+  homePageFormNumber: propTypes.func.isRequired,
+  userSigninRequest: propTypes.func.isRequired,
+  errorMessage: propTypes.string.isRequired,
+  isApiCallInProgress: propTypes.bool.isRequired
+};
 export default LoginForm;
 
