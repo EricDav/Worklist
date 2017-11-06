@@ -39,7 +39,7 @@ class SignupForm extends React.Component {
      * @description - handles the onchange event
      *
      * @param  {object} event the event for the content field
-     * @return {void} no return or void
+     * @return {void}
      */
   onChange(event) {
     this.setState({
@@ -127,7 +127,7 @@ class SignupForm extends React.Component {
          <div id="reset" className="row" >
       <div className="col l4 offset-l4 m10 offset-m1 s12 valign">
         <div className="row">
-    <div className="col s12 z-depth-4 card-panel">
+    <div className="signup-page col s12 z-depth-4 card-panel">
       <form onSubmit={this.onSubmit}>
         <div className="row">
           <div className="input-field col s12 center">
@@ -188,14 +188,14 @@ class SignupForm extends React.Component {
         <div className="row">
           <a className="col s12">
             <button disabled={this.props.isApiCallInProgress}
-              className="btn purple darken-1 waves-effect waves-light col s12">
+              className="btn indigo darken-1 waves-effect waves-light col s12">
               {textContent}
             </button></a>
         </div>
         <div className="row">
           <div className="input-field col s12">
             <p className="margin center medium-small sign-up">
-              <i>have an account?</i>
+              <i>I have an account</i>
               <a id="clickMe" onClick={this.onClick} href="#!"> Login</a>
             </p>
           </div>

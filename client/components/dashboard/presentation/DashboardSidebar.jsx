@@ -10,28 +10,39 @@ class DashboardSidebar extends React.Component {
    */
   render() {
     return (
-<header className="imag">
+<div>
     <div className="navbar-fixed">
-      <nav>
+      <nav className ="back">
         <div className="container-fluid">
           <div className="nav-wrapper">
-            <a href="#" className="brand-logo">ShoutIt</a>
+            <a href="#" className="brand-logo">Worklist</a>
             <a href="#" data-activates="mobile-links"
               className="button-collapse">
               <i className="material-icons">menu</i></a>
-            <ul id="nav-mobile" className="right hide-on-med-and-down">
-              <a className="dropdown-button btn"
-               href="#" data-activates="dropdown1">account</a>
-                <ul id="dropdown1" className="dropdown-content">
-                    <li><a href="#!">View Profile</a></li>
-                    <li><a href="#!">Logout</a></li>
+            <ul id="side" className="right">
+              <a className="dropdown-button"
+               href="#" data-activates="dropdown1">
+               <i className="material-icons">account_circle</i></a>
+                <ul id="dropdown1" className="li dropdown-content">
+                    <li>
+                      <a href="#" name="profile"
+                      onClick={this.props.handleOnclick}
+                      className="grey-text text-darken-1">
+                  <i className="material-icons">face</i> Profile</a>
+                    </li>
+                    <li>
+                      <a name="logout"
+                      onClick={this.props.handleOnclick} href="#"
+                      className="grey-text text-darken-1">
+                  <i className="material-icons">keyboard_tab</i> Logout</a>
+                    </li>
                 </ul>
             </ul>
-          </div>
+            </div>
         </div>
       </nav>
     </div>
-    <div id="mobile-links" className="side-nav fixed">
+    <div id="mobile-links" className="side-nav fixed side">
       <div className="avatar">
          <img
            style={{
@@ -46,7 +57,7 @@ class DashboardSidebar extends React.Component {
      />
          <a href="#!">
              <span
-             style={{ marginLeft: 20, marginRight: 10 }}>Solomon Kingsley
+             style={{ marginLeft: 20, marginRight: 10 }}>{this.props.fullName}
             </span>
               <a style={{
                 marginTop: -100,
@@ -61,14 +72,14 @@ class DashboardSidebar extends React.Component {
       </div>
       <ul>
         <li><a href="#modal1"
-        className="modal-trigger">
+        className="modal-trigger"
+        >
         <i className="material-icons prefix red-text">add</i>
         <b>Todolists</b></a></li>
-        {this.props.todolists}
+        {this.props.todolists()}
       </ul>
-
-    </div>
-  </header>
+  </div>
+      </div>
     );
   }
 }

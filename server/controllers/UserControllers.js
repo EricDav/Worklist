@@ -6,7 +6,7 @@ import cloudinary from 'cloudinary';
 
 import user from '../models/user';
 import { generateToken, removePassword, isInValidField, apiResponse,
-  isValidEmail, isValidPassword, generateCode, mailSender } from '../helpers';
+  isValidEmail, isValidPassword, generateCode, mailSender, isValidName } from '../helpers';
 
 dotenv.load();
 const secret = process.env.secretKey;
@@ -54,7 +54,6 @@ export default class UserControllers {
       });
       newUser.save((err, savedUser) => {
         if (err) {
-          console.log(err);
           return apiResponse(res, 500, 'Internal server error', false);
         }
         const token = generateToken(removePassword(savedUser), secret);
@@ -128,13 +127,16 @@ export default class UserControllers {
    * @return {object} response containing the updated user
    */
   static updateUserProfile(req, res) {
-    user.findByIdAndUpdate(
-      req.currentUser.currentUser._id,
-      { $set: req.body }, (err, updatedUser) => {
+    user.findOne(
+      { _id: req.currentUser.currentUser._id },
+      (err, updatedUser) => {
         if (err) {
           return apiResponse(res, 500, 'Internal server error', false);
         }
-        return apiResponse(res, 200, 'token', true, removePassword(updatedUser));
+        return apiResponse(
+          res, 200, 'token', true,
+          generateToken(removePassword(updatedUser), secret)
+        );
       }
     );
   }
@@ -153,6 +155,7 @@ export default class UserControllers {
       return apiResponse(res, 400, 'Invalid email', false);
     }
     user.findOne({ email: req.body.email }, (err, googleUser) => {
+      console.log(googleUser, '================================');
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
@@ -293,6 +296,31 @@ export default class UserControllers {
         res, 500,
         'An error occured while uploading image', false
       );
+    });
+  }
+
+  /**
+ * @description: get usesr that matches a search string through route
+ * GET: /api/v1/users
+ *
+ * @param {Object} req request object
+ * @param {Object} res response object
+ *
+ * @return {Object} response containing the updated todo
+ */
+  static getUsers(req, res) {
+    if (!isValidName(req.query.searchParam)) {
+      return apiResponse(res, 400, 'Invalid query parameter', false);
+    }
+    user.find({
+      userName: {
+        $regex: `.*${req.query.searchParam}.*`
+      }
+    }, (err, users) => {
+      if (err) {
+        return apiResponse(res, 500, 'Internal server error', false);
+      }
+      return apiResponse(res, 200, null, true, users);
     });
   }
 }

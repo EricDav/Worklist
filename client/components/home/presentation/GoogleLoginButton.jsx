@@ -2,6 +2,7 @@ import React from 'react';
 import ReactGoogleLogin from 'react-google-login';
 import PropTypes from 'prop-types';
 
+
 /** @class GoogleLoginButton
  * @classdesc component for GoogleLoginButton
  */
@@ -11,7 +12,13 @@ class GoogleLoginButton extends React.Component {
    * @return {object} returns an object
    */
   render() {
-    const responseGoogle = () => {
+    const responseGoogle = (response) => {
+      console.log(response);
+      const googleUser = {
+        fullName: response.profileObj.name,
+        email: response.profileObj.email,
+      };
+      this.props.googleSignin(googleUser);
     };
     return (
       <ReactGoogleLogin

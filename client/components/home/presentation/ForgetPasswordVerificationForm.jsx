@@ -104,7 +104,7 @@ class ForgetPasswordVerificationForm extends React.Component {
         <div className="row">
           <div className="input-field col s12">
             <button onClick={this.onClick}
-              className="btn purple darken-1 waves-effect waves-light col s12"
+              className="btn indigo darken-1 waves-effect waves-light col s12"
               disabled={this.props.isApiCallInProgress}>
               {textContent}
             </button>

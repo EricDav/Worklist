@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import SignupForm from '../presentation/SignupForm.jsx';
 import LoginForm from '../presentation/LoginForm.jsx';
+import GoogleSignupForm from '../presentation/GoogleSignupForm.jsx';
 import ForgetPasswordVerificationForm from
   '../presentation/ForgetPasswordVerificationForm.jsx';
 import ForgetPasswordConfirmationForm from
@@ -32,10 +33,10 @@ class HomePage extends React.Component {
 
   /**
    *@description render - renders the signup component
+   *
    * @return {object} returns an object
    */
-  handleOnclickForNavbar(event) {
-    console.log(event.target.name);
+  handleOnclickForNavbar() {
     this.props.actions.showHomePageForm(1);
   }
   /**
@@ -52,7 +53,7 @@ class HomePage extends React.Component {
         <div className="container">
          { formNumber === 2 &&
          <SignupForm
-          setError = {this.props.actions.setError}
+           setError = {this.props.actions.setError}
            homePageFormNumber = {this.props.actions.showHomePageForm}
            userSignupRequest = {this.props.actions.userSignupRequest}
            errorMessage = {this.props.errorMessage}
@@ -61,7 +62,8 @@ class HomePage extends React.Component {
 
         { formNumber === 1 &&
         <LoginForm
-         setError = {this.props.actions.setError}
+          googleSignin={this.props.UserActions.googleSignin}
+          setError = {this.props.actions.setError}
           homePageFormNumber = {this.props.actions.showHomePageForm}
           userSigninRequest = {this.props.actions.userSigninRequest}
           errorMessage = {this.props.errorMessage}
@@ -84,6 +86,16 @@ class HomePage extends React.Component {
             isApiCallInProgress = {this.props.isApiCallInProgress}
           />
         }
+       { formNumber === 5 &&
+         <GoogleSignupForm
+           googleUser={this.props.googleUser}
+           setError = {this.props.actions.setError}
+           userSignupRequest = {this.props.actions.userSignupRequest}
+           errorMessage = {this.props.errorMessage}
+           isApiCallInProgress = {this.props.isApiCallInProgress}
+         />
+       }
+
         </div>
     </div>
     );
@@ -114,7 +126,8 @@ function mapStateToProps(state) {
     errorMessage: state.errorMessage.message,
     isApiCallInProgress: state.isApiCallInProgress,
     formNumber: state.homePageFormNumber,
-    resetPasswordUser: state.resetPasswordUser
+    resetPasswordUser: state.resetPasswordUser,
+    googleUser: state.googleUser
   };
 }
 

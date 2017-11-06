@@ -4,13 +4,15 @@ import jwt from 'jsonwebtoken';
 
 import { setIsApiCallInProgress, setError,
   showHomePageForm, setCurrentUser } from './AuthActions';
-import { RESET_USER_PASSWORD } from './ActionTypes';
+import { RESET_USER_PASSWORD, SET_USERS, SCREEN_SIZE,
+  SET_GOOGLE_USER } from './ActionTypes';
 import setAuthorizationToken from '../utils/setAuthorizationToken';
 
 /**
  * @description set the user requesting for reset password
  *
  * @param  {object} resetPasswordUser
+ *
  * @return {object} returns object
  */
 export function setForgetPasswordUser(resetPasswordUser) {
@@ -65,7 +67,6 @@ export function resetPassword(payload) {
           dispatch(setForgetPasswordUser({}));
         }
       );
-      console.log('I got here');
       dispatch(setIsApiCallInProgress(false));
     }).catch(({ response }) => {
       const { message } = response.data.error;
@@ -117,3 +118,103 @@ export function updateProfilePicture(payload) {
   };
 }
 
+/**
+ * @description reset user password
+ *
+ * @param  {String} parameter searched parameter
+ * @param {Boolean} isValidParam determines if a parameter is valid
+ *
+ * @return {object} returns dispatch object
+ */
+export function getUsers(parameter, isValidParam) {
+  if (isValidParam) {
+    return dispatch => axios.get(`/api/v1/users/?searchParam=${parameter}`)
+      .then((res) => {
+        const { data } = res.data;
+        dispatch({
+          type: SET_USERS,
+          users: data
+        });
+      }).catch(() => {
+        Materialize.toast('An error occured. Could not add user', 2000, red);
+      });
+  }
+  return dispatch => dispatch({
+    type: SET_USERS,
+    users: []
+  });
+}
+
+
+/**
+ * @description Request to API to update user profile
+ *
+ * @param  {object} payload user payload
+ *
+ * @return {object} returns dispatch object
+ */
+export function updateUserProfile(payload) {
+  return (dispatch) => {
+    dispatch(setIsApiCallInProgress(true));
+    return axios.put('/api/v1/users', payload)
+      .then((res) => {
+        const { token } = res.data;
+        localStorage.setItem('jwtToken', token);
+        setAuthorizationToken(token);
+        dispatch(setCurrentUser(jwt.decode(token)));
+        dispatch(setIsApiCallInProgress(false));
+      })
+      .catch(({ response }) => {
+        const { message } = response.data.error;
+        if (message) {
+          Materialize.toast(message, 300, red);
+        } else {
+          Materialize.toast(`Could not upload image. An unexpected
+        error occured`, 300, red);
+        }
+        dispatch(setIsApiCallInProgress(false));
+      });
+  };
+}
+
+/**
+ * @description checks for small screen size
+ *
+ * @param  {number} screenSize
+ *
+ * @return {object} returns object
+ */
+export function smallScreenSize(screenSize) {
+  return (dispatch) => {
+    dispatch({
+      type: SCREEN_SIZE,
+      screenSize
+    });
+  };
+}
+
+/**
+ * @description Request to the API to signin a user with google+
+ *
+ * @param  {Object} userData the details of the google user
+ *
+ * @return {Object} returns object
+ */
+export function googleSignin(userData) {
+  return dispatch =>
+    axios.post('/api/v1/users/google-signin', userData).then((res) => {
+      if (res.data.data === 'New user') {
+        dispatch({
+          type: SET_GOOGLE_USER,
+          userData
+        });
+        dispatch(showHomePageForm(5));
+      } else {
+        const { token } = res.data;
+        localStorage.setItem('jwtToken', token);
+        setAuthorizationToken(token);
+        dispatch(setCurrentUser(jwt.decode(token)));
+        window.location = 'dashboard';
+      }
+    });
+}

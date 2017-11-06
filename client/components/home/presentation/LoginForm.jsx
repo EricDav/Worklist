@@ -98,7 +98,7 @@ export class LoginForm extends React.Component {
     <div className="row" >
       <div id="image" className="col m6 l4 offset-l4 offset-m3 s12 valign">
         <div className="row">
-    <div id="login-page" className="col s12 z-depth-4 card-panel">
+    <div id="signup-page" className="col s12 z-depth-4 card-panel">
       <form id="login" className="login-form" onSubmit={this.onSubmit}>
         <div className="row">
           <div className="input-field col s12 center">
@@ -137,14 +137,16 @@ export class LoginForm extends React.Component {
         <div className="row">
           <div className="input-field col s12">
             <button
-              className="btn purple darken-1 waves-effect waves-light col s12"
+              className="btn indigo darken-1 waves-effect waves-light col s12"
               disabled={this.props.isLoading}>Login</button>
           </div>
         </div>
         <div className="row">
           <div className="input-field col s12">
             <center>
-              <GoogleLogInButton/>
+              <GoogleLogInButton
+                googleSignin={this.props.googleSignin}
+              />
             </center>
             <p className="margin center medium-small sign-up">
               <a onClick={this.onClick} href="#!">Forgot password ?</a>

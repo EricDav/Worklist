@@ -23,7 +23,7 @@ user.patch(
   '/api/v1/users/reset-password',
   UserControllers.verifyCodeAndUpdatePassword
 );
-
+user.get('/api/v1/users', Authorization.verifyToken, UserControllers.getUsers);
 user.patch('/api/v1/users', Authorization.verifyToken,
   UserControllers.uploadProfilePicture);
 

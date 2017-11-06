@@ -1,3 +1,4 @@
+import moment from 'moment';
 /**
  *@description checks if a field is null, undefined or empty
  *
@@ -55,7 +56,7 @@ export const isValidEmail = (email) => {
   return true;
 };
 
-export const isValidName = (name) => {
+export const isValidNames = (name) => {
   if (!isText(name) || name.length < 5) {
     return false;
   }
@@ -78,3 +79,59 @@ export const isValidUsername = (username) => {
   }
   return true;
 };
+
+export const isValidName = (name) => {
+  if (name.length === 0) {
+    return false;
+  }
+  for (let i = 0; i < name.length; i += 1) {
+    if (!(/[0-9]/.test(name[i]) || /[a-z A-Z]/.test(name[i]))) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const isUniqueTaskName = (todolist, name) => {
+  if (todolist.tasks.length === 0) {
+    return true;
+  }
+  let isUnique = true;
+  todolist.tasks.forEach((task) => {
+    if (task.taskName.toLowerCase() === name.toLowerCase()) {
+      isUnique = false;
+    }
+  });
+  if (isUnique) {
+    return true;
+  }
+  return false;
+};
+
+export const updateTodolists = (todolists, newTodolist) => {
+  const updatedTodolists = [];
+  todolists.forEach((todolist) => {
+    if (todolist._id != newTodolist._id) {
+      updatedTodolists.push(todolist);
+    }
+  });
+  updatedTodolists.push(newTodolist);
+  return updatedTodolists;
+};
+
+export const validateRemindersInput =
+  (day, hour, minute, dueYear, dueMonth, dueDate) => {
+    if (isInValidField(day) && isInValidField(hour) && isInValidField(minute)) {
+      return [false, 'You have to set reminders!'];
+    } else if (!isDigit(day) || !isDigit(hour) || !isDigit(minute)) {
+      return [false, `Invalid date for Reminders.
+       Date should be positive numbers`];
+    } else if (Number(day) > 31 || Number(hour) > 59 || Number(minute) > 59) {
+      return [false, 'Invalid date!'];
+    }
+    const reminderDate = new Date(dueYear, dueMonth, day, hour, minute);
+    if (moment(dueDate).valueOf() < moment(reminderDate.valueOf())) {
+      return [false, 'Error! Date for reminder should be before due date'];
+    }
+    return [true, reminderDate];
+  };

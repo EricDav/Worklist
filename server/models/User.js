@@ -23,7 +23,7 @@ const userSchema = new Schema({
   },
   imageUrl: {
     type: String,
-    unique: true,
+    unique: false,
     default: 'http://res.cloudinary.com/dbczzmftw/image/upload/v1509127904/pojdk9ajmdgase3esgg2.png'
   }
 }, {

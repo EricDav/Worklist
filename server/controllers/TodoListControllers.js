@@ -1,4 +1,5 @@
 import todoList from '../models/todoList';
+import reminder from '../models/reminder';
 import { apiResponse } from '../helpers';
 
 /**
@@ -41,7 +42,26 @@ export default class TodoListControllers {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
-      todo.tasks.push(req.body);
+      todo.tasks.push({
+        taskName: req.body.name,
+        priority: req.body.priority,
+        dueDate: req.body.date,
+        assignTo: req.body.assignTo
+      });
+      reminder.create({
+        todoName: todo.name,
+        taskName: req.body.name,
+        name: req.currentUser.currentUser.fullName,
+        email: req.currentUser.currentUser.email,
+        time: req.body.reminder
+      }, (err) => {
+        if (err) {
+          return apiResponse(
+            res, 500,
+            'An error occured could not set reminder', false
+          );
+        }
+      });
       todo.save((err, updatedTodo) => {
         if (err) {
           return apiResponse(res, 500, 'Internal server error', false);
@@ -83,9 +103,11 @@ export default class TodoListControllers {
  * @return {Object} response containing the updated todo
  */
   static getTodolist(req, res) {
-    todoList.find({ collaborators: {
-      $in: [req.currentUser.currentUser.userName]
-    } }).exec((err, todolists) => {
+    todoList.find({
+      collaborators: {
+        $in: [req.currentUser.currentUser.userName]
+      }
+    }).exec((err, todolists) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }

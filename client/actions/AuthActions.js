@@ -75,6 +75,7 @@ export function userSignupRequest(payload) {
     axios.post('/api/v1/users', payload).then((res) => {
       const { token } = res.data;
       localStorage.setItem('jwtToken', token);
+      localStorage.removeItem('homePageNum');
       setAuthorizationToken(token);
       dispatch(setCurrentUser(jwt.decode(token)));
       dispatch(setIsApiCallInProgress(false));
@@ -109,6 +110,7 @@ export function userSigninRequest(payload) {
         setAuthorizationToken(token);
         dispatch(setCurrentUser(jwt.decode(token)));
         dispatch(setIsApiCallInProgress(false));
+        window.location = 'dashboard';
       })
       .catch(({ response }) => {
         const { message } = response.data.error;
@@ -120,5 +122,24 @@ export function userSigninRequest(payload) {
         }
         dispatch(setIsApiCallInProgress(false));
       });
+  };
+}
+
+/**
+ * @description Sign out user by removing jwt token from local storage
+ *
+ * @return {object} dispatch object
+ */
+export function logout() {
+  return (dispatch) => {
+    localStorage.removeItem('jwtToken');
+    setAuthorizationToken(false);
+    dispatch(setCurrentUser({
+      currentUser: {
+        userName: '',
+        fullName: ''
+      }
+    }));
+    window.location = '/';
   };
 }

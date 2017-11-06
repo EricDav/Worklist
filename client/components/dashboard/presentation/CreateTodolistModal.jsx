@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-/** @class CreateGroupModal
- * @classdesc component for creating groups
+/** @class CreateTodlistModal
+ * @classdesc component for creating todolist
  */
-export class CreateGroupModal extends React.Component {
+export class CreateTodolistModal extends React.Component {
   /**
    * constructor - contains the constructor
    * @param  {object} props the properties of the class component
@@ -128,7 +128,7 @@ export class CreateGroupModal extends React.Component {
     return (
       <div id="modal1" className="modal">
         <div className="modal-content">
-          <nav className="red">
+          <nav className="back">
             <div className="nav-wrapper">
               <div className="left col s12 m5 l4">
                 <ul>
@@ -168,8 +168,8 @@ export class CreateGroupModal extends React.Component {
                 <div className="input-field col s12">
                   <button
                     disabled = {this.props.isApiCallInProgress}
-                    className={`btn purple
-                    darken-1 waves-effect waves-light col s12`}>
+                    className={`btn indigo
+                    darken-1 waves-effect waves-light col s12 back`}>
                     {buttonText}</button>
                 </div>
               </div>
@@ -181,10 +181,5 @@ export class CreateGroupModal extends React.Component {
   }
 }
 
-const createGroupModalPropTypes = {
-  createGroupRequest: PropTypes.func
-};
 
-PropTypes.checkPropTypes(createGroupModalPropTypes, 'prop', 'CreateGroupModal');
-
-export default CreateGroupModal;
+export default CreateTodolistModal;

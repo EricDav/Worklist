@@ -4,3 +4,4 @@ coverage
 npm-debug.log
 .nyc_output/
 .env
+server/uploads

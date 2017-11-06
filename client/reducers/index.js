@@ -2,15 +2,21 @@ import { combineReducers } from 'redux';
 
 import { user, errorMessage, isApiCallInProgress,
   homePageFormNumber } from './AuthReducers';
-import { resetPasswordUser } from './UserReducers';
-import { todolists } from './TodolistReducers';
+import { resetPasswordUser, users, isSmallScreenSize,
+  googleUser } from './UserReducers';
+import { todolists, currentTodolist, rightSideNav } from './TodolistReducers';
 
 export default combineReducers({
   user,
+  users,
   errorMessage,
   isApiCallInProgress,
   homePageFormNumber,
   resetPasswordUser,
-  todolists
+  todolists,
+  currentTodolist,
+  rightSideNav,
+  isSmallScreenSize,
+  googleUser
 });
 

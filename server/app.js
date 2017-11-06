@@ -11,6 +11,7 @@ import fileUpload from 'express-fileupload';
 import webpackConfig from '../webpack.config.dev';
 import user from './routes/user';
 import todo from './routes/todo';
+import reminder from './controllers/ReminderControllers';
 
 dotenv.load();
 
@@ -35,4 +36,7 @@ app.listen(port, () => {
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/index.html'));
 });
+
 export default app;
+
+// reminder.start();

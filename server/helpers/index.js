@@ -143,18 +143,9 @@ export const isValidEmail = (email) => {
   return true;
 };
 
-export const isValidName = (name) => {
-  if (isInValidField(name)) {
-    return false;
-  } else if (!isText(name) || name.length < 5) {
-    return false;
-  }
-  return true;
-};
-
 /**
    * @description generate secret code to be sent to forgot password users
-   * 
+   *
    * @return  {string} random secret code
 */
 
@@ -211,8 +202,10 @@ export const mailSender = (
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      return apiResponse(res, 500,
-        'An error occured while sending mail', false);
+      return apiResponse(
+        res, 500,
+        'An error occured while sending mail', false
+      );
     }
     return apiResponse(res, 200, null, true, {
       success: true,
@@ -220,5 +213,38 @@ export const mailSender = (
       SwZ5: secretCode,
       email
     });
+  });
+};
+
+export const isValidName = (name) => {
+  if (name.length === 0) {
+    return false;
+  }
+  for (let i = 0; i < name.length; i += 1) {
+    if (!(/[0-9]/.test(name[i]) || /[a-z A-Z]/.test(name[i]))) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const sendReminders = (message, email) => {
+  const transporter = nodemailer.createTransport({
+    service: process.env.SERVICE,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.GMAIL_PASSWORD
+    }
+  });
+  const mailOptions = {
+    from: `PostIt <${process.env.EMAIL}`,
+    to: email,
+    subject: 'Worklist',
+    text: message
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    }
   });
 };

@@ -81,7 +81,7 @@ class UploadImageModal extends React.Component {
     return (
           <div id="modal2" className="modal">
         <div className="modal-content">
-          <nav className="red">
+          <nav className="indigo">
             <div className="nav-wrapper">
               <div className="left col s12 m5 l4">
                 <ul>
@@ -116,13 +116,14 @@ class UploadImageModal extends React.Component {
             src={this.props.imageUrl}
             /></center>}
              {!this.props.isApiCallInProgress &&
-               <input onChange={this.onChange} type="file" name="files" />
+               <input onChange={this.onChange}
+               accept="image/*" type="file" name="files" />
              }
               <div className="row">
                 <div className="input-field col s12">
                   <button
                     disabled = {this.props.isApiCallInProgress}
-                    className={`btn purple
+                    className={`btn indigo
                     darken-1 waves-effect waves-light col s12`}>
                     {buttonText}</button>
                 </div>
