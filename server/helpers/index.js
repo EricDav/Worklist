@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
 
 dotenv.load();
 /**
@@ -36,6 +37,15 @@ export const generateToken = (currentUser, secret) => {
     exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
   }, secret);
   return token;
+};
+
+export const isValidPassword = (password) => {
+  if (password.length < 9 ||
+    !(/[0-9]/.test(password) &&
+    /[a-z A-Z]/.test(password))) {
+    return false;
+  }
+  return true;
 };
 
 /**
@@ -133,12 +143,108 @@ export const isValidEmail = (email) => {
   return true;
 };
 
+/**
+   * @description generate secret code to be sent to forgot password users
+   *
+   * @return  {string} random secret code
+*/
+
+export const generateCode = () => {
+  const number = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  const alpha = ['a', 'B', 'c', 'D', 'e', 'F', 'g', 'H', 'i',
+    'J', 'k', 'L', 'm',
+    'N', 'o', 'P', 'q', 'R', 's', 'T', 'u', 'V', 'w', 'X', 'y', 'Z'];
+  const char = ['@', '%', '?', '+', '-', '$', '#'];
+  let secretCode = '';
+  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].forEach((num) => {
+    if (num < 3 || num > 8) {
+      secretCode = `${secretCode}${number[Math.floor(Math.random() * 10)]}`;
+    } else if (num > 2 && num < 7) {
+      secretCode = `${secretCode}${alpha[Math.floor(Math.random() * 26)]}`;
+    } else {
+      secretCode = `${secretCode}${char[Math.floor(Math.random() * 7)]}`;
+    }
+  });
+  return secretCode;
+};
+
+/**
+ * @description send a mail that contains the secret to reset a user password
+ *
+ * @param  {object} req request object
+ * @param {object} res response object
+ * @param {string} mesage the message that contains the secret code to
+ * be sent to users mail
+ * @param {string} successMessage success message
+ * @param {string} secretCode the secret code to be sent as part of the
+ * response
+ * @param {string} email the email of the user to recieve the message
+ *
+ * @return {boolean} true or false
+ */
+
+export const mailSender = (
+  req, res, message,
+  successMessage, secretCode, email
+) => {
+  const transporter = nodemailer.createTransport({
+    service: process.env.SERVICE,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.GMAIL_PASSWORD
+    }
+  });
+  const mailOptions = {
+    from: `PostIt <${process.env.EMAIL}`,
+    to: req.body.email,
+    subject: 'PostIt',
+    text: message
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return apiResponse(
+        res, 500,
+        'An error occured while sending mail', false
+      );
+    }
+    return apiResponse(res, 200, null, true, {
+      success: true,
+      message: successMessage,
+      SwZ5: secretCode,
+      email
+    });
+  });
+};
+
 export const isValidName = (name) => {
-  if (isInValidField(name)) {
+  if (name.length === 0) {
     return false;
-  } else if (!isText(name) || name.length < 5) {
-    return false;
+  }
+  for (let i = 0; i < name.length; i += 1) {
+    if (!(/[0-9]/.test(name[i]) || /[a-z A-Z]/.test(name[i]))) {
+      return false;
+    }
   }
   return true;
 };
 
+export const sendReminders = (message, email) => {
+  const transporter = nodemailer.createTransport({
+    service: process.env.SERVICE,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.GMAIL_PASSWORD
+    }
+  });
+  const mailOptions = {
+    from: `PostIt <${process.env.EMAIL}`,
+    to: email,
+    subject: 'Worklist',
+    text: message
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+};

@@ -4,7 +4,6 @@ import 'chai';
 import expect from 'expect';
 
 import app from '../../app';
-import todoList from '../../models/todoList';
 
 const server = supertest.agent(app);
 let regUserToken = 'bearer ';
@@ -152,7 +151,7 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({ priority: 'urgent' })
+        .send({priority: 'urgent' })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
@@ -170,7 +169,7 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({ priority: 'urgent', taskName: 'path' })
+        .send({priority: 'urgent', taskName: 'path'})
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
@@ -188,7 +187,7 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({ taskName: 'jondo', priority: 'urge' })
+        .send({taskName: 'jondo', priority: 'urge' })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
@@ -206,7 +205,7 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({ taskName: 'jondon' })
+        .send({taskName: 'jondon'})
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
@@ -224,7 +223,7 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({ taskName: 'create login', priority: 'normal' })
+        .send({taskName: 'create login', priority: 'normal'})
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(409);
@@ -242,10 +241,9 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({ taskName: 'create login', priority: 'normal' })
+        .send({taskName: 'create login', priority: 'normal'})
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          // console.log(res);
           expect(res.status).toEqual(404);
           expect(res.body.success).toEqual(false);
           expect(res.body.error.message)
@@ -268,9 +266,9 @@ describe('Todolist API', () => {
           expect(res.body.success).toEqual(true);
           expect(res.body.data.name)
             .toEqual('postIt');
-          expect(res.body.data.tasks[0].done).toEqual(true);
+          expect(res.body.data.tasks[0].done).toEqual(true)
           expect(res.body.data.tasks[0].taskName)
-            .toEqual('create login');
+            .toEqual('create login');       
           if (err) return done(err);
           done();
         });
@@ -300,7 +298,7 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({ taskName: 'create signup', priority: 'normal' })
+        .send({taskName: 'create signup', priority: 'normal'})
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(404);

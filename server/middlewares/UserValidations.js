@@ -1,6 +1,5 @@
-import { isInValidField, isDigit, isText, apiResponse,
-  isValidEmail, isValidName } from '../helpers';
-import user from '../models/user';
+import { isInValidField, isDigit, isText, apiResponse } from '../helpers';
+
 /**
  * class UserValidation: controls all user validations
  * @class

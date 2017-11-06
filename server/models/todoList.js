@@ -18,13 +18,15 @@ const taskSchema = new Schema(
     },
     done: {
       type: Boolean,
-      required: true,
       default: false,
     },
     dueDate: {
       type: Date,
       required: true,
-      default: Date.now()
+    },
+    assignTo: {
+      type: String,
+      default: ''
     }
   },
   {
