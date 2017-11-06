@@ -13,6 +13,10 @@
     "type": "git",
     "url": "git+https://github.com/EricDav/Worklist.git"
   },
+    "engines": {
+    "node": "8.1.x",
+    "npm": "3.10.x"
+  },
   "author": "Alienyi David",
   "license": "ISC",
   "bugs": {

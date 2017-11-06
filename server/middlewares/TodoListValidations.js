@@ -1,7 +1,7 @@
 import { isInValidField, isText, apiResponse,
   isValidName } from '../helpers';
 import todoList from '../models/todoList';
-import user from '../models/user';
+import user from '../models/User';
 
 /**
  * class TodoListValidations: controlls all todo list validation
@@ -147,6 +147,7 @@ export default class TodoListValidations {
    *
    * @param  {object} req request object
    * @param  {object} res response object
+   * 
    * @param  {Function} next a call back function
    *
    * @return {object} response object
@@ -169,9 +170,11 @@ export default class TodoListValidations {
       }
       if (todolist) {
         let hasValidTaskId = false;
+        let taskToBeUpdated;
         todolist.tasks.forEach((task) => {
           if (task._id == req.params.taskId) {
             hasValidTaskId = true;
+            taskToBeUpdated = task;
           }
         });
         if (!hasValidTaskId) {
@@ -182,6 +185,59 @@ export default class TodoListValidations {
           req.body.assignTo = '';
         }
         next();
+        if (req.body.userName) {
+          if (taskToBeUpdated.assignTo) {
+            return apiResponse(
+              res, 403,
+              'Task already assign to a user', false
+            );
+          }
+          if (isDigit(req.body.userName) || isDigit(req.body.userName[0])) {
+            return apiResponse(res, 400, 'Invalid userName', false);
+          }
+          user.findOne(
+            { userName: req.body.userName },
+            (err, userToBeAssignToTask) => {
+              if (err) {
+                return apiResponse(res, 500, 'Internal server error', false);
+              }
+              if (userToBeAssignToTask) {
+                if (todolist.creatorId !== req.currentUser.currentUser._id && 
+                req.currentUser.currentUser !== userToBeAssignToTask.userName) {
+                  return apiResponse(res, 403,
+                    'user not permitted to perform this operation', false);
+                }
+                if (todolist.collaborators
+                  .includes(userToBeAssignToTask.userName)) {
+                  next();
+                } else {
+                  return apiResponse(
+                    res, 403,
+                    'user can not be assigned to task', false
+                  );
+                }
+              } else {
+                return apiResponse(
+                  res, 404,
+                  'user to be assigned to task not found', false
+                );
+              }
+            }
+          );
+        } else if (!taskToBeUpdated.assignTo) {
+          return apiResponse(
+            res, 400,
+            'todo not assigned to a user yet', false
+          );
+        } else if (req.currentUser.currentUser._id !== todolist.creatorId &&
+          taskToBeUpdated.assignTo !== req.currentUser.currentUser.userName) {
+          return apiResponse(
+            res, 403,
+            'user not permitted to perform this operation', false
+          );
+        } else {
+          next();
+        }
       } else {
         return apiResponse(res, 404, 'todolist not found', false);
       }

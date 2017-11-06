@@ -8,6 +8,10 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
+    assignTo: {
+      type: String,
+      default: ''
+    },
     priority: {
       type: String,
       required: true

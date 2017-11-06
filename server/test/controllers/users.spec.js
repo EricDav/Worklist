@@ -9,13 +9,13 @@ import app from '../../app';
 import user from '../../models/user';
 
 const server = supertest.agent(app);
-//const regUserData = 'bearer ';
-  before((done) => {
-        user.remove({}, (err) => {
-           if (err) return done(err);
-        });
-        done();
+// const regUserData = 'bearer ';
+before((done) => {
+  user.remove({}, (err) => {
+    if (err) return done(err);
   });
+  done();
+});
 describe('User API', () => {
 //   let userData;
 //   let regUserData;
@@ -161,12 +161,11 @@ describe('User API', () => {
     it('should not create new user without an email', (done) => {
       server
         .post('/api/v1/users')
-        .send(
-          {
-            userName: 'jonathan',
-            password: 'password123',
-            fullName: 'mrincredible'
-          })
+        .send({
+          userName: 'jonathan',
+          password: 'password123',
+          fullName: 'mrincredible'
+        })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
@@ -184,14 +183,16 @@ describe('User API', () => {
         server
           .post('/api/v1/users/signin')
           .send({
-              userName: 'pychat2',
-              password: 'david1996'
+            userName: 'pychat2',
+            password: 'david1996'
           })
-          .end((err, res) => {1
-            expect(res.status).toEqual(200);
+          .end((err, res) => {
+            1
+;
+expect(res.status).toEqual(200);
             expect(res.body.success).toEqual(true);
             expect(jwt.decode(res.body.token).currentUser.userName)
-            .toEqual('pychat2')
+              .toEqual('pychat2');
             done();
           });
       });
@@ -199,8 +200,8 @@ describe('User API', () => {
       it('should not allow unregistered users to login', (done) => {
         server.post('/api/v1/users/signin')
           .send({
-              userName: 'I am not registered',
-              password: 'Iamnot'
+            userName: 'I am not registered',
+            password: 'Iamnot'
           })
           .end((err, res) => {
             expect(res.status).toEqual(401);
@@ -222,7 +223,7 @@ describe('User API', () => {
       });
 
       it(
-'should not allow login when username or password is not provided',
+        'should not allow login when username or password is not provided',
         (done) => {
           server.post('/api/v1/users/signin')
             .send({ })
@@ -233,60 +234,60 @@ describe('User API', () => {
               done();
             });
         }
-);
-    it('should not all user to signin with google with an invalid email', (done) => {
-      server
-        .post('/api/v1/users/google-signin')
-        .send(
-          {
-            email: 'ade@.c'
-          })
-        .expect('Content-Type', /json/)
-        .end((err, res) => {
-          expect(res.status).toEqual(400);
-          expect(res.body.success).toEqual(false);
-          expect(res.body.error.message)
-            .toEqual('Invalid email');
-          if (err) return done(err);
-          done();
-        });
-    });
-    it(`should return new user when a
+      );
+      it(
+        'should not all user to signin with google with an invalid email',
+        (done) => {
+          server
+            .post('/api/v1/users/google-signin')
+            .send({
+              email: 'ade@.c'
+            })
+            .expect('Content-Type', /json/)
+            .end((err, res) => {
+              expect(res.status).toEqual(400);
+              expect(res.body.success).toEqual(false);
+              expect(res.body.error.message)
+                .toEqual('Invalid email');
+              if (err) return done(err);
+              done();
+            });
+        }
+      );
+      it(`should return new user when a
     google user wants to signin with google for the first time`, (done) => {
-      server
-        .post('/api/v1/users/google-signin')
-        .send(
-          {
-            email: 'ade@me.com'
-          })
-        .expect('Content-Type', /json/)
-        .end((err, res) => {
-          expect(res.status).toEqual(200);
-          expect(res.body.success).toEqual(true);
-          expect(res.body.data)
-            .toEqual('New user');
-          if (err) return done(err);
-          done();
+          server
+            .post('/api/v1/users/google-signin')
+            .send({
+              email: 'ade@me.com'
+            })
+            .expect('Content-Type', /json/)
+            .end((err, res) => {
+              expect(res.status).toEqual(200);
+              expect(res.body.success).toEqual(true);
+              expect(res.body.data)
+                .toEqual('New user');
+              if (err) return done(err);
+              done();
+            });
         });
-    });
-        it(`should allow a user to sign in with google`, (done) => {
-      server
-        .post('/api/v1/users/google-signin')
-        .send(
-          {
+      it('should allow a user to sign in with google', (done) => {
+        server
+          .post('/api/v1/users/google-signin')
+          .send({
             email: 'dad2@we.com'
           })
-        .expect('Content-Type', /json/)
-        .end((err, res) => {
-          expect(res.status).toEqual(200);
-          expect(res.body.success).toEqual(true);
-          expect(jwt.decode(res.body.token).currentUser
-          .email)
-            .toEqual('dad2@we.com');
-          if (err) return done(err);
-          done();
-        });
-    });
+          .expect('Content-Type', /json/)
+          .end((err, res) => {
+            expect(res.status).toEqual(200);
+            expect(res.body.success).toEqual(true);
+            expect(jwt.decode(res.body.token).currentUser
+              .email)
+              .toEqual('dad2@we.com');
+            if (err) return done(err);
+            done();
+          });
+      });
     });
   });
 });

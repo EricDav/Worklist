@@ -91,4 +91,47 @@ export default class UserValidations {
     }
     next();
   }
+  /**
+   * @description: validate updated field for name and email
+   *
+   * @param  {object} req request object
+   * @param  {object} res response object
+   * @param  {function} next a call back function
+   *
+   * @return {object} response object
+   */
+  static updateUserValidation(req, res, next) {
+    const updatedField = {};
+    const error = {};
+    if (req.body.fullName) {
+      if (isValidName(req.body.fullName)) {
+        updatedField.fullName = req.body.fullName;
+      } else {
+        return apiResponse(res, 400, 'Invalid fullName', false);
+      }
+    }
+    if (req.body.email) {
+      if (isValidEmail(req.body.email)) {
+        user.findOne({ email: req.body.email }, (err, updatedUser) => {
+          if (err) {
+            return apiResponse(res, 500, 'Internal server error', false);
+          }
+          if (updatedUser) {
+            return apiResponse(res, 409, 'email already exist', false);
+          }
+          updatedField.email = req.body.email;
+          req.updatedField = updatedField;
+          next();
+        });
+      } else {
+        return apiResponse(res, 400, 'Invalid email', false);
+      }
+    } else if (updatedField.fullName) {
+      req.updatedField = updatedField;
+      next();
+    } else {
+      return apiResponse(res, 400,
+        'either fullName or email is required', false);
+    }
+  }
 }

@@ -4,9 +4,10 @@ import fs from 'fs';
 import del from 'del';
 import cloudinary from 'cloudinary';
 
-import user from '../models/user';
+import user from '../models/User';
 import { generateToken, removePassword, isInValidField, apiResponse,
-  isValidEmail, isValidPassword, generateCode, mailSender, isValidName } from '../helpers';
+  isValidEmail, isValidPassword, generateCode,
+  mailSender, isValidName } from '../helpers';
 
 dotenv.load();
 const secret = process.env.secretKey;
@@ -155,7 +156,6 @@ export default class UserControllers {
       return apiResponse(res, 400, 'Invalid email', false);
     }
     user.findOne({ email: req.body.email }, (err, googleUser) => {
-      console.log(googleUser, '================================');
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
