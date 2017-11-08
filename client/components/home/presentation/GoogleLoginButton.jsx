@@ -13,7 +13,6 @@ class GoogleLoginButton extends React.Component {
    */
   render() {
     const responseGoogle = (response) => {
-      console.log(response);
       const googleUser = {
         fullName: response.profileObj.name,
         email: response.profileObj.email,

@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 /** @class Taskboard
  * @classdesc component for sidebar
@@ -32,7 +33,7 @@ class TaskBoard extends React.Component {
                <i className="material-icons medium">arrow_drop_down</i>
          </a>
         </div>
-        <div className="bottom">
+        <div className="bottom bot">
           <i>
             {this.props.todolist.name} | Created By:
             {this.props.todolist.collaborators[0]}</i></div>
@@ -69,5 +70,16 @@ class TaskBoard extends React.Component {
     );
   }
 }
+
+TaskBoard.propTypes = {
+  currentUser: propTypes.object.isRequired,
+  currentUserId: propTypes.string.isRequired,
+  todolist: propTypes.object.isRequired,
+  handleOnclick: propTypes.func.isRequired,
+  tasks: propTypes.func.isRequired,
+  rightSideNav: propTypes.func.isRequired,
+  styles: propTypes.string.isRequired,
+  width: propTypes.string.isRequired
+};
 
 export default TaskBoard;

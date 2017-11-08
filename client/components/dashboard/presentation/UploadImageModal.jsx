@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import Preloader from './Preloader.jsx';
 
@@ -46,7 +47,7 @@ class UploadImageModal extends React.Component {
      * @description - handles the onSubmit event
      *
      * @param  {object} event the event for the content field
-     * @return {void} no return or void
+     * @return {void}
      */
   onSubmit(event) {
     event.preventDefault();
@@ -135,5 +136,12 @@ class UploadImageModal extends React.Component {
     );
   }
 }
+
+
+UploadImageModal.propTypes = {
+  updateProfilePicture: propTypes.func.isRequired,
+  imageUrl: propTypes.string.isRequired,
+  isApiCallInProgress: propTypes.bool.isRequired
+};
 
 export default UploadImageModal;

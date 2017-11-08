@@ -20,6 +20,13 @@ export function getTodolist() {
   });
 }
 
+/**
+ * @description determines what shows in the right side nav
+ *
+ * @param {Number} formNumber the form number
+ *
+ * @return {Object} returns dispatch object
+ */
 export function showRightSideNav(formNumber) {
   return (dispatch) => {
     dispatch({
@@ -30,7 +37,7 @@ export function showRightSideNav(formNumber) {
 }
 
 /**
- * @description Request to the API to create todolist
+ * @description Request to the API to create a todolist
  *
  *@param {Array} todolists list of all todo
  *@param {Number} todoId id of the current todolist
@@ -69,7 +76,6 @@ export function createTodolist(payload) {
         todolist: data
       });
       dispatch(setError(''));
-      dispatch(showRightSideNav(1));
       Materialize.toast('Todolist created successfully', 2000, 'green');
     });
   };
@@ -136,19 +142,21 @@ export function addContributorToTodolist(payload, todoId) {
  *
  *@param {object} taskId id of the task to be completed
  *@param {Number} todoId id of the todolist
+ @param {Object} payload object containing the task nae
  *
  * @return {object} returns dispatch object
  */
-export function completeTask(taskId, todoId) {
+export function completeTask(taskId, todoId, payload) {
   return (dispatch) => {
-    return axios.patch(`/api/v1/todos/${todoId}/tasks/${taskId}`)
+    return axios.patch(`/api/v1/todos/${todoId}/tasks/${taskId}`, payload)
       .then((res) => {
         const { data } = res.data;
         dispatch({
           type: UPDATE_TODOLIST,
           updatedTodolist: data
         });
-      }).catch(() => {
+        Materialize.toast('Task has been completed', 2000, 'green');
+      }).catch(({response}) => {
         Materialize.toast('An error occured', 2000, 'red');
       });
   };

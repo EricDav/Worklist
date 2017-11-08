@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 
 /** @class CreateTodlistModal
  * @classdesc component for creating todolist
@@ -180,6 +180,14 @@ export class CreateTodolistModal extends React.Component {
     );
   }
 }
+
+CreateTodolistModal.propTypes = {
+  setIsApiCallInProgress: propTypes.func.isRequired,
+  errorMessage: propTypes.string.isRequired,
+  setError: propTypes.func.isRequired,
+  createTodolist: propTypes.func.isRequired,
+  isApiCallInProgress: propTypes.bool.isRequired,
+};
 
 
 export default CreateTodolistModal;

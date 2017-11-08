@@ -34,6 +34,9 @@ class SignupForm extends React.Component {
    */
   componentWillUnmount() {
     this.props.setError('');
+    if (this.props.isApiCallInProgress) {
+      this.props.setIsApiCallInProgress(false);
+    }
   }
   /**
      * @description - handles the onchange event

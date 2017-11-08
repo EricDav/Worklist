@@ -1,6 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import propTypes from 'prop-types';
 
 /** @class Piority
  * @classdesc component for piority level
@@ -35,7 +34,7 @@ export class Priority extends React.Component {
           <label htmlFor="test2">Urgent</label>
         </p>
         <p id="piority">
-          <input onClick={this.onClick}
+          <input
             onChange={this.props.handleOnchange}
             className="with-gap" name="priority"
             type="radio" id="test3" value="critical"/>
@@ -47,10 +46,8 @@ export class Priority extends React.Component {
   }
 }
 
-const setPiorityPropTypes = {
-  setPiority: PropTypes.func,
+Priority.propTypes = {
+  handleOnchange: propTypes.func.isRequired,
 };
-
-PropTypes.checkPropTypes(setPiorityPropTypes, 'prop', 'Piority');
 
 export default Priority;

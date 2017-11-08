@@ -2,6 +2,7 @@ node_modules
 package-lock.json
 coverage
 npm-debug.log
-.nyc_output/
-.env
+nyc_output/
+env
 server/uploads
+dist

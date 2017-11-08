@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 const Intro = (props) => {
   return (
@@ -11,6 +12,12 @@ const Intro = (props) => {
          </div>
     </div>
   );
+};
+
+Intro.propTypes = {
+  styles: propTypes.string.isRequired,
+  width: propTypes.string.isRequired,
+  currentUser: propTypes.object.isRequired
 };
 
 export default Intro;

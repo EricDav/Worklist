@@ -3,6 +3,14 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const reminderSchema = new Schema({
+  needReminder: {
+    type: Boolean,
+    default: true
+  },
+  todoId: {
+    type: String,
+    required: true
+  },
   todoName: {
     type: String,
     required: true

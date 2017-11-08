@@ -11,7 +11,7 @@ import setAuthorizationToken from '../utils/setAuthorizationToken';
 /**
  * @description set the user requesting for reset password
  *
- * @param  {object} resetPasswordUser
+ * @param  {object} resetPasswordUser details of the user resetting password
  *
  * @return {object} returns object
  */
@@ -25,8 +25,9 @@ export function setForgetPasswordUser(resetPasswordUser) {
 /**
  * @description Request to the API to send verification code
  *
- * @param  {object} payload
- * @return {object} returns object
+ * @param  {Object} payload an object which contain the user email address
+ *
+ * @return {Object} returns object
  */
 export function sendSecretCode(payload) {
   return (dispatch) => {
@@ -59,7 +60,7 @@ export function sendSecretCode(payload) {
 export function resetPassword(payload) {
   return (dispatch) => {
     dispatch(setIsApiCallInProgress(true));
-    return axios.put('/api/v1/users/reset-password', payload).then((res) => {
+    return axios.patch('/api/v1/users/reset-password', payload).then((res) => {
       Materialize.toast(
         'Password reset successfully', 2000, 'green',
         () => {
@@ -163,14 +164,14 @@ export function updateUserProfile(payload) {
         setAuthorizationToken(token);
         dispatch(setCurrentUser(jwt.decode(token)));
         dispatch(setIsApiCallInProgress(false));
+        Materialize.toast('User profile updated successfully', 300, 'green');
       })
       .catch(({ response }) => {
         const { message } = response.data.error;
         if (message) {
-          Materialize.toast(message, 300, red);
+          dispatch(setError(message));
         } else {
-          Materialize.toast(`Could not upload image. An unexpected
-        error occured`, 300, red);
+          Materialize.toast('An unexpected error occured retry', 300, 'red');
         }
         dispatch(setIsApiCallInProgress(false));
       });

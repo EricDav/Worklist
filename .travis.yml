@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+    - "6"
+services:
+    - mongodb
+before_script:
+    - npm install
+    - npm install -g mocha
+    - npm install -g nyc
+    - npm install -g sequelize-cli
+script:
+    - npm run coverage
+after_script: 
+    - npm run cover
+after_success:
+    - npm install -g codeclimate-test-reporter
+    - codeclimate-test-reporter < coverage/lcov.info
+env:
+  global:
+    - NODE_ENV=test
+    - secure: "sn7e8lFtlzCjXdsThN5LonF94SW8vC4oEzM4nA6GgfvNa/G2fodgLiwJKA/44nLLk2VStVhcnjG1wLNWj/rDSW7mv7rNswCR17ZccVSAFDmb2+q/H+9IMjhhi9M9PtrF71FUZxc0CxkuAYLyZU0vsKVDLz+3PTE0elTtQo3UmblsTD0+taerz6qrJBJsHfTougV8jSZRS7OC/qMDgo4bS1KTViEcOMUzq+ChZOQHfiJgu6l2T8CWBYxw2L6gU+6LnmssiOU28LwbBc7LE/MlK+Lx+psdajOaDkN50oEIwzFhOGMU65+cfkUG3RMp0Lel7+/5zaBxudyq4GWKoYYILNPYJckHeVvrtMdVTwfrvucAnzT36Cm0Kop6cig+Q1t4CEUvSgdMmz0E4ntCsWxyNCVYZQGVWjm3sSA55ZPHhxMPlSCSGeVMFnUB+rCtyOyvHBEpdyO8BKdYb9tuakoPFPQyZ+CyvW6DO3PdJIZml8LyVNxiGRRrK9vu81N59Zqg3sgeHe4gpT0oIkMgf+xmCeMEdpsxardN2pUwNoNWzkADpfh0UaztpPpXgoA8IT1eXvQM/KnTUEIln1kpSLGmToVgPOe/pdeI/5IvFu8udyzoOEBSrlH5ZqTwfiIdOD+ZO3q20X3CuQuby2GyR6h+c0UrNX0MxpUGRSqyEr19x7o="
+    - secure: "XnouT0b/k8ZxnuU2XFvDyNv6r+XAZ3a41bQIknfs4DTX7nksKxcLKweawgDs8Hy3whbHhBORztiyZY+61bW0NQUtMJbOJTDLz4bVlgdnp8hSCkVzo6rhwC1IQszMZTaUKO2xJFLb+5vyRlRGVoixmQt8qlrUqlVu6czOnK3FWk599FDZ04iFhOz1vlwEq9IHbby6EwMAOsmWaUNgn2gq7agRKijWkFPXVPYvr5gK3L8G9+YrDj1HjDSs9YrAc/8OeTtCBiKT8/ftLBA4000h4Xml3OusElxRPjQL3qRMCTdbycg92d4FiMbhs6Y4IJD2gGlX9PodZyRcxP1lXMrEEnRTNWruc0wjD/fc9+lu8VDnfrxfq7eHH8BDgpRqUUpQW+KdkbiPdRVZqtl4jIogEXWL/AG5aX/enzliLPoV24QFJIpbiK0/7DP0gGcNNMPw2klq+u20w3vtFattMNKno4uj+47u/3WVW5b0qodialr/a/4Iio4egD4j6MrgYZ9zhod3rKMRDFHi5F0OI4qb2Bt/CCADu0pME/VLm4SMcvbyPmAXOJGO6p7w+EsbP0M9vg+XF/GQ0osvLlOCtXfJJmHwJcqhkL6itc2SC5XYZYpOcj5JdYBxuEAD5s5TjYBoaFf3liVGtbfIV9YMCvWIxVqwL3gU78Sk0vGIx4zxuQM="

@@ -49,6 +49,7 @@ export default class TodoListControllers {
         assignTo: req.body.assignTo
       });
       reminder.create({
+        todoId: req.params.todoId,
         todoName: todo.name,
         taskName: req.body.name,
         name: req.currentUser.currentUser.fullName,
@@ -61,18 +62,18 @@ export default class TodoListControllers {
             'An error occured could not set reminder', false
           );
         }
-      });
-      todo.save((err, updatedTodo) => {
-        if (err) {
-          return apiResponse(res, 500, 'Internal server error', false);
-        }
-        return apiResponse(res, 200, null, true, updatedTodo);
+        todo.save((err, updatedTodo) => {
+          if (err) {
+            return apiResponse(res, 500, 'Internal server error', false);
+          }
+          return apiResponse(res, 200, null, true, updatedTodo);
+        });
       });
     });
   }
   /**
- * @description: add a task to  a todo list through route
- * POST: api/v1/todos/todoId/tasks
+ * @description: add a contributor to  a todo list through route
+ * POST: api/v1/todos/todoId/contributor
  *
  * @param {Object} req request object
  * @param {Object} res response object
@@ -124,24 +125,36 @@ export default class TodoListControllers {
  * @return {Object} response containing the updated todo
  */
   static updateTaskInTodolist(req, res) {
-    todoList.findById(req.params.todoId, (err, todolist) => {
+    const { taskId, todoId } = req.params;
+    todoList.findById(todoId, (err, todolist) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
-      todolist.tasks.forEach((task) => {
-        if (task._id == req.params.taskId) {
-          if (req.body.userName) {
-            task.assignTo = req.body.userName;
-          } else {
-            task.done = true;
-          }
-        }
-      });
-      todolist.save((err, updatedTodolist) => {
+      reminder.findOne({
+        $and: [{ todoId }, {
+          taskName: req.body.taskName
+        }]
+      }, (err, reminderToUpdate) => {
         if (err) {
           return apiResponse(res, 500, 'Internal server error', false);
         }
-        return apiResponse(res, 200, null, true, updatedTodolist);
+        reminderToUpdate.needReminder = false;
+        reminderToUpdate.save((err) => {
+          if (err) {
+            return apiResponse(res, 500, 'Internal server error', false);
+          }
+          todolist.tasks.forEach((task) => {
+            if (task._id == taskId) {
+              task.done = true;
+            }
+          });
+          todolist.save((err, updatedTodolist) => {
+            if (err) {
+              return apiResponse(res, 500, 'Internal server error', false);
+            }
+            apiResponse(res, 200, null, true, updatedTodolist);
+          });
+        });
       });
     });
   }

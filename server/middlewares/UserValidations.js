@@ -1,5 +1,7 @@
-import { isInValidField, isDigit, isText, apiResponse } from '../helpers';
+import { isInValidField, isDigit, isValidName,
+  isText, apiResponse, isValidEmail, isValidPassword } from '../helpers';
 
+import User from '../models/User';
 /**
  * class UserValidation: controls all user validations
  * @class
@@ -112,7 +114,7 @@ export default class UserValidations {
     }
     if (req.body.email) {
       if (isValidEmail(req.body.email)) {
-        user.findOne({ email: req.body.email }, (err, updatedUser) => {
+        User.findOne({ email: req.body.email }, (err, updatedUser) => {
           if (err) {
             return apiResponse(res, 500, 'Internal server error', false);
           }

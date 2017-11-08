@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { isValidName } from '../../../helpers';
+import { isValidName, isValidPassword } from '../../../helpers';
 /** @class GoogleSignupForm
  * @classdesc component for signing up with google+
  */
@@ -46,11 +46,16 @@ export class GoogleSignupForm extends React.Component {
      */
   onSubmit(event) {
     event.preventDefault();
-    if (!isValidName(event.target.userName)) {
+    if (!isValidName(this.state.userName)) {
       this.setState({ error: 'Invalid username' });
-      return;
+    } else if (!isValidPassword(this.state.password)) {
+      this.setState({
+        error: `Password should contain
+        at least 8 characters including one number and alphabet`
+      });
+    } else {
+      this.props.userSignupRequest(this.state);
     }
-    this.props.userSignupRequest(this.state);
   }
   /**
    *@description render - renders the class component
@@ -70,17 +75,16 @@ export class GoogleSignupForm extends React.Component {
         <div className ="row">
           <div id="signup-page"
             className={`col m6 l4 offset-l4 offset-m3 s12 
-            z-depth-4 card-panel reset`}>
+            z-depth-4 card-panel reset signup-page`}>
             <form onSubmit={this.onSubmit} className="login-form">
               <div className="row">
                 <div className="input-field col s12 center">
                   <h5 className="center">Kindly Complete Your Registration</h5>
                 </div>
-                {(error.message) &&
             <div className="mes reduce"><i>
-              <h6>{errors.message}</h6>
+              <h6>{error || this.props.errorMessage}</h6>
             </i>
-            </div>}
+            </div>
               </div>
               <div className="row margin">
                 <div className="input-field col s12">

@@ -9,6 +9,7 @@ const server = supertest.agent(app);
 let regUserToken = 'bearer ';
 let todoId;
 let taskId;
+let taskName;
 const invalidId = 'IamInvalidTaskId';
 const notFoundId = '59eaf52946198d2a65cd4400';
 
@@ -24,7 +25,17 @@ describe('Todolist API', () => {
       })
       .end((err, res) => {
         regUserToken += res.body.token;
-        done();
+        server
+          .post('/api/v1/users')
+          .send({
+            userName: 'bode',
+            fullName: 'Ade Bayo',
+            password: 'folami1234',
+            email: 'house123@gmail.com'
+          })
+          .end((err, res) => {
+            done();
+          });
       });
   });
   describe('Create Todolist', () => {
@@ -114,10 +125,17 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({ taskName: 'create login', priority: 'urgent' })
+        .send({
+          name: 'create login',
+          priority: 'urgent',
+          assignTo: 'bayo',
+          reminder: new Date(2017, 11, 20),
+          date: new Date(2017, 11, 25)
+        })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           taskId = res.body.data.tasks[0]._id;
+          taskName = res.body.data.tasks[0].taskName;
           expect(res.status).toEqual(200);
           expect(res.body.success).toEqual(true);
           expect(res.body.data.tasks[0].taskName)
@@ -133,7 +151,13 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({ taskName: 'c', priority: 'urgent' })
+        .send({
+          name: 'c',
+          priority: 'urgent',
+          assignTo: 'bayo',
+          reminder: new Date(2017, 11, 20),
+          date: new Date(2017, 11, 25)
+        })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
@@ -151,7 +175,7 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({priority: 'urgent' })
+        .send({ priority: 'urgent' })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
@@ -169,7 +193,13 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({priority: 'urgent', taskName: 'path'})
+        .send({
+          name: 'path',
+          priority: 'normal',
+          assignTo: 'bayo',
+          reminder: new Date(2017, 11, 20),
+          date: new Date(2017, 11, 25)
+        })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
@@ -187,7 +217,13 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({taskName: 'jondo', priority: 'urge' })
+        .send({
+          name: 'johndoe',
+          priority: 'urg',
+          assignTo: 'bayo',
+          reminder: new Date(2017, 11, 20),
+          date: new Date(2017, 11, 25)
+        })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
@@ -205,7 +241,12 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({taskName: 'jondon'})
+        .send({
+          name: 'counter',
+          assignTo: 'bayo',
+          reminder: new Date(2017, 11, 20),
+          date: new Date(2017, 11, 25)
+        })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
@@ -223,7 +264,13 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({taskName: 'create login', priority: 'normal'})
+        .send({
+          name: 'create login',
+          priority: 'urgent',
+          assignTo: 'bayo',
+          reminder: new Date(2017, 11, 20),
+          date: new Date(2017, 11, 25)
+        })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(409);
@@ -241,7 +288,13 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({taskName: 'create login', priority: 'normal'})
+        .send({
+          name: 'create signup page',
+          priority: 'critical',
+          assignTo: 'bayo',
+          reminder: new Date(2017, 11, 20),
+          date: new Date(2017, 11, 25)
+        })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(404);
@@ -259,16 +312,16 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({})
+        .send({ taskName })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(200);
           expect(res.body.success).toEqual(true);
           expect(res.body.data.name)
             .toEqual('postIt');
-          expect(res.body.data.tasks[0].done).toEqual(true)
+          expect(res.body.data.tasks[0].done).toEqual(true);
           expect(res.body.data.tasks[0].taskName)
-            .toEqual('create login');       
+            .toEqual('create login');
           if (err) return done(err);
           done();
         });
@@ -298,7 +351,7 @@ describe('Todolist API', () => {
         .set('authorization', regUserToken)
         .set('Content-Type', 'application/json')
         .type('form')
-        .send({taskName: 'create signup', priority: 'normal'})
+        .send({ taskName: 'create signup', priority: 'normal' })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(404);
@@ -323,6 +376,155 @@ describe('Todolist API', () => {
           expect(res.body.success).toEqual(false);
           expect(res.body.error.message)
             .toEqual('Invalid todoId');
+          if (err) return done(err);
+          done();
+        });
+    });
+  });
+  describe('Collaborator in Todolist', () => {
+    it('should add a collaborator ta a todolist successfully', (done) => {
+      server
+        .post(`/api/v1/todos/${todoId}/contributors`)
+        .set('Connection', 'keep alive')
+        .set('authorization', regUserToken)
+        .set('Content-Type', 'application/json')
+        .type('form')
+        .send({
+          username: 'bode'
+        })
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          expect(res.status).toEqual(200);
+          expect(res.body.success).toEqual(true);
+          expect(res.body.data.collaborators[1]).toEqual('bode');
+          if (err) return done(err);
+          done();
+        });
+    });
+    it(
+      'should throw error if username of contributor is not provided',
+      (done) => {
+        server
+          .post(`/api/v1/todos/${todoId}/contributors`)
+          .set('Connection', 'keep alive')
+          .set('authorization', regUserToken)
+          .set('Content-Type', 'application/json')
+          .type('form')
+          .send({})
+          .expect('Content-Type', /json/)
+          .end((err, res) => {
+            expect(res.status).toEqual(400);
+            expect(res.body.success).toEqual(false);
+            expect(res.body.error.message)
+              .toEqual('username of contributor is required');
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
+    it(
+      'should throw error if username provided is already a contributor',
+      (done) => {
+        server
+          .post(`/api/v1/todos/${todoId}/contributors`)
+          .set('Connection', 'keep alive')
+          .set('authorization', regUserToken)
+          .set('Content-Type', 'application/json')
+          .type('form')
+          .send({username: 'bode'})
+          .expect('Content-Type', /json/)
+          .end((err, res) => {
+            expect(res.status).toEqual(409);
+            expect(res.body.success).toEqual(false);
+            expect(res.body.error.message)
+              .toEqual('user already a contributor');
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
+    it(
+      'should throw error if username provided is not a registered user',
+      (done) => {
+        server
+          .post(`/api/v1/todos/${todoId}/contributors`)
+          .set('Connection', 'keep alive')
+          .set('authorization', regUserToken)
+          .set('Content-Type', 'application/json')
+          .type('form')
+          .send({ username: 'notaregistereduser' })
+          .expect('Content-Type', /json/)
+          .end((err, res) => {
+            expect(res.status).toEqual(404);
+            expect(res.body.success).toEqual(false);
+            expect(res.body.error.message)
+              .toEqual('User not found');
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
+    it(
+      'should throw error if todoId is invalid',
+      (done) => {
+        server
+          .post(`/api/v1/todos/${invalidId}/contributors`)
+          .set('Connection', 'keep alive')
+          .set('authorization', regUserToken)
+          .set('Content-Type', 'application/json')
+          .type('form')
+          .send({ username: 'notaregistereduser' })
+          .expect('Content-Type', /json/)
+          .end((err, res) => {
+            expect(res.status).toEqual(400);
+            expect(res.body.success).toEqual(false);
+            expect(res.body.error.message)
+              .toEqual('Invalid todoId');
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
+    it(
+      'should throw error if todolist does not exist',
+      (done) => {
+        server
+          .post(`/api/v1/todos/${notFoundId}/contributors`)
+          .set('Connection', 'keep alive')
+          .set('authorization', regUserToken)
+          .set('Content-Type', 'application/json')
+          .type('form')
+          .send({ username: 'notaregistereduser' })
+          .expect('Content-Type', /json/)
+          .end((err, res) => {
+            expect(res.status).toEqual(404);
+            expect(res.body.success).toEqual(false);
+            expect(res.body.error.message)
+              .toEqual('todolist not found');
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
+  });
+  describe('GET Todolist', () => {
+    it('should retrieve all the todolist of a user successfully', (done) => {
+      server
+        .get('/api/v1/todos')
+        .set('Connection', 'keep alive')
+        .set('authorization', regUserToken)
+        .set('Content-Type', 'application/json')
+        .type('form')
+        .send({
+          username: 'bode'
+        })
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          expect(res.status).toEqual(200);
+          expect(res.body.success).toEqual(true);
+          expect(res.body.data.length).toEqual(1);
+          expect(res.body.data[0].name).toEqual('postIt');
+          expect(res.body.data[0].collaborators.length).toEqual(2);
           if (err) return done(err);
           done();
         });

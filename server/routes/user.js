@@ -13,7 +13,7 @@ user.post(
 user.post('/api/v1/users/signin', UserControllers.authenticateUser);
 
 user.put('/api/v1/users', Authorization.verifyToken,
-  UserControllers.updateUserProfile);
+  UserValidations.updateUserValidation, UserControllers.updateUserProfile);
 
 user.post('/api/v1/users/google-signin', UserControllers.googleSignin);
 

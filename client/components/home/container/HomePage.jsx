@@ -25,9 +25,6 @@ class HomePage extends React.Component {
    */
   constructor(props) {
     super(props);
-    // this.state = {
-
-    // }
     this.handleOnclickForNavbar = this.handleOnclickForNavbar.bind(this);
   }
 
@@ -37,6 +34,9 @@ class HomePage extends React.Component {
    * @return {object} returns an object
    */
   handleOnclickForNavbar() {
+    if (this.props.isApiCallInProgress) {
+      this.props.actions.setIsApiCallInProgress(false);
+    }
     this.props.actions.showHomePageForm(1);
   }
   /**
@@ -58,6 +58,7 @@ class HomePage extends React.Component {
            userSignupRequest = {this.props.actions.userSignupRequest}
            errorMessage = {this.props.errorMessage}
            isApiCallInProgress = {this.props.isApiCallInProgress}
+           setIsApiCallInProgress={this.props.actions.setIsApiCallInProgress}
          /> }
 
         { formNumber === 1 &&
@@ -68,6 +69,7 @@ class HomePage extends React.Component {
           userSigninRequest = {this.props.actions.userSigninRequest}
           errorMessage = {this.props.errorMessage}
           isApiCallInProgress = {this.props.isApiCallInProgress}
+          setIsApiCallInProgress={this.props.actions.setIsApiCallInProgress}
         /> }
         { formNumber === 3 &&
          <ForgetPasswordVerificationForm

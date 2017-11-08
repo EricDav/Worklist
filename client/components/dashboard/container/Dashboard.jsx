@@ -91,7 +91,8 @@ class Dashboard extends React.Component {
     if (event.target.name === 'complete') {
       this.props.actions.completeTask(
         event.target.id,
-        this.props.currentTodolist._id
+        this.props.currentTodolist._id,
+        { taskName: event.target.value }
       );
     }
     if (event.target.name === 'task') {
@@ -229,7 +230,7 @@ class Dashboard extends React.Component {
       todoBoardStyles = 'col s12 m8 l6 offset-l3 card-panel  valign height';
     }
     return (
-        <div className="">
+        <div>
             <DashboardSidebar
              imageUrl={this.props.imageUrl}
              todolists={this.getTodolists}

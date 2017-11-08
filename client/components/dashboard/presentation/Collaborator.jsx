@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 const Collaborator = props =>
   (
@@ -7,4 +8,7 @@ const Collaborator = props =>
   </li>
   );
 
+Collaborator.propTypes = {
+  userName: propTypes.string.isRequired,
+};
 export default Collaborator;

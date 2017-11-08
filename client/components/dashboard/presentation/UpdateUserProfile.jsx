@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import { isValidEmail, isValidName } from '../../../helpers';
 
@@ -24,6 +25,12 @@ class UpdateUserProfile extends React.Component {
     this.onClick = this.onClick.bind(this);
   }
 
+  /**
+     * @description - handles the onchange event
+     *
+     * @param  {object} event the event for the content field
+     * @return {void}
+     */
   onChange(event) {
     this.setState({
       [event.target.name]: event.target.value
@@ -39,6 +46,7 @@ class UpdateUserProfile extends React.Component {
      */
   onSubmit(event) {
     event.preventDefault();
+
     this.setState({
       error: ''
     });
@@ -53,9 +61,25 @@ class UpdateUserProfile extends React.Component {
         error: 'Invalid email'
       });
     } else {
-      this.props.updateUserProfile(this.state);
+      const updatedField = {};
+      if (fullName !== this.props.fullName) {
+        updatedField.fullName = fullName;
+      }
+      if (email !== this.props.email) {
+        updatedField.email = email;
+      }
+      if (Object.keys(updatedField).length === 0) {
+        Materialize.toast('You did not make any changes', 2000, 'red');
+      } else {
+        this.props.updateUserProfile(updatedField);
+      }
     }
   }
+  /**
+     * @description - handles the onClick event
+     *
+     * @return {void} no return or void
+     */
   onClick() {
     this.props.rightSideNav(1);
   }
@@ -73,8 +97,6 @@ class UpdateUserProfile extends React.Component {
     return (
       <div className="row" >
       <div id="reset" className="col l3 offset-l9 m4 offset-m8 s12 valign">
-        <div className="row">
-    <div id="reset" className="col s12 z-depth-4 card-panel">
       <form onSubmit={this.onSubmit}>
          <div className="right">
      <a href="#!" name ="clear" onClick={this.onClick}>
@@ -84,12 +106,11 @@ class UpdateUserProfile extends React.Component {
     </div>
         <div className="row">
           <div className="input-field col s12 center move">
-            <p className="center">Your Profile</p>
-            { (this.state.showError || this.state.error) &&
+            <p className="center"><h4><i>Your Profile</i></h4></p>
             <div className="mes reduce"><i>
-              <h6>{this.props.errorMessage || this.state.error }</h6>
+              <h6>{this.props.errorMessage || this.state.error}</h6>
             </i>
-            </div>}
+            </div>
           </div>
         </div>
         <a href="#modal2" className="modal-trigger"><center><img
@@ -137,10 +158,18 @@ class UpdateUserProfile extends React.Component {
         </form>
       </div>
     </div>
-  </div>
- </div>
     );
   }
 }
 
+UpdateUserProfile.propTypes = {
+  updateUserProfile: propTypes.func.isRequired,
+  imageUrl: propTypes.string.isRequired,
+  isApiCallInProgress: propTypes.bool.isRequired,
+  rightSideNav: propTypes.func.isRequired,
+  errorMessage: propTypes.string.isRequired,
+  fullName: propTypes.string.isRequired,
+  email: propTypes.string.isRequired,
+  username: propTypes.string.isRequired
+};
 export default UpdateUserProfile;

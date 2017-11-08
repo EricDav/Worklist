@@ -33,6 +33,9 @@ export class LoginForm extends React.Component {
    */
   componentWillUnmount() {
     this.props.setError('');
+    if (this.props.isApiCallInProgress) {
+      this.props.setIsApiCallInProgress(false);
+    }
   }
   /**
      * @description - handles the onchange event
@@ -98,7 +101,7 @@ export class LoginForm extends React.Component {
     <div className="row" >
       <div id="image" className="col m6 l4 offset-l4 offset-m3 s12 valign">
         <div className="row">
-    <div id="signup-page" className="col s12 z-depth-4 card-panel">
+    <div className="col s12 z-depth-4 card-panel">
       <form id="login" className="login-form" onSubmit={this.onSubmit}>
         <div className="row">
           <div className="input-field col s12 center">
@@ -126,12 +129,6 @@ export class LoginForm extends React.Component {
               onChange={this.onChange} name="password"
               onFocus={this.onFocus} value={password} required="true"/>
             <label htmlFor="password">Password</label>
-          </div>
-        </div>
-        <div className="row">
-          <div className="input-field col s12 m12 l12  login-text">
-            <input type="checkbox" id="remember-me"/>
-            <label htmlFor="remember-me">Remember me</label>
           </div>
         </div>
         <div className="row">

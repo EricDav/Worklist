@@ -1,4 +1,3 @@
-import moment from 'moment';
 /**
  *@description checks if a field is null, undefined or empty
  *
@@ -120,7 +119,10 @@ export const updateTodolists = (todolists, newTodolist) => {
 };
 
 export const validateRemindersInput =
-  (day, hour, minute, dueYear, dueMonth, dueDate) => {
+  (
+    day, hour, minute, dueYear, dueMonth, dueDay,
+    dueHour, dueMinute, dueDate
+  ) => {
     if (isInValidField(day) && isInValidField(hour) && isInValidField(minute)) {
       return [false, 'You have to set reminders!'];
     } else if (!isDigit(day) || !isDigit(hour) || !isDigit(minute)) {
@@ -129,9 +131,13 @@ export const validateRemindersInput =
     } else if (Number(day) > 31 || Number(hour) > 59 || Number(minute) > 59) {
       return [false, 'Invalid date!'];
     }
-    const reminderDate = new Date(dueYear, dueMonth, day, hour, minute);
-    if (moment(dueDate).valueOf() < moment(reminderDate.valueOf())) {
-      return [false, 'Error! Date for reminder should be before due date'];
+    const reminderDate = new Date(
+      dueYear, dueMonth,
+      Number(dueDay) - Number(day), Number(dueHour) - Number(hour),
+      Number(dueMinute) - Number(minute)
+    );
+    if (Date.parse(new Date()) > Date.parse(reminderDate)) {
+      return [false, 'Error! Date for reminder can not be in the past'];
     }
     return [true, reminderDate];
   };

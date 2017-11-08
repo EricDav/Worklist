@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import propTypes from 'prop-types';
 
 const Task = props =>
   (
@@ -17,11 +18,25 @@ const Task = props =>
         </b></span></div>
      {props.showComplete && <div className="wid collapsible-body">
        <div id="button">
-        <button name="complete" id={props.taskId} onClick={props.handleOnclick}
+        <button value={props.name}
+        name="complete" id={props.taskId}
+        onClick={props.handleOnclick}
         className={props.buttonClass}>complete</button>
       </div>
     </div>}
     </li>
   );
+
+Task.propTypes = {
+  users: propTypes.func.isRequired,
+  buttonClass: propTypes.string.isRequired,
+  status: propTypes.string.isRequired,
+  taskId: propTypes.string.isRequired,
+  showComplete: propTypes.bool.isRequired,
+  handleOnclick: propTypes.func.isRequired,
+  colorCode: propTypes.string.isRequired,
+  name: propTypes.string.isRequired,
+  assignTo: propTypes.string.isRequired,
+};
 
 export default Task;

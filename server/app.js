@@ -12,16 +12,21 @@ import webpackConfig from '../webpack.config.dev';
 import user from './routes/user';
 import todo from './routes/todo';
 import reminder from './controllers/ReminderControllers';
+import config from './config/config';
 
 dotenv.load();
 
 const port = process.env.PORT || 9000;
 const app = express();
-const url = process.env.MONGOHQ_TEST_URL;
+const url = config.db[process.env.NODE_ENV];
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(webpackMiddleware(webpack(webpackConfig)));
+}
+
 moongose.connect(url);
 
-app.use(webpackMiddleware(webpack(webpackConfig)));
-// app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(path.join(__dirname, '../client')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -37,6 +42,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/index.html'));
 });
 
-export default app;
+reminder.start();
 
-// reminder.start();
+export default app;

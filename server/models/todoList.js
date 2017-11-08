@@ -10,7 +10,7 @@ const taskSchema = new Schema(
     },
     assignTo: {
       type: String,
-      default: ''
+      required: true,
     },
     priority: {
       type: String,
@@ -24,10 +24,6 @@ const taskSchema = new Schema(
       type: Date,
       required: true,
     },
-    assignTo: {
-      type: String,
-      default: ''
-    }
   },
   {
     timestamps: true

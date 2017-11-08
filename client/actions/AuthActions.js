@@ -6,7 +6,7 @@ import { SET_CURRENT_USER, SET_ERROR_MESSAGE,
   SET_IS_API_CALL_IN_PROGRESS, SET_HOME_PAGE_FORM } from './ActionTypes';
 
 /**
- * @description action for user current user information in store
+ * @description set the current user
  *
  * @param  {object} user current user object
  *
@@ -55,7 +55,9 @@ export function setError(message) {
  * @return {object} dispatch object
  */
 export function showHomePageForm(formNumber) {
-  localStorage.setItem('homePageNum', formNumber);
+  if (formNumber < 4) {
+    localStorage.setItem('homePageNum', formNumber);
+  }
   return dispatch => dispatch({
     type: SET_HOME_PAGE_FORM,
     formNumber
@@ -75,7 +77,6 @@ export function userSignupRequest(payload) {
     axios.post('/api/v1/users', payload).then((res) => {
       const { token } = res.data;
       localStorage.setItem('jwtToken', token);
-      localStorage.removeItem('homePageNum');
       setAuthorizationToken(token);
       dispatch(setCurrentUser(jwt.decode(token)));
       dispatch(setIsApiCallInProgress(false));

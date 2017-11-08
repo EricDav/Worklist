@@ -1,8 +1,9 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import Priority from './Priority.jsx';
 import { isValidName, isUniqueTaskName,
-  validateRemindersInput } from '../../../helpers';
+  validateRemindersInput, isInValidField } from '../../../helpers';
 
 /** @class CreateTaskForm
  * @classdesc component for creating tasks
@@ -42,9 +43,7 @@ class CreateTaskForm extends React.Component {
      * @return {void}
      */
   onChange(event) {
-    console.log(typeof (event.target.value));
     if (event.target.name === 'assignTo') {
-      console.log(event.target.value);
       if (event.target.value !== '') {
         this.setState({
           disableAssignTaskToSelf: true
@@ -79,7 +78,7 @@ class CreateTaskForm extends React.Component {
     );
     if (Date.parse(date) < Date.parse(currentDate)) {
       this.setState({
-        error: 'Invalid date! Due date should be at least 24 hours from now.'
+        error: 'Invalid date! Due date should be at a minute from now.'
       });
     } else if (!isValidName(this.state.name)) {
       this.setState({
@@ -104,10 +103,19 @@ class CreateTaskForm extends React.Component {
         error: 'A user must be assign to a task'
       });
     } else {
-      const { dayReminder, hourReminder, minuteReminder } = this.state;
+      let { dayReminder, hourReminder, minuteReminder } = this.state;
+      if (isInValidField(dayReminder)) {
+        dayReminder = '0';
+      }
+      if (isInValidField(hourReminder)) {
+        hourReminder = '0';
+      }
+      if (isInValidField(minuteReminder)) {
+        minuteReminder = '0';
+      }
       const isValidReminder = validateRemindersInput(
         dayReminder, hourReminder, minuteReminder,
-        day[0], Number(day[1] - 1).toString(), date
+        day[0], Number(day[1] - 1).toString(), day[2], time[0], time[1], date
       );
       if (isValidReminder[0]) {
         const payload = {
@@ -165,9 +173,9 @@ class CreateTaskForm extends React.Component {
   render() {
     let textContent;
     if (this.props.isApiCallInProgress) {
-      textContent = 'Loading...';
+      textContent = 'Creating...';
     } else {
-      textContent = 'REGISTER NOW';
+      textContent = 'CREATE';
     }
     return (
     <div className="row">
@@ -275,5 +283,14 @@ class CreateTaskForm extends React.Component {
     );
   }
 }
+
+CreateTaskForm.propTypes = {
+  currentUser: propTypes.object.isRequired,
+  errorMessage: propTypes.string.isRequired,
+  currentTodolist: propTypes.object.isRequired,
+  rightSideNav: propTypes.func.isRequired,
+  isApiCallInProgress: propTypes.bool.isRequired,
+  createTask: propTypes.func.isRequired
+};
 
 export default CreateTaskForm;

@@ -1,15 +1,7 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
-/** @class DashboardSidebar
- * @classdesc component for sidebar
- */
-class DashboardSidebar extends React.Component {
-  /**
-   *@description render - renders the Dashboard sidebar component
-   * @return {object} returns an object
-   */
-  render() {
-    return (
+const DashboardSidebar = props => (
 <div>
     <div className="navbar-fixed">
       <nav className ="back">
@@ -26,13 +18,13 @@ class DashboardSidebar extends React.Component {
                 <ul id="dropdown1" className="li dropdown-content">
                     <li>
                       <a href="#" name="profile"
-                      onClick={this.props.handleOnclick}
+                      onClick={props.handleOnclick}
                       className="grey-text text-darken-1">
                   <i className="material-icons">face</i> Profile</a>
                     </li>
                     <li>
                       <a name="logout"
-                      onClick={this.props.handleOnclick} href="#"
+                      onClick={props.handleOnclick} href="#"
                       className="grey-text text-darken-1">
                   <i className="material-icons">keyboard_tab</i> Logout</a>
                     </li>
@@ -52,12 +44,12 @@ class DashboardSidebar extends React.Component {
             marginLeft: 20,
             marginTop: 10
           }}
-           src={this.props.imageUrl}
+           src={props.imageUrl}
             className="circle darken-1"
      />
          <a href="#!">
              <span
-             style={{ marginLeft: 20, marginRight: 10 }}>{this.props.fullName}
+             style={{ marginLeft: 20, marginRight: 10 }}>{props.fullName}
             </span>
               <a style={{
                 marginTop: -100,
@@ -76,12 +68,16 @@ class DashboardSidebar extends React.Component {
         >
         <i className="material-icons prefix red-text">add</i>
         <b>Todolists</b></a></li>
-        {this.props.todolists()}
+        {props.todolists()}
       </ul>
   </div>
       </div>
-    );
-  }
-}
+);
 
+DashboardSidebar.propTypes = {
+  fullName: propTypes.string.isRequired,
+  imageUrl: propTypes.string.isRequired,
+  todolists: propTypes.func.isRequired,
+  handleOnclick: propTypes.func.isRequired
+};
 export default DashboardSidebar;

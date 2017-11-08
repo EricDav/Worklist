@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 
 import Search from './Search.jsx';
 
@@ -33,5 +34,13 @@ function RightSideNav(props) {
     </div>
   );
 }
+
+RightSideNav.propTypes = {
+  users: propTypes.func.isRequired,
+  rightSideNav: propTypes.number.isRequired,
+  collaborators: propTypes.func.isRequired,
+  handleOnclick: propTypes.func.isRequired,
+  handleOnchange: propTypes.func.isRequired
+};
 
 export default RightSideNav;

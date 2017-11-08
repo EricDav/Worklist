@@ -225,6 +225,9 @@ export const isValidName = (name) => {
       return false;
     }
   }
+  if (isDigit(name)) {
+    return false;
+  }
   return true;
 };
 
@@ -237,10 +240,10 @@ export const sendReminders = (message, email) => {
     }
   });
   const mailOptions = {
-    from: `PostIt <${process.env.EMAIL}`,
+    from: `Worklist <${process.env.EMAIL}`,
     to: email,
     subject: 'Worklist',
-    text: message
+    html: message
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
@@ -248,3 +251,15 @@ export const sendReminders = (message, email) => {
     }
   });
 };
+
+export const createMessage = (name, todoname, task, dueDate) => {
+  const message = `<h3 style="color: indigo">Hi ${name}</h3><br/>
+    <div style="font-size: 15px">This is to remind you that the ${task}
+    task you are assign to<br/> in
+    ${todoname} todolist is yet to be completed and will be due on
+    ${dueDate}<br/>
+    <br/>
+    <i>Thanks.</i>`;
+  return message;
+};
+

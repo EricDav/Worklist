@@ -4,7 +4,7 @@ import fs from 'fs';
 import del from 'del';
 import cloudinary from 'cloudinary';
 
-import user from '../models/User';
+import User from '../models/User';
 import { generateToken, removePassword, isInValidField, apiResponse,
   isValidEmail, isValidPassword, generateCode,
   mailSender, isValidName } from '../helpers';
@@ -26,9 +26,9 @@ export default class UserControllers {
  * @return {Object} response containing the created user
  */
   static createUser(req, res) {
-    user.findOne({
+    User.findOne({
       $or: [{ email: req.body.email },
-        { userName: req.body.userName.toLowerCase }]
+        { userName: req.body.userName.toLowerCase() }]
     }, (err, currentUser) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
@@ -47,7 +47,7 @@ export default class UserControllers {
       }
       const salt = bcrypt.genSaltSync(10);
       const hashedPassword = bcrypt.hashSync(req.body.password, salt);
-      const newUser = user({
+      const newUser = User({
         fullName: req.body.fullName,
         userName: req.body.userName.toLowerCase(),
         email: req.body.email,
@@ -92,7 +92,7 @@ export default class UserControllers {
         'password can not be null or empty', false
       );
     }
-    user.findOne({
+    User.findOne({
       $or: [{ userName: req.body.userName.toLowerCase() },
         { email: req.body.email }]
     }, (err, userInfo) => {
@@ -128,16 +128,22 @@ export default class UserControllers {
    * @return {object} response containing the updated user
    */
   static updateUserProfile(req, res) {
-    user.findOne(
+    User.findOne(
       { _id: req.currentUser.currentUser._id },
-      (err, updatedUser) => {
+      (err, user) => {
         if (err) {
           return apiResponse(res, 500, 'Internal server error', false);
         }
-        return apiResponse(
-          res, 200, 'token', true,
-          generateToken(removePassword(updatedUser), secret)
-        );
+        const { email, fullName } = req.updatedField;
+        user.email = email || req.currentUser.currentUser.email;
+        user.fullName = fullName || req.currentUser.currentUser.fullName;
+        user.save((err, updatedUser) => {
+          if (err) {
+            return apiResponse(res, 500, 'Internal server error', false);
+          }
+          const token = generateToken(removePassword(updatedUser), secret);
+          return apiResponse(res, 200, 'token', true, token);
+        });
       }
     );
   }
@@ -152,10 +158,10 @@ export default class UserControllers {
    * @return {object} response containing the user token or action status
    */
   static googleSignin(req, res) {
-    if (isValidEmail(!req.body.email)) {
+    if (!isValidEmail(req.body.email)) {
       return apiResponse(res, 400, 'Invalid email', false);
     }
-    user.findOne({ email: req.body.email }, (err, googleUser) => {
+    User.findOne({ email: req.body.email }, (err, googleUser) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
@@ -180,7 +186,7 @@ export default class UserControllers {
     if (!isValidEmail(req.body.email)) {
       return apiResponse(res, 400, 'Invalid email', false);
     }
-    user.findOne({ email: req.body.email }, (err, requester) => {
+    User.findOne({ email: req.body.email }, (err, requester) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       } else if (!requester) {
@@ -218,7 +224,7 @@ export default class UserControllers {
     bcrypt.compare(req.body.secretCode, req.body.hash, (err, response) => {
       if (response) {
         bcrypt.hash(req.body.password, 10, (err, hash) => {
-          user.findOne(
+          User.findOne(
             { email: req.body.email },
             (err, forgetPasswordUser) => {
               if (err) {
@@ -259,7 +265,7 @@ export default class UserControllers {
       api_key: process.env.API_KEY,
       api_secret: process.env.API_SECRET
     });
-    if (!req.files) {
+    if (!req.files || !req.files.file) {
       return apiResponse(res, 400, 'No image found', false);
     }
     const uploadDir = 'server/uploads';
@@ -268,11 +274,18 @@ export default class UserControllers {
     }
 
     const { file } = req.files;
+    const imageType = ['image/jpeg', 'image/png'];
+    if (!imageType.includes(file.mimetype)) {
+      return apiResponse(res, 415,
+        `file not supported. Supported
+        image formats: jpeg, jpg, jpe, png.`, false
+      );
+    }
     file.mv(`${uploadDir}/${file.name}`).then(() => {
       cloudinary.v2.uploader.upload(`${uploadDir}/${file.name}`)
         .then((cloudinaryImage) => {
           const { url } = cloudinaryImage;
-          user.findOne(
+          User.findOne(
             { _id: req.currentUser.currentUser._id },
             (err, currentUser) => {
               if (err) {
@@ -312,7 +325,7 @@ export default class UserControllers {
     if (!isValidName(req.query.searchParam)) {
       return apiResponse(res, 400, 'Invalid query parameter', false);
     }
-    user.find({
+    User.find({
       userName: {
         $regex: `.*${req.query.searchParam}.*`
       }
