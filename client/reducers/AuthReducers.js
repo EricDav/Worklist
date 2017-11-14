@@ -1,5 +1,5 @@
 import { SET_CURRENT_USER, SET_ERROR_MESSAGE,
-  SET_IS_API_CALL_IN_PROGRESS,
+  API_CALL_IN_PROGRESS,
   SET_HOME_PAGE_FORM } from '../actions/ActionTypes';
 
 const initialState = {
@@ -11,7 +11,7 @@ export const user = (state = initialState, action = {}) => {
   switch (action.type) {
     case SET_CURRENT_USER:
       return {
-        isAuthenticated: action.user.email !== undefined,
+        isAuthenticated: action.user.currentUser.email !== undefined,
         user: action.user
       };
     default:
@@ -30,9 +30,9 @@ export const errorMessage = (state = '', action = {}) => {
   }
 };
 
-export const isApiCallInProgress = (state = false, action = {}) => {
+export const apiCallInProgress = (state = false, action = {}) => {
   switch (action.type) {
-    case SET_IS_API_CALL_IN_PROGRESS:
+    case API_CALL_IN_PROGRESS:
       return action.status;
     default:
       return state;

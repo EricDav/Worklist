@@ -1,6 +1,9 @@
-import { isInValidField, isText, apiResponse } from '../helpers';
+import moment from 'moment';
+
+import { isInValidField, isText, apiResponse,
+  isValidName } from '../helpers';
 import todoList from '../models/todoList';
-import user from '../models/user';
+import user from '../models/User';
 
 /**
  * class TodoListValidations: controlls all todo list validation
@@ -10,17 +13,18 @@ export default class TodoListValidations {
   /**
    * @description: validate todo list field
    *
-   * @param  {object} req request object
-   * @param  {object} res response object
-   * @param  {function} next a call back function
+   * @param  {Object} req request object
+   * @param  {Object} res response object
+   * @param  {Function} next a call back function
    *
    * @return {object} response object
    */
   static createTodoListValidation(req, res, next) {
     const error = {};
+    const { currentUser } = req.currentUser;
     if (isInValidField(req.body.name)) {
       error.name = 'name field is required';
-    } else if (!isText(req.body.name)) {
+    } else if (!isValidName(req.body.name)) {
       error.name = 'todo names must be in letters';
     } else if (req.body.name.length < 2) {
       error.name = 'a character can not be a name of a todo';
@@ -32,7 +36,7 @@ export default class TodoListValidations {
       $and:
         [{
           internalName: req.body.name.toUpperCase(),
-        }, { creatorId: req.currentUser.currentUser._id }]
+        }, { creatorId: currentUser._id }]
     }, (err, todo) => {
       if (todo) {
         error.name = 'name already taken';
@@ -53,6 +57,7 @@ export default class TodoListValidations {
    * @return {object} response object
    */
   static validateAddCaontributorToTodolist(req, res, next) {
+    const { currentUser } = req.currentUser;
     if (isInValidField(req.body.username)) {
       return apiResponse(
         res, 400,
@@ -61,12 +66,14 @@ export default class TodoListValidations {
     } else if (isInValidField(req.params.todoId) ||
       req.params.todoId.length !== 24) {
       return apiResponse(res, 400, 'Invalid todoId', false);
+    } else if (!moment(req.body.reminder).isValid()) {
+      return apiResponse(res, 400, 'Invalid date for reminder', false);
     }
     todoList.findOne({ _id: req.params.todoId }, (err, todolist) => {
       if (todolist) {
-        if (todolist.creatorId !== req.currentUser.currentUser._id) {
+        if (todolist.creatorId !== currentUser._id) {
           return apiResponse(
-            res, 401,
+            res, 403,
             'you are unthorized to add a contributor', false
           );
         } else if (todolist.collaborators
@@ -96,11 +103,12 @@ export default class TodoListValidations {
    */
   static validateCreateTaskForTodolist(req, res, next) {
     const error = {};
-    if (isInValidField(req.body.taskName)) {
+    const { currentUser } = req.currentUser;
+    if (isInValidField(req.body.name)) {
       error.name = 'Task name field is required';
-    } else if (!isText(req.body.taskName)) {
+    } else if (!isValidName(req.body.name)) {
       error.name = 'task names must be in letters';
-    } else if (req.body.taskName.length < 2) {
+    } else if (req.body.name.length < 2) {
       error.name = 'a character can not be a name of a task';
     } else if (isInValidField(req.body.priority)) {
       error.name = 'priority field is required';
@@ -121,9 +129,16 @@ export default class TodoListValidations {
         return apiResponse(res, 500, 'Internal server error', false);
       }
       if (todolist) {
+        if (currentUser._id.toString()
+        != todolist.creatorId.toString()) {
+          return apiResponse(
+            res, 403,
+            'You did not have the permision to perform this operation', false
+          );
+        }
         let isTaken = false;
         todolist.tasks.forEach((task) => {
-          if (task.taskName.toLowerCase() === req.body.taskName.toLowerCase()) {
+          if (task.taskName.toLowerCase() === req.body.name.toLowerCase()) {
             isTaken = true;
           }
         });
@@ -147,6 +162,7 @@ export default class TodoListValidations {
    */
   static validateUpdateTaskInTodolist(req, res, next) {
     const error = {};
+    const { currentUser } = req.currentUser;
     if (isInValidField(req.params.todoId) ||
       req.params.todoId.length !== 24) {
       error.name = 'Invalid todoId';
@@ -163,13 +179,22 @@ export default class TodoListValidations {
       }
       if (todolist) {
         let hasValidTaskId = false;
+        let taskToBeUpdated;
         todolist.tasks.forEach((task) => {
           if (task._id == req.params.taskId) {
             hasValidTaskId = true;
+            taskToBeUpdated = task;
           }
         });
         if (!hasValidTaskId) {
           return apiResponse(res, 404, 'task not found', false);
+        }
+        if (currentUser._id !== todolist.creatorId ||
+          taskToBeUpdated.assignTo !== currentUser.userName) {
+          return apiResponse(
+            res, 403,
+            'user not permitted to perform this operation', false
+          );
         }
         next();
       } else {

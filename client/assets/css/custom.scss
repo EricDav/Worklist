@@ -17,7 +17,7 @@
 }
 .image {
   min-height: 100vh;
-  background-image: url("https://imgur.com/ERyVjgo.jpg");
+  background-image: url("http://res.cloudinary.com/dbczzmftw/image/upload/v1510063139/pjtwjtzapmfpwhssyu3n.jpg");
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -58,27 +58,10 @@
 		    color: #fff;
 		    font-weight: 300;
 		    padding: 10px;
-		}
-.side-nav .user-view, .side-nav .userView {
-		    position: relative;
-		    padding: 32px 32px 0;
-		    margin-bottom: 8px;
-		}
-.side-nav .user-view .background, .side-nav .userView .background {
-		    overflow: hidden;
-		    position: absolute;
-		    top: 0;
-		    right: 0;
-		    bottom: 0;
-		    left: 0;
-		    z-index: -1;
-		}
+}
 		.noHover{
     pointer-events: none;
     padding-right: 10px;
-}
-.nav {
-	width: 100% !important
 }
 
 .searchButton {
@@ -116,9 +99,6 @@
 body {
     background-color: white;
     }
-    // .body-container {
-    // //   background-color: rgba(0, 0, 0, 0.51);
-    // }
     .authentication {
       margin-right: 50%
     }
@@ -185,10 +165,9 @@ body {
     }
     #email-list {
         position: fixed;
-        min-height: 100%;
-        max-height: 100%;
-        margin-top: 0px;
+        height: 100%;
         overflow: scroll;
+        margin-top: -40px;
     }
     .model-email-content {
     padding: 24px;
@@ -244,19 +223,6 @@ body {
         white-space: pre-line;
     }
 
-    .spa {
-        margin-left: 20px !important;
-        font-size: 2px;
-    }
-
-    .groupBut {
-        height: 30px;
-        width: 160px;
-        font-size: 13px;
-        text-align: left;
-        background-color: purple !important;
-        margin-left: 2px;
-    }
    #but {
         height: 30px;
         width: 40px;
@@ -276,10 +242,6 @@ body {
     background-color: green;
     position: absolute;
     margin-right: 5px;
-}
-.viewers {
-    font-size: 12px;
-    color: purple;
 }
 .email-content-wrap {
     margin-top: auto;
@@ -308,12 +270,6 @@ body {
     position: relative;
    margin-right: 0px; 
 }
-.side {
-    margin-top: 7px !important;
-    padding: 0px !important;
-    border: 5px white;
-    background-color: white;
-}
 .side1 {
     margin-top: -7px;
     margin-left: 0px;
@@ -324,55 +280,30 @@ body {
     border-radius: 5px;
 }
 
-.footer {
-    position: fixed;
-    bottom: 0px;
-    width:100%;
-    height: 60px;
-}
 #reset {
-    margin-top: 0%;
-}
-.Message {
-width: 55% !important;
-}
-.Imessage {
-width: 80% !important;
-}
-
-.drop {
-   background-color:#c24141;
+    margin-top: -5px;
+    margin-bottom: -20px;
+    height: 93vh;
 }
 #piority {
     position: relative;
     float: left;
+}
+#prior {
+  position: relative;
+  float: left;
+  margin-left: 20px;
+}
+#contain {
+    width: 250px;
 }
 .form {
     margin-top: 30px;
     position: center;
     height: 30%;
 }
-
-.feed {
-    margin-top: 0px;
-    margin-bottom: 20px;
-}
-.seen {
-    color: #35aeeb;
-    border: solid 1px #35aeeb;
-    font-size: 10px;
-    padding: 2px;
-    border-radius: 5px;
-}
 .numSeen {
     color:black;
-}
-.firstName {
-    color: white;
-    font-size: 1.5rem;
-    text-align: center;
-    margin-top: 10px;
-    font-weight: 300
 }
 
 .minimizeSeen {
@@ -383,4 +314,205 @@ width: 80% !important;
 }
 #forget-password {
     margin-top: 40px;
+}
+.first {
+  touch-action: pan-y;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+.second {
+    text-decoration: none;
+}
+.third {
+    text-decoration: line-through;
+}
+
+#task-card .task-cat {
+    padding: 2px 4px;
+    color: #fff;
+    margin-left: 37px;
+    font-weight: 300;
+    font-size: 0.8rem;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background-clip: padding-box;
+}
+.task-cat {
+    padding: 2px 4px;
+    color: #fff;
+    font-weight: 300;
+    font-size: 0.8rem;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background-clip: padding-box;
+}
+ .forth {
+  white-space: nowrap;
+  opacity: 1;
+  left: 888.609px;
+  position: absolute;
+  top: 64px;
+  display: none;
+ }
+ #notifications-dropdown li {
+    padding: 8px 16px;
+    font-size: 1rem;
+        white-space: nowrap;
+    opacity: 1;
+    left: 888.609px;
+    position: absolute;
+    top: 64px;
+    display: none;
+}
+.taskDetail {
+ position: relative;
+ float: left !important;
+ padding-top: 80px;
+}
+.head1 {
+    position: relative;
+    float: left;
+}
+#head2 {
+    position: relative;
+    float: right !important;
+    margin-top: -30px !important;
+    margin-right: -10px !important;
+}
+
+.height {
+    height: 110% !important;
+    position: fixed;
+    margin-top: 0px !important;
+}
+.pos {
+    position: fixed !important;
+     float: right !important;
+     left: 88% !important;
+     margin-top: 5px;
+     float: right !important;
+}
+.pos1 {
+    position: fixed !important;
+     float: right !important;
+     left: 54% !important;
+     margin-top: 5px;
+     float: right !important;
+}
+#low {
+    margin-top: 40px;
+}
+
+.close i {
+    margin-top: -0px;
+    font-size: 2em;
+    outline: none;
+    
+}
+.header {
+  width: 104%;
+  height: 100px;
+  position: relative;
+  background-color: white;
+  margin-top: -30px;
+  margin-left: -10px;
+  margin-right: 0px;
+   z-index: 10;
+}
+
+.collaborators {
+  margin-top: 20px;
+}
+.details {
+    margin-top: -20px;
+}
+.back {
+    background-color: #3f51b5;
+}
+.li {
+    width: 150px !important;
+    position: absolute;
+    display: none;
+}
+.taskboard {
+    width: 200px !important;
+    position: absolute !important;
+    top: 15px !important;
+    display: none;
+    font-size: 5px  !important;
+}
+
+
+  @media only screen and (min-width:  992px) {
+   .side {
+    width: 25% !important;
+   }
+}
+.move {
+    margin-top: -10px !important;
+}
+.wid {
+    height: 1px !important;
+}
+.bottom {
+    float: left;
+    position: relative;
+    padding-top: 60px;
+    margin-left: 100px;
+    font-size: 20px;
+}
+  @media only screen and (max-width:  600px) {
+   .bot {
+    font-size: 13px !important;
+   }
+}
+
+  @media only screen and (max-width:  400px) {
+   .smallDate {
+       font-size: 12px !important;
+   }
+   .smallStatus {
+       font-size: 11px !important;
+   }
+}
+ @media only screen and (max-width:  350px)  {
+   .bot {
+    font-size: 11px !important;
+   }
+ .smallDate {
+       font-size: 11px !important;
+   }
+.smallStatus {
+       font-size: 10px !important;
+   }
+}
+
+#tasks {
+  margin-top: 10px;
+  overflow: auto;
+  max-height: 81vh;
+  min-height: 81vh;
+
+}
+.drop {
+    margin-top: -50px !important;
+}
+#button {
+  margin-top: -20px;
+  width: 20px;
+}
+  #signup-page {
+     margin-top: 12% !important;
+  }
+
+@media only screen and (min-width: 600px) and (max-width: 992) {
+  .signup-page {
+     margin-top: 20% !important;
+  }
+}
+.reminder {
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }

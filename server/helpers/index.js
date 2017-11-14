@@ -143,18 +143,9 @@ export const isValidEmail = (email) => {
   return true;
 };
 
-export const isValidName = (name) => {
-  if (isInValidField(name)) {
-    return false;
-  } else if (!isText(name) || name.length < 5) {
-    return false;
-  }
-  return true;
-};
-
 /**
    * @description generate secret code to be sent to forgot password users
-   * 
+   *
    * @return  {string} random secret code
 */
 
@@ -204,15 +195,17 @@ export const mailSender = (
     }
   });
   const mailOptions = {
-    from: `PostIt <${process.env.EMAIL}`,
+    from: `Worklist <${process.env.EMAIL}`,
     to: req.body.email,
-    subject: 'PostIt',
+    subject: 'Worklist',
     text: message
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      return apiResponse(res, 500,
-        'An error occured while sending mail', false);
+      return apiResponse(
+        res, 500,
+        'An error occured while sending mail', false
+      );
     }
     return apiResponse(res, 200, null, true, {
       success: true,
@@ -222,3 +215,53 @@ export const mailSender = (
     });
   });
 };
+
+export const isValidName = (name) => {
+  const value = name.trim();
+  if (name.length === 0) {
+    return false;
+  }
+  for (let i = 0; i < value.length; i += 1) {
+    if (!(/[0-9]/.test(value[i]) || /[a-z A-Z]/.test(value[i]))) {
+      return false;
+    }
+  }
+  if (isDigit(value)) {
+    return false;
+  }
+  return true;
+};
+
+export const sendReminders = (message, email) => {
+  const transporter = nodemailer.createTransport({
+    service: process.env.SERVICE,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.GMAIL_PASSWORD
+    }
+  });
+  const mailOptions = {
+    from: `Worklist <${process.env.EMAIL}`,
+    to: email,
+    subject: 'Worklist',
+    html: message
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+};
+
+export const createMessage = (name, todoname, task, dueDate, isEmail) => {
+  const appMessage = 'The task you are assign to, ';
+  const message = `<h3 style="color: indigo">Hi ${name}</h3><br/>
+    <div style="font-size: 15px">This is to remind you that the ${task}
+    task you are assign to<br/> in
+    ${todoname} todolist is yet to be completed and will be due on
+    ${dueDate}<br/>
+    <br/>
+    <i>Thanks.</i>`;
+  return [message, appMessage];
+};
+

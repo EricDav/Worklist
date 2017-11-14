@@ -14,7 +14,7 @@ export default class Authorization {
  *  if a user has a token or a valid token
  *
  * @param  {object} req request object
- * @param  {object} res response object
+ * @param  {Object} res response object
  * @param  {Function} next callback
  *
  * @return {object} success or failure message.

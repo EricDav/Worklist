@@ -20,11 +20,16 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  imageUrl: {
+    type: String,
+    unique: false,
+    default: 'http://res.cloudinary.com/dbczzmftw/image/upload/v1509127904/pojdk9ajmdgase3esgg2.png'
   }
 }, {
   timestamps: true
 });
-
-const user = mongoose.model('User', userSchema);
+userSchema.index({ userName: 'text' });
+const user = mongoose.model('user', userSchema);
 
 export default user;

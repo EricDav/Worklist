@@ -3,10 +3,10 @@ import jwt from 'jsonwebtoken';
 
 import setAuthorizationToken from '../utils/setAuthorizationToken';
 import { SET_CURRENT_USER, SET_ERROR_MESSAGE,
-  SET_IS_API_CALL_IN_PROGRESS, SET_HOME_PAGE_FORM } from './ActionTypes';
+  API_CALL_IN_PROGRESS, SET_HOME_PAGE_FORM } from './ActionTypes';
 
 /**
- * @description action for user current user information in store
+ * @description set the current user
  *
  * @param  {object} user current user object
  *
@@ -26,9 +26,9 @@ export function setCurrentUser(user) {
  *
  * @return {object} dispatch object
  */
-export function setIsApiCallInProgress(status) {
+export function setIsApiCall(status) {
   return {
-    type: SET_IS_API_CALL_IN_PROGRESS,
+    type: API_CALL_IN_PROGRESS,
     status
   };
 }
@@ -55,7 +55,9 @@ export function setError(message) {
  * @return {object} dispatch object
  */
 export function showHomePageForm(formNumber) {
-  localStorage.setItem('homePageNum', formNumber);
+  if (formNumber < 4) {
+    localStorage.setItem('homePageNum', formNumber);
+  }
   return dispatch => dispatch({
     type: SET_HOME_PAGE_FORM,
     formNumber
@@ -71,13 +73,20 @@ export function showHomePageForm(formNumber) {
  */
 export function userSignupRequest(payload) {
   return (dispatch) => {
-    dispatch(setIsApiCallInProgress(true));
+    dispatch({
+      type: API_CALL_IN_PROGRESS,
+      status: true
+    });
     axios.post('/api/v1/users', payload).then((res) => {
       const { token } = res.data;
       localStorage.setItem('jwtToken', token);
       setAuthorizationToken(token);
       dispatch(setCurrentUser(jwt.decode(token)));
-      dispatch(setIsApiCallInProgress(false));
+      dispatch({
+        type: API_CALL_IN_PROGRESS,
+        status: false
+      });
+      window.location = '/dashboard';
     }).catch(({ response }) => {
       const { message } = response.data.error;
       if (message) {
@@ -86,7 +95,10 @@ export function userSignupRequest(payload) {
         dispatch(setError(`An unexpected error occured.
          You can check your internet connection`));
       }
-      dispatch(setIsApiCallInProgress(false));
+      dispatch({
+        type: API_CALL_IN_PROGRESS,
+        status: false
+      });
     });
   };
 }
@@ -100,14 +112,21 @@ export function userSignupRequest(payload) {
  */
 export function userSigninRequest(payload) {
   return (dispatch) => {
-    dispatch(setIsApiCallInProgress(true));
+    dispatch({
+      type: API_CALL_IN_PROGRESS,
+      status: true
+    });
     axios.post('/api/v1/users/signin', payload)
       .then((res) => {
         const { token } = res.data;
         localStorage.setItem('jwtToken', token);
         setAuthorizationToken(token);
         dispatch(setCurrentUser(jwt.decode(token)));
-        dispatch(setIsApiCallInProgress(false));
+        dispatch({
+          type: API_CALL_IN_PROGRESS,
+          status: false
+        });
+        window.location = 'dashboard';
       })
       .catch(({ response }) => {
         const { message } = response.data.error;
@@ -117,7 +136,28 @@ export function userSigninRequest(payload) {
           dispatch(setError(`An unexpected error occured.
          You can check your internet connection`));
         }
-        dispatch(setIsApiCallInProgress(false));
+        dispatch({
+          type: API_CALL_IN_PROGRESS,
+          status: false
+        });
       });
+  };
+}
+
+/**
+ * @description Sign out user by removing jwt token from local storage
+ *
+ * @return {object} dispatch object
+ */
+export function logout() {
+  return (dispatch) => {
+    localStorage.removeItem('jwtToken');
+    setAuthorizationToken(false);
+    dispatch(setCurrentUser({
+      currentUser: {
+        userName: '',
+        fullName: ''
+      }
+    }));
   };
 }

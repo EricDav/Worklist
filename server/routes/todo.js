@@ -20,11 +20,14 @@ todo.post(
   TodoListValidations.validateCreateTaskForTodolist,
   TodoListControllers.addTaskToTodoList
 );
-todo.post('/api/v1/todos/:todoId/contributors', Authorization.verifyToken,
+
+todo.post(
+  '/api/v1/todos/:todoId/contributors', Authorization.verifyToken,
   TodoListValidations.validateAddCaontributorToTodolist,
   TodoListControllers.addContributorToTodolist
 );
-todo.patch('/api/v1/todos/:todoId/tasks/:taskId', Authorization.verifyToken,
+todo.patch(
+  '/api/v1/todos/:todoId/tasks/:taskId', Authorization.verifyToken,
   TodoListValidations.validateUpdateTaskInTodolist,
   TodoListControllers.updateTaskInTodolist
 );

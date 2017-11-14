@@ -8,20 +8,22 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
+    assignTo: {
+      type: String,
+      required: true,
+    },
     priority: {
       type: String,
       required: true
     },
     done: {
       type: Boolean,
-      required: true,
       default: false,
     },
     dueDate: {
       type: Date,
       required: true,
-      default: Date.now()
-    }
+    },
   },
   {
     timestamps: true

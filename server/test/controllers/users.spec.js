@@ -6,19 +6,19 @@ import jwt from 'jsonwebtoken';
 import expect from 'expect';
 
 import app from '../../app';
-import user from '../../models/user';
+import user from '../../models/User';
 
 const server = supertest.agent(app);
-//const regUserData = 'bearer ';
-  before((done) => {
-        user.remove({}, (err) => {
-           if (err) return done(err);
-        });
-        done();
+let regUser = 'bearer ';
+let secretCode;
+
+before((done) => {
+  user.remove({}, (err) => {
+    if (err) return done(err);
   });
+  done();
+});
 describe('User API', () => {
-//   let userData;
-//   let regUserData;
   describe('Create User', () => {
     it('should create new user', (done) => {
       server
@@ -35,6 +35,7 @@ describe('User API', () => {
         .expect('Content-Type', /json/)
         .end((err, res) => {
           const currentUser = jwt.decode(res.body.token);
+          regUser += res.body.token;
           res.status.should.equal(201);
           res.body.success.should.equal(true);
           expect(currentUser.currentUser.email).toEqual('dad2@we.com');
@@ -131,7 +132,7 @@ describe('User API', () => {
           .end((err, res) => {
             expect(res.status).toEqual(400);
             expect(res.body.success).toEqual(false);
-            expect(res.body.error.email)
+            expect(res.body.error.message)
               .toEqual('Invalid email address');
             done(err);
           });
@@ -150,7 +151,7 @@ describe('User API', () => {
           .expect(400)
           .end((err, res) => {
             expect(res.body.success).toEqual(false);
-            expect(res.body.error.password)
+            expect(res.body.error.message)
               .toEqual(`Weak password. Password should contain
         at least 8 characters including at least one number and alphabet`);
             done(err);
@@ -161,18 +162,17 @@ describe('User API', () => {
     it('should not create new user without an email', (done) => {
       server
         .post('/api/v1/users')
-        .send(
-          {
-            userName: 'jonathan',
-            password: 'password123',
-            fullName: 'mrincredible'
-          })
+        .send({
+          userName: 'jonathan',
+          password: 'password123',
+          fullName: 'mrincredible'
+        })
         .expect('Content-Type', /json/)
         .end((err, res) => {
           expect(res.status).toEqual(400);
           expect(res.body.success).toEqual(false);
-          expect(res.body.error.email)
-            .toEqual('This field is required');
+          expect(res.body.error.message)
+            .toEqual('email field is required');
           if (err) return done(err);
           done();
         });
@@ -184,14 +184,14 @@ describe('User API', () => {
         server
           .post('/api/v1/users/signin')
           .send({
-              userName: 'pychat2',
-              password: 'david1996'
+            userName: 'pychat2',
+            password: 'david1996'
           })
-          .end((err, res) => {1
+          .end((err, res) => {
             expect(res.status).toEqual(200);
             expect(res.body.success).toEqual(true);
             expect(jwt.decode(res.body.token).currentUser.userName)
-            .toEqual('pychat2')
+              .toEqual('pychat2');
             done();
           });
       });
@@ -199,8 +199,8 @@ describe('User API', () => {
       it('should not allow unregistered users to login', (done) => {
         server.post('/api/v1/users/signin')
           .send({
-              userName: 'I am not registered',
-              password: 'Iamnot'
+            userName: 'I am not registered',
+            password: 'Iamnot'
           })
           .end((err, res) => {
             expect(res.status).toEqual(401);
@@ -222,7 +222,7 @@ describe('User API', () => {
       });
 
       it(
-'should not allow login when username or password is not provided',
+        'should not allow login when username or password is not provided',
         (done) => {
           server.post('/api/v1/users/signin')
             .send({ })
@@ -233,60 +233,263 @@ describe('User API', () => {
               done();
             });
         }
-);
-    it('should not all user to signin with google with an invalid email', (done) => {
-      server
-        .post('/api/v1/users/google-signin')
-        .send(
-          {
-            email: 'ade@.c'
-          })
-        .expect('Content-Type', /json/)
-        .end((err, res) => {
-          expect(res.status).toEqual(400);
-          expect(res.body.success).toEqual(false);
-          expect(res.body.error.message)
-            .toEqual('Invalid email');
-          if (err) return done(err);
-          done();
-        });
-    });
-    it(`should return new user when a
+      );
+      it(
+        'should not all user to signin with google with an invalid email',
+        (done) => {
+          server
+            .post('/api/v1/users/google-signin')
+            .send({
+              email: 'ade@.c'
+            })
+            .expect('Content-Type', /json/)
+            .end((err, res) => {
+              expect(res.status).toEqual(400);
+              expect(res.body.success).toEqual(false);
+              expect(res.body.error.message)
+                .toEqual('Invalid email');
+              if (err) return done(err);
+              done();
+            });
+        }
+      );
+      it(`should return new user when a
     google user wants to signin with google for the first time`, (done) => {
-      server
-        .post('/api/v1/users/google-signin')
-        .send(
-          {
-            email: 'ade@me.com'
-          })
-        .expect('Content-Type', /json/)
-        .end((err, res) => {
-          expect(res.status).toEqual(200);
-          expect(res.body.success).toEqual(true);
-          expect(res.body.data)
-            .toEqual('New user');
-          if (err) return done(err);
-          done();
+          server
+            .post('/api/v1/users/google-signin')
+            .send({
+              email: 'ade@me.com'
+            })
+            .expect('Content-Type', /json/)
+            .end((err, res) => {
+              expect(res.status).toEqual(200);
+              expect(res.body.success).toEqual(true);
+              expect(res.body.data)
+                .toEqual('New user');
+              if (err) return done(err);
+              done();
+            });
         });
-    });
-        it(`should allow a user to sign in with google`, (done) => {
-      server
-        .post('/api/v1/users/google-signin')
-        .send(
-          {
+      it('should allow a user to sign in with google', (done) => {
+        server
+          .post('/api/v1/users/google-signin')
+          .send({
             email: 'dad2@we.com'
           })
-        .expect('Content-Type', /json/)
-        .end((err, res) => {
-          expect(res.status).toEqual(200);
-          expect(res.body.success).toEqual(true);
-          expect(jwt.decode(res.body.token).currentUser
-          .email)
-            .toEqual('dad2@we.com');
-          if (err) return done(err);
-          done();
-        });
+          .expect('Content-Type', /json/)
+          .end((err, res) => {
+            expect(res.status).toEqual(200);
+            expect(res.body.success).toEqual(true);
+            expect(jwt.decode(res.body.token).currentUser
+              .email)
+              .toEqual('dad2@we.com');
+            if (err) return done(err);
+            done();
+          });
+      });
     });
+  });
+  describe('Update users', () => {
+    describe('Put /api/v1/users', () => {
+      it('should update user fullName successfully', (done) => {
+        server
+          .put('/api/v1/users')
+          .set('authorization', regUser)
+          .send({
+            fullName: 'Updated Name',
+          })
+          .end((err, res) => {
+            const updatedUser = jwt.decode(res.body.token);
+            res.status.should.equal(200);
+            res.body.success.should.equal(true);
+            expect(updatedUser.currentUser.fullName)
+              .toEqual('Updated Name');
+            done();
+          });
+      });
+
+      it('should update user email successfully', (done) => {
+        server
+          .put('/api/v1/users')
+          .set('authorization', regUser)
+          .send({
+            email: 'updatedemail@me.com',
+          })
+          .end((err, res) => {
+            const updatedUser = jwt.decode(res.body.token);
+            res.status.should.equal(200);
+            res.body.success.should.equal(true);
+            expect(updatedUser.currentUser.email)
+              .toEqual('updatedemail@me.com');
+            done();
+          });
+      });
+      it('should throw error if email to be updated is invalid', (done) => {
+        server
+          .put('/api/v1/users')
+          .set('authorization', regUser)
+          .send({
+            email: 'updatedemail.com',
+          })
+          .end((err, res) => {
+            expect(res.status).toEqual(400);
+            expect(res.body.success).toEqual(false);
+            expect(res.body.error.message).toEqual('Invalid email');
+            done();
+          });
+      });
+      it('should throw error if email to be updated has been taken', (done) => {
+        server
+          .put('/api/v1/users')
+          .set('authorization', regUser)
+          .send({
+            email: 'updatedemail@me.com',
+          })
+          .end((err, res) => {
+            expect(res.status).toEqual(409);
+            expect(res.body.success).toEqual(false);
+            expect(res.body.error.message).toEqual('email already exist');
+            done();
+          });
+      });
+      it('should throw error if fullName to be updated is invalid', (done) => {
+        server
+          .put('/api/v1/users')
+          .set('authorization', regUser)
+          .send({
+            fullName: '56574647',
+          })
+          .end((err, res) => {
+            expect(res.status).toEqual(400);
+            expect(res.body.success).toEqual(false);
+            expect(res.body.error.message).toEqual('Invalid fullName');
+            done();
+          });
+      });
     });
+  });
+  describe('Get User', () => {
+    it(
+      'should retrieve users that matches a query parameter successfully',
+      (done) => {
+        server
+          .get('/api/v1/users?searchParam=a')
+          .set('Connection', 'keep alive')
+          .set('authorization', regUser)
+          .set('Content-Type', 'application/json')
+          .end((err, res) => {
+            res.body.success.should.equal(true);
+            expect(res.status).toEqual(200);
+            expect(res.body.data.length).toEqual(2);
+            expect(res.body.data[1].userName).toEqual('pychat2');
+            expect(res.body.data[0].userName).toEqual('bayo');
+            expect(res.body.data[0].fullName).toEqual('Ade Bayo');
+            expect(res.body.data[0].email).toEqual('house@gmail.com');
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
+    it(
+      'should throw error for invalid parameters',
+      (done) => {
+        server
+          .get('/api/v1/users?searchParam=%#')
+          .set('Connection', 'keep alive')
+          .set('authorization', regUser)
+          .set('Content-Type', 'application/json')
+          .end((err, res) => {
+            expect(res.status).toEqual(400);
+            res.body.success.should.equal(false);
+            expect(res.body.error.message).toEqual('Invalid query parameter');
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
+  });
+  describe('Forget Paswword', () => {
+    it(
+      'should not send secret code for invalid email',
+      (done) => {
+        server
+          .post('/api/v1/users/send-secret-code')
+          .set('Connection', 'keep alive')
+          .set('Content-Type', 'application/json')
+          .send({ email: 'alienyidmail.com' })
+          .end((err, res) => {
+            res.body.success.should.equal(false);
+            expect(res.status).toEqual(400);
+            expect(res.body.error.message)
+              .toEqual('Invalid email');
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
+    it(
+      'should not reset user password if password is not provided',
+      (done) => {
+        server
+          .patch('/api/v1/users/reset-password')
+          .set('Connection', 'keep alive')
+          .set('Content-Type', 'application/json')
+          .send({
+            hash: secretCode
+          })
+          .end((err, res) => {
+            res.body.success.should.equal(false);
+            expect(res.status).toEqual(400);
+            expect(res.body.error.message)
+              .toEqual('Invalid password');
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
+    it(
+      'should not reset user password if password is not up to 8 characters',
+      (done) => {
+        server
+          .patch('/api/v1/users/reset-password')
+          .set('Connection', 'keep alive')
+          .set('Content-Type', 'application/json')
+          .send({
+            password: 'thyu',
+            hash: secretCode
+          })
+          .end((err, res) => {
+            res.body.success.should.equal(false);
+            expect(res.status).toEqual(400);
+            expect(res.body.error.message)
+              .toEqual(`password should be up to
+      8 characters including alphabet and number`);
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
+    it(
+      'should throw error if secret code is invalid',
+      (done) => {
+        server
+          .patch('/api/v1/users/reset-password')
+          .set('Connection', 'keep alive')
+          .set('Content-Type', 'application/json')
+          .send({
+            password: 'david1963',
+            email: 'dad2@we.com',
+            hash: 'Iaminvalid'
+          })
+          .end((err, res) => {
+            res.body.success.should.equal(false);
+            expect(res.status).toEqual(400);
+            expect(res.body.error.message)
+              .toEqual('Invalid code');
+            if (err) return done(err);
+            done();
+          });
+      }
+    );
   });
 });
