@@ -1,14 +1,14 @@
 import Croner from 'node-cron';
 import moment from 'moment';
 
-import reminder from '../models/reminder';
+import reminderLists from '../models/reminderLists';
 import { sendReminders, createMessage, apiResponse } from '../helpers';
 
 /**
  * class ReminderController
  * @class
  */
-export default class ReminderController {
+export default class ReminderControllers {
   /**
  * @description: determines whether a reminder needs a notification at a
  * particular moment
@@ -28,7 +28,7 @@ export default class ReminderController {
  * @return {void}
  */
   static sendNotification() {
-    reminder.find({}, (err, reminders) => {
+    reminderLists.find({}, (err, reminders) => {
       if (err) {
         return err;
       }
@@ -44,7 +44,6 @@ export default class ReminderController {
             moment(time).format('LLLL')
           );
           reminder.message = message[1];
-          // reminder.needReminder = false;
           reminder.save();
           sendReminders(message[0], reminder.email);
         });
@@ -61,9 +60,9 @@ export default class ReminderController {
  * @return {void}
  */
   static getReminders(req, res) {
-    const { currentUser } = req.currentUser;
-    reminder.find({
-      $and: [{ ownerId: currentUser._id }, {
+    const { currentUser } = req.decoded;
+    reminderLists.find({
+      $and: [{ ownerUsername: currentUser.userName }, {
         message: 'The task you are assign to, '
       }, { needReminder: true }]
     }, (err, reminders) => {
@@ -73,7 +72,7 @@ export default class ReminderController {
           'An error occured while retrieving reminders', false
         );
       }
-      return apiResponse(res, 200, null, true, reminders);
+      return apiResponse(res, 200, 'reminders', true, reminders);
     });
   }
   /**

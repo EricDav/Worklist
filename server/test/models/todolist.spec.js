@@ -1,7 +1,6 @@
-import chai from 'chai';
 import expect from 'expect';
 
-import todoList from '../../models/todoList';
+import todoLists from '../../models/todoLists';
 
 let todoId;
 const task = {
@@ -13,7 +12,7 @@ const task = {
 
 describe('Todolist Model', () => {
   it('should be able to save a todolist', (done) => {
-    const newTodolist = todoList({
+    const newTodolist = todoLists({
       name: 'postit',
       internalName: 'POSTIT',
       creatorId: '59eaf52946198d2a65cd4400'
@@ -28,7 +27,7 @@ describe('Todolist Model', () => {
     });
   });
   it('should be able to find saved todolist', (done) => {
-    todoList.findById(todoId, (err, savedTodolist) => {
+    todoLists.findById(todoId, (err, savedTodolist) => {
       expect(savedTodolist.name).toEqual('postit');
       expect(savedTodolist.internalName).toEqual('POSTIT');
       expect(savedTodolist.creatorId).toEqual('59eaf52946198d2a65cd4400');
@@ -37,7 +36,7 @@ describe('Todolist Model', () => {
     });
   });
   it('should not save a todolist without a name', (done) => {
-    const newTodolist = todoList({
+    const newTodolist = todoLists({
       internalName: 'POSTIT',
       creatorId: '59eaf52946198d2a65cd4400'
     });
@@ -49,7 +48,7 @@ describe('Todolist Model', () => {
     });
   });
   it('should set default fields', (done) => {
-    todoList.findById(todoId, (err, todolist) => {
+    todoLists.findById(todoId, (err, todolist) => {
       expect(todolist.tasks.length).toEqual(0);
       expect(todolist.collaborators.length).toEqual(0);
       if (err) return done(err);
@@ -57,7 +56,7 @@ describe('Todolist Model', () => {
     });
   });
   it('should be able to add a task to a todolist', (done) => {
-    todoList.findById(todoId, (err, todolist) => {
+    todoLists.findById(todoId, (err, todolist) => {
       todolist.tasks.push(task);
       todolist.save((err, updatedTodolist) => {
         expect(updatedTodolist.tasks.length).toEqual(1);
@@ -70,7 +69,7 @@ describe('Todolist Model', () => {
     });
   });
   it('should set default fields for task added to todolist', (done) => {
-    todoList.findById(todoId, (err, todolist) => {
+    todoLists.findById(todoId, (err, todolist) => {
       expect(todolist.tasks[0].done).toEqual(false);
       if (err) return done(err);
       done();

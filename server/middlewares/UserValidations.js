@@ -1,7 +1,7 @@
 import { isInValidField, isDigit, isValidName,
   isText, apiResponse, isValidEmail, isValidPassword } from '../helpers';
 
-import User from '../models/User';
+import userLists from '../models/userLists';
 /**
  * class UserValidation: controls all user validations
  * @class
@@ -21,21 +21,21 @@ export default class UserValidations {
       email, userName, fullName, password
     } = req.body;
     if (email === null || email === undefined) {
-      email = ''
+      email = '';
     }
     if (userName === null || userName === undefined) {
-      userName = ''
+      userName = '';
     }
     if (password === null || password=== undefined) {
-     password = ''
+      password = '';
     }
-    if (isInValidField(userName) && isInValidField(userName.trim())) {
+    if (isInValidField(userName) || isInValidField(userName.trim())) {
       return apiResponse(res, 400, 'username field is required', false);
     }
     if (isInValidField(email) || isInValidField(email.trim())) {
       return apiResponse(res, 400, 'email field is required', false);
     }
-    if (isInValidField(fullName) && isInValidField(fullName.trim())) {
+    if (isInValidField(fullName) || isInValidField(fullName.trim())) {
       return apiResponse(res, 400, 'fullname field is required', false);
     }
     if (
@@ -75,7 +75,6 @@ export default class UserValidations {
    */
   static updateUserValidation(req, res, next) {
     const updatedField = {};
-    const error = {};
     if (req.body.fullName) {
       if (isValidName(req.body.fullName)) {
         updatedField.fullName = req.body.fullName;
@@ -85,7 +84,7 @@ export default class UserValidations {
     }
     if (req.body.email) {
       if (isValidEmail(req.body.email)) {
-        User.findOne({ email: req.body.email }, (err, updatedUser) => {
+        userLists.findOne({ email: req.body.email }, (err, updatedUser) => {
           if (err) {
             return apiResponse(res, 500, 'Internal server error', false);
           }

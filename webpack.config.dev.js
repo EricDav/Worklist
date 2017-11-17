@@ -1,5 +1,6 @@
 import path from 'path';
 import webpack from 'webpack';
+import dotenvWebpack from 'dotenv-webpack';
 
 module.exports = {
   entry: './client/index.js',
@@ -16,6 +17,7 @@ module.exports = {
     Materialize: 'Materialize'
   },
   plugins: [
+    new dotenvWebpack({ systemvars: true }),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
@@ -28,14 +30,20 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /.jsx?$/,
-        enforce: 'pre',
-        use: [
-          {
-            loader: 'babel-loader'
+        test: /\.(jsx|js)$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              'react',
+              ['es2015', {
+                targets: {
+                  browsers: ['last 2 versions']
+                }
+              }]
+            ]
           }
-        ],
-        include: path.join(__dirname, '/client'),
+        },
         exclude: /node_modules/,
       },
       { test: /(\.s?css)$/,

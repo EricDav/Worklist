@@ -1,5 +1,5 @@
-import todoList from '../models/todoList';
-import reminder from '../models/reminder';
+import todoLists from '../models/todoLists';
+import reminderLists from '../models/reminderLists';
 import { apiResponse } from '../helpers';
 
 /**
@@ -16,17 +16,17 @@ export default class TodoListControllers {
  * @return {Object} response containing the created todoList
  */
   static createTodoList(req, res) {
-    const { currentUser } = req.currentUser;
-    todoList.create({
+    const { currentUser } = req.decoded;
+    todoLists.create({
       internalName: req.body.name.toUpperCase(),
       name: req.body.name,
-      collaborators: [req.currentUser.currentUser.userName],
+      collaborators: [req.decoded.currentUser.userName],
       creatorId: currentUser._id
     }, (err, todo) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
-      return apiResponse(res, 201, null, true, todo);
+      return apiResponse(res, 201, 'todolist', true, todo);
     });
   }
   /**
@@ -42,8 +42,8 @@ export default class TodoListControllers {
     const {
       name, priority, date, assignTo
     } = req.body;
-    const { currentUser } = req.currentUser;
-    todoList.findById(req.params.todoId, (err, todo) => {
+    const { currentUser } = req.decoded;
+    todoLists.findById(req.params.todoId, (err, todo) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
@@ -53,12 +53,12 @@ export default class TodoListControllers {
         dueDate: date,
         assignTo
       });
-      reminder.create({
+      reminderLists.create({
         todoId: req.params.todoId,
         todoName: todo.name,
         taskName: name,
         dueDate: date,
-        ownerId: currentUser._id,
+        ownerUsername: assignTo,
         name: currentUser.fullName,
         email: currentUser.email,
         time: req.body.reminder,
@@ -73,7 +73,7 @@ export default class TodoListControllers {
           if (err) {
             return apiResponse(res, 500, 'Internal server error', false);
           }
-          return apiResponse(res, 200, null, true, updatedTodo);
+          return apiResponse(res, 200, 'todolist', true, updatedTodo);
         });
       });
     });
@@ -88,7 +88,7 @@ export default class TodoListControllers {
  * @return {Object} response containing the updated todo
  */
   static addContributorToTodolist(req, res) {
-    todoList.findById(req.params.todoId, (err, todo) => {
+    todoLists.findById(req.params.todoId, (err, todo) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
@@ -97,7 +97,7 @@ export default class TodoListControllers {
         if (err) {
           return apiResponse(res, 500, 'Internal server error', false);
         }
-        return apiResponse(res, 200, null, true, updatedTodo);
+        return apiResponse(res, 200, 'todolist', true, updatedTodo);
       });
     });
   }
@@ -111,8 +111,8 @@ export default class TodoListControllers {
  * @return {Object} response containing the updated todo
  */
   static getTodolist(req, res) {
-    const { currentUser } = req.currentUser;
-    todoList.find({
+    const { currentUser } = req.decoded;
+    todoLists.find({
       collaborators: {
         $in: [currentUser.userName]
       }
@@ -120,7 +120,7 @@ export default class TodoListControllers {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
-      return apiResponse(res, 200, null, true, todolists);
+      return apiResponse(res, 200, 'todolists', true, todolists);
     });
   }
   /**
@@ -134,11 +134,11 @@ export default class TodoListControllers {
  */
   static updateTaskInTodolist(req, res) {
     const { taskId, todoId } = req.params;
-    todoList.findById(todoId, (err, todolist) => {
+    todoLists.findById(todoId, (err, todolist) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
-      reminder.findOne({
+      reminderLists.findOne({
         $and: [{ todoId }, {
           taskName: req.body.taskName
         }]
@@ -160,7 +160,7 @@ export default class TodoListControllers {
             if (err) {
               return apiResponse(res, 500, 'Internal server error', false);
             }
-            apiResponse(res, 200, null, true, updatedTodolist);
+            apiResponse(res, 200, 'todolist', true, updatedTodolist);
           });
         });
       });

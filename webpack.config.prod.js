@@ -1,6 +1,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import dotenvWebpack from 'dotenv-webpack';
 
 const GLOBALS = {
   'process.env.NODE_ENV': JSON.stringify('production')
@@ -18,6 +19,7 @@ module.exports = {
   },
   target: 'web',
   plugins: [
+    new dotenvWebpack({ systemvars: true }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.DefinePlugin(GLOBALS),
     new webpack.LoaderOptionsPlugin({
@@ -34,14 +36,20 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /.jsx?$/,
-        enforce: 'pre',
-        use: [
-          {
-            loader: 'babel-loader'
+        test: /\.(jsx|js)$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              'react',
+              ['es2015', {
+                targets: {
+                  browsers: ['last 2 versions']
+                }
+              }]
+            ]
           }
-        ],
-        include: path.join(__dirname, '/client'),
+        },
         exclude: /node_modules/,
       },
       { test: /(\.s?css)$/,

@@ -42,7 +42,7 @@ describe('Todolist actions', () => {
   it('should creates ADD_TODOLIST when a user create a todolist', () => {
     const response = {
       data: {
-        data: {
+        todolist: {
           name: 'Woorklist',
           tasks: [],
           collaborators: ['Pythagoras']
@@ -72,7 +72,7 @@ describe('Todolist actions', () => {
   a user create a task`, () => {
       const response = {
         data: {
-          data: {
+          todolist: {
             name: 'Woorklist',
             tasks: [{}],
             collaborators: ['Pythagoras']
@@ -128,7 +128,7 @@ describe('Todolist actions', () => {
       const response =
          {
            data: {
-             data: {
+             todolist: {
                name: 'Woorklist',
                tasks: [{}],
                collaborators: ['Pythagoras']
@@ -156,7 +156,7 @@ describe('Todolist actions', () => {
       const response =
          {
            data: {
-             data: {
+             todolist: {
                name: 'Woorklist',
                tasks: [{}],
                collaborators: ['Pythagoras']

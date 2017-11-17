@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import Search from './Search.jsx';
+import Search from './Search';
 
 /**
      * @description - collaborators component

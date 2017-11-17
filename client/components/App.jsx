@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import Main from './Main.jsx';
+import Main from './Main';
 
 
 /* eslint-disable react/prefer-stateless-function */
@@ -17,7 +17,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Main/>
+        <Main />
       </div>
     );
   }

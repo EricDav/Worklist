@@ -20,7 +20,7 @@ describe('User actions', () => {
   code successfully`, () => {
       const response = {
         data: {
-          data: {
+          message: {
             fullName: 'Alienyi David',
             userName: 'Pythagoras',
             id: 1,
@@ -127,7 +127,7 @@ describe('User actions', () => {
   it('should creates SET_GOOGLE_USER when googlesignin is called', () => {
     const response = {
       data: {
-        data: 'New user'
+        message: 'New user'
       },
       success: true
     };
@@ -148,7 +148,7 @@ describe('User actions', () => {
   it('should creates SET_USER when getUsers is called', () => {
     const response = {
       data: {
-        data: [{
+        users: [{
           fullName: 'Bola amin',
           userName: 'pyth',
           email: 'sad@we.com'

@@ -90,6 +90,13 @@ export class CreateTodolistModal extends React.Component {
           this.props.setIsApiCall(false);
           const { message } = response.data.error;
           if (message) {
+            if (['Failed to authenticate token.', 'No token provided']
+              .includes(message)) {
+              Materialize.toast('Your session has expired', 2000, 'red');
+              window.location = '/';
+              localStorage.removeItem('jwtToken');
+              return;
+            }
             this.setState({
               nameError: message
             });

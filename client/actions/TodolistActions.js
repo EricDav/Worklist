@@ -4,6 +4,7 @@ import { SET_TODOLISTS, ADD_TODOLIST,
   SET_CURRENT_TODOLIST, UPDATE_TODOLIST,
   SHOW_RIGHT_SIDE_NAV, API_CALL_IN_PROGRESS } from './ActionTypes';
 import { setError } from './AuthActions';
+import setAuthorizationToken from '../utils/setAuthorizationToken';
 
 /**
  * @description Request to the API to fetch todolist
@@ -11,13 +12,23 @@ import { setError } from './AuthActions';
  * @return {object} returns object
  */
 export function getTodolist() {
+  setAuthorizationToken(localStorage.jwtToken);
   return dispatch => axios.get('/api/v1/todos').then((res) => {
-    const { data } = res.data;
+    const { todolists } = res.data;
     dispatch({
       type: SET_TODOLISTS,
-      todolists: data
+      todolists
     });
-  });
+  })
+    .catch(({ response }) => {
+      const { message } = response.data.error;
+      if (['Failed to authenticate token.', 'No token provided']
+        .includes(message)) {
+        Materialize.toast('Your session has expired', 2000, 'red');
+        window.location = '/';
+        localStorage.removeItem('jwtToken');
+      }
+    });
 }
 
 /**
@@ -66,6 +77,7 @@ export function setCurrentTodolist(todolists, todoId) {
  * @return {object} returns object
  */
 export function createTodolist(payload) {
+  setAuthorizationToken(localStorage.jwtToken);
   return (dispatch) => {
     dispatch({
       type: API_CALL_IN_PROGRESS,
@@ -76,10 +88,10 @@ export function createTodolist(payload) {
         type: API_CALL_IN_PROGRESS,
         status: false
       });
-      const { data } = res.data;
+      const { todolist } = res.data;
       dispatch({
         type: ADD_TODOLIST,
-        todolist: data
+        todolist
       });
       dispatch(setError(''));
       Materialize.toast('Todolist created successfully', 2000, 'green');
@@ -96,6 +108,7 @@ export function createTodolist(payload) {
  * @return {object} returns dispatch object
  */
 export function createTaskForTodolist(payload, todoId) {
+  setAuthorizationToken(localStorage.jwtToken);
   return (dispatch) => {
     dispatch({
       type: API_CALL_IN_PROGRESS,
@@ -103,10 +116,10 @@ export function createTaskForTodolist(payload, todoId) {
     });
     return axios.post(`/api/v1/todos/${todoId}/tasks`, payload)
       .then((res) => {
-        const { data } = res.data;
+        const { todolist } = res.data;
         dispatch({
           type: UPDATE_TODOLIST,
-          updatedTodolist: data
+          updatedTodolist: todolist
         });
         dispatch(setError(''));
         dispatch(showRightSideNav(1));
@@ -119,6 +132,13 @@ export function createTaskForTodolist(payload, todoId) {
       .catch(({ response }) => {
         const { message } = response.data.error;
         if (message) {
+          if (['Failed to authenticate token.', 'No token provided']
+            .includes(message)) {
+            Materialize.toast('Your session has expired');
+            window.location = '/';
+            localStorage.removeItem('jwtToken');
+            return;
+          }
           dispatch(setError(message));
         } else {
           dispatch(setError(`An unexpected error occured.
@@ -141,14 +161,24 @@ export function createTaskForTodolist(payload, todoId) {
  * @return {Object} returns dispatch object
  */
 export function addContributorToTodolist(payload, todoId) {
+  setAuthorizationToken(localStorage.jwtToken);
   return dispatch => axios.post(`/api/v1/todos/${todoId}/contributors`, payload)
     .then((res) => {
-      const { data } = res.data;
+      const { todolist } = res.data;
       dispatch({
         type: UPDATE_TODOLIST,
-        updatedTodolist: data
+        updatedTodolist: todolist
       });
       Materialize.toast('User added succesfully', 2000, 'green');
+    })
+    .catch(({ response }) => {
+      const { message } = response.error;
+      if (['Failed to authenticate token.', 'No token provided']
+        .includes(message)) {
+        Materialize.toast('Your session has expired');
+        window.location = '/';
+        localStorage.removeItem('jwtToken');
+      }
     });
 }
 
@@ -162,16 +192,25 @@ export function addContributorToTodolist(payload, todoId) {
  * @return {object} returns dispatch object
  */
 export function completeTask(taskId, todoId, payload) {
+  setAuthorizationToken(localStorage.jwtToken);
   return dispatch =>
     axios.patch(`/api/v1/todos/${todoId}/tasks/${taskId}`, payload)
       .then((res) => {
-        const { data } = res.data;
+        const { todolist } = res.data;
         dispatch({
           type: UPDATE_TODOLIST,
-          updatedTodolist: data
+          updatedTodolist: todolist
         });
         Materialize.toast('Task has been completed', 2000, 'green');
-      }).catch(() => {
+      }).catch(({ response }) => {
+        const { message } = response.error;
+        if (['Failed to authenticate token.', 'No token provided']
+          .includes(message)) {
+          Materialize.toast('Your session has expired');
+          window.location = '/';
+          localStorage.removeItem('jwtToken');
+          return;
+        }
         Materialize.toast('An error occured', 2000, 'red');
       });
 }

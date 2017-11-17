@@ -20,9 +20,11 @@ const port = process.env.PORT || 8000;
 const app = express();
 const url = config.db[process.env.NODE_ENV];
 
+
 if (process.env.NODE_ENV === 'development') {
   app.use(webpackMiddleware(webpack(webpackConfig)));
 }
+
 
 moongose.connect(url);
 

@@ -49,6 +49,6 @@ const todoListSchema = new Schema({
   timestamps: true
 });
 
-const todoList = mongoose.model('todoList', todoListSchema);
+const todoLists = mongoose.model('todoList', todoListSchema);
 
-export default todoList;
+export default todoLists;

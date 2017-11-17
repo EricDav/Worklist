@@ -2,7 +2,6 @@ import React from 'react';
 import ReactGoogleLogin from 'react-google-login';
 import PropTypes from 'prop-types';
 
-
 /** @class GoogleLoginButton
  * @classdesc component for GoogleLoginButton
  */
@@ -21,7 +20,7 @@ class GoogleLoginButton extends React.Component {
     };
     return (
       <ReactGoogleLogin
-        clientId= "341007871035-58t5g92qknspjc6gqchdca2ssr8s7squ.apps.googleusercontent.com"
+        clientId={process.env.CLIENT_ID}
         buttonText="Login with Google"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}

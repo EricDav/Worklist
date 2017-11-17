@@ -70,6 +70,14 @@ export const isDigit = (str) => {
   return true;
 };
 
+/**
+ * @description checks if the string pass in is a text.
+ * Means all the charcters are alphabets
+ *
+ * @param  {string} str the string to be checked
+ *
+ * @return {boolean} true or false
+ */
 export const isText = (str) => {
   if (str.length === 0) {
     return false;
@@ -106,6 +114,17 @@ export const isInValidField = (fieldData) => {
   return false;
 };
 
+/**
+ *@description checks if a field is null, undefined or empty
+ *
+ * @param  {Object} res response object
+ * @param  {Number} statusCode status code
+ * @param  {String} message response message
+ * @param  {Boolean}  success response data
+ * @param  {Boolean}  data response data
+ *
+*@return {Object} response object
+ */
 export const apiResponse = (res, statusCode, message, success, data = null) => {
   if (message === 'error') {
     return res.status(statusCode).json({
@@ -119,10 +138,34 @@ export const apiResponse = (res, statusCode, message, success, data = null) => {
       token: data
     });
   }
-  if (data) {
+  if (message === 'users') {
     return res.status(statusCode).json({
       success,
-      data
+      users: data
+    });
+  }
+  if (message === 'todolists') {
+    return res.status(statusCode).json({
+      success,
+      todolists: data
+    });
+  }
+  if (message === 'todolist') {
+    return res.status(statusCode).json({
+      success,
+      todolist: data
+    });
+  }
+  if (message === 'reminders') {
+    return res.status(statusCode).json({
+      success,
+      reminders: data
+    });
+  }
+  if (message === 'message') {
+    return res.status(statusCode).json({
+      success,
+      message: data
     });
   }
   return res.status(statusCode).json({
@@ -133,6 +176,13 @@ export const apiResponse = (res, statusCode, message, success, data = null) => {
   });
 };
 
+/**
+ *@description checks if a value passed in is a valid email
+ *
+ * @param  {Object} email the value to be checked if it is a valid email
+ *
+ * @return {Boolean} true or false
+ */
 export const isValidEmail = (email) => {
   if (isInValidField(email) || email.length < 7) {
     return false;
@@ -207,7 +257,7 @@ export const mailSender = (
         'An error occured while sending mail', false
       );
     }
-    return apiResponse(res, 200, null, true, {
+    return apiResponse(res, 200, 'message', true, {
       success: true,
       message: successMessage,
       SwZ5: secretCode,
@@ -216,6 +266,13 @@ export const mailSender = (
   });
 };
 
+/**
+ *@description checks if a field is a valid name
+ *
+ * @param  {type} name the value to be checked if it is valid
+ *
+ * @return {boolean} true or false
+ */
 export const isValidName = (name) => {
   const value = name.trim();
   if (name.length === 0) {
@@ -232,6 +289,14 @@ export const isValidName = (name) => {
   return true;
 };
 
+/**
+ *@description checks if a field is null, undefined or empty
+ *
+ * @param  {String} message the message to send to user email address
+ * @param  {String} email user email address
+ *
+ * @return {Boolean} true or false
+ */
 export const sendReminders = (message, email) => {
   const transporter = nodemailer.createTransport({
     service: process.env.SERVICE,
@@ -253,7 +318,18 @@ export const sendReminders = (message, email) => {
   });
 };
 
-export const createMessage = (name, todoname, task, dueDate, isEmail) => {
+/**
+ *@description checks if a field is null, undefined or empty
+ *
+ * @param  {String} name name of the user recieving eminder
+  * @param  {String} todoname the name of the todolist
+ * @param  {String} task name of the task
+ * @param  {String} dueDate the due date of the task
+ *
+ * @return {Array} an erray containing the message for emails and
+ * for application
+ */
+export const createMessage = (name, todoname, task, dueDate) => {
   const appMessage = 'The task you are assign to, ';
   const message = `<h3 style="color: indigo">Hi ${name}</h3><br/>
     <div style="font-size: 15px">This is to remind you that the ${task}
