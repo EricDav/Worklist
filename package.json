@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/app.js",
   "scripts": {
-    "start": "NODE_ENV=development nodemon --watch server --exec babel-node -- server/app.js",
+    "start": "NODE_ENV=production nodemon --watch server --exec babel-node -- server/app.js",
     "server:test": "NODE_ENV=test mocha --timeout 40000 --compilers js:babel-core/register ./server/test/**/*.spec.js --exit",
     "coverage": "NODE_ENV=test ./node_modules/.bin/nyc --reporter=html --reporter=text mocha --reporter spec --compilers js:babel-register ./server/test/**/*.spec.js --timeout 400000 --exit",
     "client:test": "jest --coverage cli",

@@ -25,6 +25,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(webpackMiddleware(webpack(webpackConfig)));
 }
 
+console.log(url);
 
 moongose.connect(url);
 

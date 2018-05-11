@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
+import nodemailer from 'nodemailer';
 import fs from 'fs';
 import cloudinary from 'cloudinary';
 
@@ -344,6 +345,44 @@ export default class UserControllers {
         return apiResponse(res, 500, 'Internal server error', false);
       }
       return apiResponse(res, 200, 'users', true, users);
+    });
+  }
+
+  /**
+ * @description: end point for sending mails
+ *
+ * @param {Object} req request object
+ * @param {Object} res response object
+ *
+ * @return {Object} response
+ */
+  static sendMail(req, res) {
+    console.log(req.body.feedback);
+    const transporter = nodemailer.createTransport({
+      service: process.env.SERVICE,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.GMAIL_PASSWORD
+      }
+    });
+    const mailOptions = {
+      from: `Worklist <${process.env.EMAIL}`,
+      to: req.body.email,
+      subject: req.body.name,
+      text: req.body.feedback
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        return apiResponse(
+          res, 500,
+          'An error occured while sending mail', false
+        );
+      }
+      return apiResponse(res, 200, 'message', true, {
+        success: true,
+        message: 'email sent successfully'
+      });
     });
   }
 }

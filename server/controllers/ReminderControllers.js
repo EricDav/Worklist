@@ -43,7 +43,7 @@ export default class ReminderControllers {
             name, todoName, taskName,
             moment(time).format('LLLL')
           );
-          reminder.message = message[1];
+          reminder.message = message[1]; 
           reminder.save();
           sendReminders(message[0], reminder.email);
         });
