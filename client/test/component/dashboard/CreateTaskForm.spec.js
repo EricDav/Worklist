@@ -16,6 +16,7 @@ const setup = () => {
     ...mockData.createTaskForm.props
   };
 };
+
 configure({ adapter: new Adapter() });
 describe('CreateTodolistModal Component', () => {
   beforeEach(() => {

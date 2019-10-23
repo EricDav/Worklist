@@ -5,6 +5,7 @@ import fs from 'fs';
 import cloudinary from 'cloudinary';
 
 import userLists from '../models/userLists';
+import messageLists from '../models/message';
 import { generateToken, removePassword, isInValidField, apiResponse,
   isValidEmail, isValidPassword, generateCode,
   mailSender, isValidName } from '../helpers';
@@ -63,6 +64,48 @@ export default class UserControllers {
         const token = generateToken(removePassword(savedUser), secret);
         return apiResponse(res, 201, 'token', true, token);
       });
+    });
+  }
+  /**
+ * @description: creates a user through route POST: api/v1/user
+ *
+ * @param {Object} req requset object
+ * @param {Object} res response object
+ *
+ * @return {Object} response containing the created user
+ */
+  static createMessage(req, res) {
+    const {
+      name, email, message
+    } = req.body;
+
+    const newMessage = userLists({
+      name,
+      email,
+      message
+    });
+    newMessage.save((err, savedMessage) => {
+      if (err) {
+        return apiResponse(res, 500, 'Internal server error', false);
+      }
+      return apiResponse(res, 201, savedMessage, true);
+    });
+  }
+
+  /**
+ * @description: creates a user through route POST: api/v1/user
+ *
+ * @param {Object} req requset object
+ * @param {Object} res response object
+ *
+ * @return {Object} response containing the created user
+ */
+  static getMessages(req, res) {
+    messageLists.find({}, (err, users) => {
+      if (err) {
+        return apiResponse(res, 500, 'Internal server error', false);
+      }
+      return apiResponse(res, 200, 'users', true, users);
     });
   }
   /**
