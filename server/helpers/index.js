@@ -252,6 +252,8 @@ export const mailSender = (
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
+      console.log(error);
+      console.log(info);
       return apiResponse(
         res, 500,
         'An error occured while sending mail', false

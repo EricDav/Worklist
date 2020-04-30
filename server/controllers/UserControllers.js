@@ -5,7 +5,6 @@ import fs from 'fs';
 import cloudinary from 'cloudinary';
 
 import userLists from '../models/userLists';
-import messageLists from '../models/message';
 import { generateToken, removePassword, isInValidField, apiResponse,
   isValidEmail, isValidPassword, generateCode,
   mailSender, isValidName } from '../helpers';
@@ -92,22 +91,6 @@ export default class UserControllers {
     });
   }
 
-  /**
- * @description: creates a user through route POST: api/v1/user
- *
- * @param {Object} req requset object
- * @param {Object} res response object
- *
- * @return {Object} response containing the created user
- */
-  static getMessages(req, res) {
-    messageLists.find({}, (err, users) => {
-      if (err) {
-        return apiResponse(res, 500, 'Internal server error', false);
-      }
-      return apiResponse(res, 200, 'users', true, users);
-    });
-  }
   /**
  *@description controls users login through the route
  * POST: /api/v1/signin
@@ -343,11 +326,13 @@ export default class UserControllers {
             { _id: currentUser._id },
             (err, currentUser) => {
               if (err) {
+                console.log("======>>>>>>>>>>>>1");
                 return apiResponse(res, 500, 'Internal server error', false);
               }
               currentUser.imageUrl = url;
               currentUser.save((err, updatedUser) => {
                 if (err) {
+                  console.log("======>>>>>>>>>>>>2")
                   return apiResponse(res, 500, 'Internal server error', false);
                 }
                 return apiResponse(
@@ -358,7 +343,9 @@ export default class UserControllers {
             }
           );
         });
-    }).catch(() => {
+    }).catch((err) => {
+      
+      console.log(err, "======>>>>>>>>>>>>3")
       apiResponse(
         res, 500,
         'An error occured while uploading image', false

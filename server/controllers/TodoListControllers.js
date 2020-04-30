@@ -47,12 +47,27 @@ export default class TodoListControllers {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
-      todo.tasks.push({
+
+
+      /**
+       * For some reasons todo.tasks.push is throwing an err($pushAll is not defined)
+       * So, I had to came up with another logic to achieve this. I create a new array 
+       * called newArr then copy all the objects in todo.tasks intp it then add the new 
+       * object into then assignt todo.tasks to as the new array.
+       */
+      const newArr = [];
+      for (let i = 0; i < todo.tasks.length; i++) {
+        newArr.push(todo.tasks[i]);
+      }
+
+      newArr.push({
         taskName: name,
         priority,
         dueDate: date,
         assignTo
       });
+      todo.tasks = newArr;
+
       reminderLists.create({
         todoId: req.params.todoId,
         todoName: todo.name,
