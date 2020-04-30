@@ -78,7 +78,7 @@ class ForgetPasswordVerificationForm extends React.Component {
     return (
       <div id="forget-password" className="row">
       <div
-        className={`col l4 offset-l4 m6 offset-m3 s12 
+        className={`col l4 offset-l4 m6 offset-m3 s12
         z-depth-4 card-panel`}>
       <form id="login" className="login-form form" onSubmit={this.onSubmit}>
         <div className="row">

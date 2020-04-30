@@ -22,6 +22,15 @@ export const isInValidField = (fieldData) => {
   return false;
 };
 
+
+/**
+ * @description checks if the string pass in is a text.
+ * Means all the charcters are alphabets
+ *
+ * @param  {string} str the string to be checked
+ *
+ * @return {boolean} true or false
+ */
 export const isText = (str) => {
   if (str.length === 0) {
     return false;
@@ -34,6 +43,14 @@ export const isText = (str) => {
   return true;
 };
 
+/**
+ * @description checks if the string pass in is a digit.
+ * Means all the charcters are digit
+ *
+ * @param  {string} str the string to be checked
+ *
+ * @return {boolean} true or false
+ */
 export const isDigit = (str) => {
   const num = str.toString();
   if (num.length === 0) {
@@ -55,13 +72,13 @@ export const isValidEmail = (email) => {
   return true;
 };
 
-export const isValidNames = (name) => {
-  if (!isText(name) || name.length < 5) {
-    return false;
-  }
-  return true;
-};
-
+/**
+ *@description checks if a value passed in is a valid password
+ *
+ * @param  {Object} password the value to be checked if it is a valid password
+ *
+ * @return {Boolean} true or false
+ */
 export const isValidPassword = (password) => {
   if (password.length < 9 ||
     !(/[0-9]/.test(password) &&
@@ -71,6 +88,13 @@ export const isValidPassword = (password) => {
   return true;
 };
 
+/**
+ *@description checks if a value passed in is a valid username
+ *
+ * @param  {Object} username the value to be checked if it is a valid username
+ *
+ * @return {Boolean} true or false
+ */
 export const isValidUsername = (username) => {
   if (isDigit(username) ||
     isDigit(username[0]) || username.length < 2) {
@@ -79,6 +103,14 @@ export const isValidUsername = (username) => {
   return true;
 };
 
+
+/**
+ *@description checks if a field is a valid name
+ *
+ * @param  {type} name the value to be checked if it is valid
+ *
+ * @return {boolean} true or false
+ */
 export const isValidName = (name) => {
   const value = name.trim();
   if (value.length === 0) {
@@ -95,6 +127,14 @@ export const isValidName = (name) => {
   return true;
 };
 
+/**
+ *@description checks if a field is a valid name
+ *
+ * @param  {type} todolist the todolist
+ * @param  {type} name the name of the todolist
+ *
+ * @return {Boolean} true or false
+ */
 export const isUniqueTaskName = (todolist, name) => {
   if (todolist.tasks.length === 0) {
     return true;
@@ -111,6 +151,14 @@ export const isUniqueTaskName = (todolist, name) => {
   return false;
 };
 
+/**
+ *@description checks if a field is a valid name
+ *
+ * @param  {type} todolists all the todolist
+ * @param  {type} newTodolist the new todolist to be updated
+ *
+ * @return {Array} array of todolists
+ */
 export const updateTodolists = (todolists, newTodolist) => {
   const updatedTodolists = [];
   todolists.forEach((todolist) => {
@@ -122,10 +170,25 @@ export const updateTodolists = (todolists, newTodolist) => {
   return updatedTodolists;
 };
 
+/**
+ *@description checks if a field is a valid name
+ *
+ * @param  {String} day the reminder day
+ * @param  {String} hour the reminder hour
+ * @param {String} minute the  reminder minute
+ * @param  {String} dueYear the due date year
+ * @param {String} dueMonth the due date month
+ * @param  {String} dueDay the due date day
+ * @param  {String} dueHour the due date hour
+ * @param  {String} dueMinute the due date minute
+ *
+ * @return {Array} array of todolists
+ */
+
 export const validateRemindersInput =
   (
     day, hour, minute, dueYear, dueMonth, dueDay,
-    dueHour, dueMinute, dueDate
+    dueHour, dueMinute
   ) => {
     if (isInValidField(day)) {
       day = '0';
@@ -155,6 +218,18 @@ export const validateRemindersInput =
     return [true, reminderDate];
   };
 
+/**
+ *@description checks if a field is a valid name
+ *
+ * @param  {String} date the due date
+ * @param  {Date} currentDate the reminder date
+ * @param {String} name task name
+ * @param  {String} priority the priority level
+ * @param {String} assignTo the name of the user the task is assign to
+ * @param  {Object} currentTodolist the todolist the for the task
+ *
+ * @return {String} string containing the error message or null if not found
+ */
 export const validateCreateTask = (
   date, currentDate,
   name, priority, assignTo, currentTodolist
@@ -176,11 +251,3 @@ only character and number only';
   }
   return null;
 };
-
-export const validatSignup = (userName, fullName, password) => {
-  if (isValidName(userName)) {
-    return [false, 'username must contain an alphabet \
-              and must not begin with a number'];
-  }
-}
-;

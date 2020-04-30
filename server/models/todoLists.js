@@ -44,11 +44,13 @@ const todoListSchema = new Schema({
     required: true
   },
   collaborators: [String],
-  tasks: [taskSchema]
+  tasks: [taskSchema],
 }, {
   timestamps: true
+}, {
+  usePushEach: true
 });
 
-const todoList = mongoose.model('todoList', todoListSchema);
+const todoLists = mongoose.model('todoList', todoListSchema);
 
-export default todoList;
+export default todoLists;

@@ -6,14 +6,14 @@ import jwt from 'jsonwebtoken';
 import expect from 'expect';
 
 import app from '../../app';
-import user from '../../models/User';
+import userLists from '../../models/userLists';
 
 const server = supertest.agent(app);
-let regUser = 'bearer ';
+let token = 'bearer ';
 let secretCode;
 
 before((done) => {
-  user.remove({}, (err) => {
+  userLists.remove({}, (err) => {
     if (err) return done(err);
   });
   done();
@@ -35,7 +35,7 @@ describe('User API', () => {
         .expect('Content-Type', /json/)
         .end((err, res) => {
           const currentUser = jwt.decode(res.body.token);
-          regUser += res.body.token;
+          token += res.body.token;
           res.status.should.equal(201);
           res.body.success.should.equal(true);
           expect(currentUser.currentUser.email).toEqual('dad2@we.com');
@@ -264,7 +264,7 @@ describe('User API', () => {
             .end((err, res) => {
               expect(res.status).toEqual(200);
               expect(res.body.success).toEqual(true);
-              expect(res.body.data)
+              expect(res.body.message)
                 .toEqual('New user');
               if (err) return done(err);
               done();
@@ -294,7 +294,7 @@ describe('User API', () => {
       it('should update user fullName successfully', (done) => {
         server
           .put('/api/v1/users')
-          .set('authorization', regUser)
+          .set('authorization', token)
           .send({
             fullName: 'Updated Name',
           })
@@ -311,7 +311,7 @@ describe('User API', () => {
       it('should update user email successfully', (done) => {
         server
           .put('/api/v1/users')
-          .set('authorization', regUser)
+          .set('authorization', token)
           .send({
             email: 'updatedemail@me.com',
           })
@@ -327,7 +327,7 @@ describe('User API', () => {
       it('should throw error if email to be updated is invalid', (done) => {
         server
           .put('/api/v1/users')
-          .set('authorization', regUser)
+          .set('authorization', token)
           .send({
             email: 'updatedemail.com',
           })
@@ -341,7 +341,7 @@ describe('User API', () => {
       it('should throw error if email to be updated has been taken', (done) => {
         server
           .put('/api/v1/users')
-          .set('authorization', regUser)
+          .set('authorization', token)
           .send({
             email: 'updatedemail@me.com',
           })
@@ -355,7 +355,7 @@ describe('User API', () => {
       it('should throw error if fullName to be updated is invalid', (done) => {
         server
           .put('/api/v1/users')
-          .set('authorization', regUser)
+          .set('authorization', token)
           .send({
             fullName: '56574647',
           })
@@ -375,16 +375,16 @@ describe('User API', () => {
         server
           .get('/api/v1/users?searchParam=a')
           .set('Connection', 'keep alive')
-          .set('authorization', regUser)
+          .set('authorization', token)
           .set('Content-Type', 'application/json')
           .end((err, res) => {
             res.body.success.should.equal(true);
             expect(res.status).toEqual(200);
-            expect(res.body.data.length).toEqual(2);
-            expect(res.body.data[1].userName).toEqual('pychat2');
-            expect(res.body.data[0].userName).toEqual('bayo');
-            expect(res.body.data[0].fullName).toEqual('Ade Bayo');
-            expect(res.body.data[0].email).toEqual('house@gmail.com');
+            expect(res.body.users.length).toEqual(2);
+            expect(res.body.users[1].userName).toEqual('pychat2');
+            expect(res.body.users[0].userName).toEqual('bayo');
+            expect(res.body.users[0].fullName).toEqual('Ade Bayo');
+            expect(res.body.users[0].email).toEqual('house@gmail.com');
             if (err) return done(err);
             done();
           });
@@ -396,7 +396,7 @@ describe('User API', () => {
         server
           .get('/api/v1/users?searchParam=%#')
           .set('Connection', 'keep alive')
-          .set('authorization', regUser)
+          .set('authorization', token)
           .set('Content-Type', 'application/json')
           .end((err, res) => {
             expect(res.status).toEqual(400);

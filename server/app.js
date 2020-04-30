@@ -9,6 +9,8 @@ import webpackMiddleware from 'webpack-dev-middleware';
 import fileUpload from 'express-fileupload';
 
 import webpackConfig from '../webpack.config.dev';
+import webpackConfigProduction from '../webpack.config.prod';
+
 import user from './routes/user';
 import todo from './routes/todo';
 import reminder from './controllers/ReminderControllers';
@@ -20,8 +22,11 @@ const port = process.env.PORT || 8000;
 const app = express();
 const url = config.db[process.env.NODE_ENV];
 
+
 if (process.env.NODE_ENV === 'development') {
   app.use(webpackMiddleware(webpack(webpackConfig)));
+} else {
+  app.use(webpackMiddleware(webpack(webpackConfigProduction)));
 }
 
 moongose.connect(url);
@@ -39,7 +44,7 @@ app.listen(port, () => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/index.html'));
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 reminder.start();

@@ -4,13 +4,14 @@ import { Provider } from 'react-redux';
 import jwt from 'jsonwebtoken';
 import { BrowserRouter } from 'react-router-dom';
 
-import App from './components/App.jsx';
+import App from './components/App';
 import setAuthorizationToken from './utils/setAuthorizationToken';
 import './assets/css/custom.scss';
 import '../node_modules/materialize-css/dist/js/materialize.min';
 import '../node_modules/materialize-css/dist/css/materialize.min.css';
 import configureStore from './store/configureStore';
 import { setCurrentUser, showHomePageForm } from './actions/AuthActions';
+
 
 const store = configureStore();
 if (localStorage.jwtToken) {
@@ -32,7 +33,7 @@ if (localStorage.jwtToken) {
 render(
   <Provider store={store}>
     <BrowserRouter>
-      <App/>
+      <App />
     </BrowserRouter>
   </Provider>,
   document.getElementById('app')

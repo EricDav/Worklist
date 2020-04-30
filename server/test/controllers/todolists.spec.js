@@ -5,10 +5,10 @@ import expect from 'expect';
 
 import app from '../../app';
 
-import todoList from '../../models/todoList';
+import todoLists from '../../models/todoLists';
 
 const server = supertest.agent(app);
-let regUserToken = 'bearer ';
+let token = 'bearer ';
 let todoId;
 let taskId;
 let taskName;
@@ -26,7 +26,7 @@ describe('Todolist API', () => {
         email: 'house@gmail.com'
       })
       .end((err, res) => {
-        regUserToken += res.body.token;
+        token += res.body.token;
         server
           .post('/api/v1/users')
           .send({
@@ -36,7 +36,7 @@ describe('Todolist API', () => {
             email: 'house123@gmail.com'
           })
           .end((err, res) => {
-            todoList.remove({}, (err) => {
+            todoLists.remove({}, (err) => {
               if (err) return done(err);
             });
             done();
@@ -48,7 +48,7 @@ describe('Todolist API', () => {
       server
         .post('/api/v1/todos')
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({
@@ -56,11 +56,11 @@ describe('Todolist API', () => {
         })
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          todoId = res.body.data._id;
+          todoId = res.body.todolist._id;
           expect(res.status).toEqual(201);
           expect(res.body.success).toEqual(true);
-          expect(res.body.data.name).toEqual('postIt');
-          expect(res.body.data.collaborators[0]).toEqual('bayo');
+          expect(res.body.todolist.name).toEqual('postIt');
+          expect(res.body.todolist.collaborators[0]).toEqual('bayo');
           if (err) return done(err);
           done();
         });
@@ -70,7 +70,7 @@ describe('Todolist API', () => {
         server
           .post('/api/v1/todos')
           .set('Connection', 'keep alive')
-          .set('authorization', regUserToken)
+          .set('authorization', token)
           .set('Content-Type', 'application/json')
           .type('form')
           .send({
@@ -90,7 +90,7 @@ describe('Todolist API', () => {
       server
         .post('/api/v1/todos')
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({})
@@ -109,7 +109,7 @@ describe('Todolist API', () => {
       server
         .post('/api/v1/todos')
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({ name: 'postIt' })
@@ -127,7 +127,7 @@ describe('Todolist API', () => {
       server
         .post(`/api/v1/todos/${todoId}/tasks`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({
@@ -139,11 +139,11 @@ describe('Todolist API', () => {
         })
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          taskId = res.body.data.tasks[0]._id;
-          taskName = res.body.data.tasks[0].taskName;
+          taskId = res.body.todolist.tasks[0]._id;
+          taskName = res.body.todolist.tasks[0].taskName;
           expect(res.status).toEqual(200);
           expect(res.body.success).toEqual(true);
-          expect(res.body.data.tasks[0].taskName)
+          expect(res.body.todolist.tasks[0].taskName)
             .toEqual('create login');
           if (err) return done(err);
           done();
@@ -153,7 +153,7 @@ describe('Todolist API', () => {
       server
         .post(`/api/v1/todos/${todoId}/tasks`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({
@@ -177,7 +177,7 @@ describe('Todolist API', () => {
       server
         .post(`/api/v1/todos/${todoId}/tasks`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({ priority: 'urgent' })
@@ -195,7 +195,7 @@ describe('Todolist API', () => {
       server
         .post(`/api/v1/todos/${invalidId}/tasks`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({
@@ -219,7 +219,7 @@ describe('Todolist API', () => {
       server
         .post(`/api/v1/todos/${todoId}/tasks`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({
@@ -243,7 +243,7 @@ describe('Todolist API', () => {
       server
         .post(`/api/v1/todos/${todoId}/tasks`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({
@@ -266,7 +266,7 @@ describe('Todolist API', () => {
       server
         .post(`/api/v1/todos/${todoId}/tasks`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({
@@ -290,7 +290,7 @@ describe('Todolist API', () => {
       server
         .post(`/api/v1/todos/${notFoundId}/tasks`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({
@@ -314,7 +314,7 @@ describe('Todolist API', () => {
       server
         .patch(`/api/v1/todos/${todoId}/tasks/${taskId}`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({ taskName })
@@ -322,10 +322,10 @@ describe('Todolist API', () => {
         .end((err, res) => {
           expect(res.status).toEqual(200);
           expect(res.body.success).toEqual(true);
-          expect(res.body.data.name)
+          expect(res.body.todolist.name)
             .toEqual('postIt');
-          expect(res.body.data.tasks[0].done).toEqual(true);
-          expect(res.body.data.tasks[0].taskName)
+          expect(res.body.todolist.tasks[0].done).toEqual(true);
+          expect(res.body.todolist.tasks[0].taskName)
             .toEqual('create login');
           if (err) return done(err);
           done();
@@ -335,7 +335,7 @@ describe('Todolist API', () => {
       server
         .patch(`/api/v1/todos/${todoId}/tasks/${invalidId}`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({})
@@ -353,7 +353,7 @@ describe('Todolist API', () => {
       server
         .patch(`/api/v1/todos/${notFoundId}/tasks/${taskId}`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({ taskName: 'create signup', priority: 'normal' })
@@ -371,7 +371,7 @@ describe('Todolist API', () => {
       server
         .patch(`/api/v1/todos/${invalidId}/tasks/${taskId}`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({})
@@ -391,7 +391,7 @@ describe('Todolist API', () => {
       server
         .post(`/api/v1/todos/${todoId}/contributors`)
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({
@@ -401,7 +401,7 @@ describe('Todolist API', () => {
         .end((err, res) => {
           expect(res.status).toEqual(200);
           expect(res.body.success).toEqual(true);
-          expect(res.body.data.collaborators[1]).toEqual('bode');
+          expect(res.body.todolist.collaborators[1]).toEqual('bode');
           if (err) return done(err);
           done();
         });
@@ -412,7 +412,7 @@ describe('Todolist API', () => {
         server
           .post(`/api/v1/todos/${todoId}/contributors`)
           .set('Connection', 'keep alive')
-          .set('authorization', regUserToken)
+          .set('authorization', token)
           .set('Content-Type', 'application/json')
           .type('form')
           .send({})
@@ -433,7 +433,7 @@ describe('Todolist API', () => {
         server
           .post(`/api/v1/todos/${todoId}/contributors`)
           .set('Connection', 'keep alive')
-          .set('authorization', regUserToken)
+          .set('authorization', token)
           .set('Content-Type', 'application/json')
           .type('form')
           .send({ username: 'bode' })
@@ -454,7 +454,7 @@ describe('Todolist API', () => {
         server
           .post(`/api/v1/todos/${todoId}/contributors`)
           .set('Connection', 'keep alive')
-          .set('authorization', regUserToken)
+          .set('authorization', token)
           .set('Content-Type', 'application/json')
           .type('form')
           .send({ username: 'notaregistereduser' })
@@ -475,7 +475,7 @@ describe('Todolist API', () => {
         server
           .post(`/api/v1/todos/${invalidId}/contributors`)
           .set('Connection', 'keep alive')
-          .set('authorization', regUserToken)
+          .set('authorization', token)
           .set('Content-Type', 'application/json')
           .type('form')
           .send({ username: 'notaregistereduser' })
@@ -496,7 +496,7 @@ describe('Todolist API', () => {
         server
           .post(`/api/v1/todos/${notFoundId}/contributors`)
           .set('Connection', 'keep alive')
-          .set('authorization', regUserToken)
+          .set('authorization', token)
           .set('Content-Type', 'application/json')
           .type('form')
           .send({ username: 'notaregistereduser' })
@@ -517,7 +517,7 @@ describe('Todolist API', () => {
       server
         .get('/api/v1/todos')
         .set('Connection', 'keep alive')
-        .set('authorization', regUserToken)
+        .set('authorization', token)
         .set('Content-Type', 'application/json')
         .type('form')
         .send({
@@ -527,9 +527,9 @@ describe('Todolist API', () => {
         .end((err, res) => {
           expect(res.status).toEqual(200);
           expect(res.body.success).toEqual(true);
-          expect(res.body.data.length).toEqual(1);
-          expect(res.body.data[0].name).toEqual('postIt');
-          expect(res.body.data[0].collaborators.length).toEqual(2);
+          expect(res.body.todolists.length).toEqual(1);
+          expect(res.body.todolists[0].name).toEqual('postIt');
+          expect(res.body.todolists[0].collaborators.length).toEqual(2);
           if (err) return done(err);
           done();
         });

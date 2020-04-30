@@ -1,13 +1,13 @@
-import chai from 'chai';
+
 import expect from 'expect';
 
-import reminder from '../../models/reminder';
+import reminderLists from '../../models/reminderLists';
 
 let todoId;
 
 describe('Reimder Model', () => {
   it('should be able to save a reminder', (done) => {
-    const newReminder = reminder({
+    const newReminder = reminderLists({
       todoId: '59eaf52946198d2a65cd4400',
       todoName: 'worklist',
       taskName: 'reminder',
@@ -29,7 +29,7 @@ describe('Reimder Model', () => {
     });
   });
   it('should be able to find saved reminders', (done) => {
-    reminder.findOne(todoId, (err, savedReminder) => {
+    reminderLists.findOne(todoId, (err, savedReminder) => {
       expect(savedReminder.name).toEqual('Mark David');
       expect(savedReminder.taskName).toEqual('reminder');
       expect(savedReminder.email).toEqual('dav@me.com');
@@ -39,7 +39,7 @@ describe('Reimder Model', () => {
     });
   });
   it('should not saved a reminder without a name', (done) => {
-    const newReminder = reminder({
+    const newReminder = reminderLists({
       todoId,
       todoName: 'worklist',
       taskName: 'reminder',

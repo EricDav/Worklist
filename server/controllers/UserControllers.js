@@ -1,9 +1,10 @@
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
+import nodemailer from 'nodemailer';
 import fs from 'fs';
 import cloudinary from 'cloudinary';
 
-import User from '../models/User';
+import userLists from '../models/userLists';
 import { generateToken, removePassword, isInValidField, apiResponse,
   isValidEmail, isValidPassword, generateCode,
   mailSender, isValidName } from '../helpers';
@@ -28,7 +29,7 @@ export default class UserControllers {
     const {
       email, fullName, userName, password
     } = req.body;
-    User.findOne({
+    userLists.findOne({
       $or: [{ email },
         { userName: userName.toLowerCase() }]
     }, (err, currentUser) => {
@@ -49,7 +50,7 @@ export default class UserControllers {
       }
       const salt = bcrypt.genSaltSync(10);
       const hashedPassword = bcrypt.hashSync(password, salt);
-      const newUser = User({
+      const newUser = userLists({
         fullName,
         userName: userName.toLowerCase(),
         email,
@@ -64,6 +65,32 @@ export default class UserControllers {
       });
     });
   }
+  /**
+ * @description: creates a user through route POST: api/v1/user
+ *
+ * @param {Object} req requset object
+ * @param {Object} res response object
+ *
+ * @return {Object} response containing the created user
+ */
+  static createMessage(req, res) {
+    const {
+      name, email, message
+    } = req.body;
+
+    const newMessage = userLists({
+      name,
+      email,
+      message
+    });
+    newMessage.save((err, savedMessage) => {
+      if (err) {
+        return apiResponse(res, 500, 'Internal server error', false);
+      }
+      return apiResponse(res, 201, savedMessage, true);
+    });
+  }
+
   /**
  *@description controls users login through the route
  * POST: /api/v1/signin
@@ -95,7 +122,7 @@ export default class UserControllers {
         'password can not be null or empty', false
       );
     }
-    User.findOne({
+    userLists.findOne({
       $or: [{ userName: userName.toLowerCase() },
         { email }]
     }, (err, userInfo) => {
@@ -131,14 +158,14 @@ export default class UserControllers {
    * @return {object} response containing the updated user
    */
   static updateUserProfile(req, res) {
-    User.findOne(
-      { _id: req.currentUser.currentUser._id },
+    userLists.findOne(
+      { _id: req.decoded.currentUser._id },
       (err, user) => {
         if (err) {
           return apiResponse(res, 500, 'Internal server error', false);
         }
         const { email, fullName } = req.updatedField;
-        const { currentUser } = req.currentUser;
+        const { currentUser } = req.decoded;
         user.email = email || currentUser.email;
         user.fullName = fullName || currentUser.fullName;
         user.save((err, updatedUser) => {
@@ -166,12 +193,12 @@ export default class UserControllers {
     if (!isValidEmail(email)) {
       return apiResponse(res, 400, 'Invalid email', false);
     }
-    User.findOne({ email }, (err, googleUser) => {
+    userLists.findOne({ email }, (err, googleUser) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
       if (googleUser === null) {
-        return apiResponse(res, 200, null, true, 'New user');
+        return apiResponse(res, 200, 'message', true, 'New user');
       }
       const token = generateToken(removePassword(googleUser), secret);
       return apiResponse(res, 200, 'token', true, token);
@@ -192,7 +219,7 @@ export default class UserControllers {
     if (!isValidEmail(email)) {
       return apiResponse(res, 400, 'Invalid email', false);
     }
-    User.findOne({ email }, (err, requester) => {
+    userLists.findOne({ email }, (err, requester) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       } else if (!requester) {
@@ -232,7 +259,7 @@ export default class UserControllers {
     bcrypt.compare(secretCode, hash, (err, response) => {
       if (response) {
         bcrypt.hash(password, 10, (err, hash) => {
-          User.findOne(
+          userLists.findOne(
             { email },
             (err, forgetPasswordUser) => {
               if (err) {
@@ -294,16 +321,18 @@ export default class UserControllers {
       cloudinary.v2.uploader.upload(`${uploadDir}/${file.name}`)
         .then((cloudinaryImage) => {
           const { url } = cloudinaryImage;
-          const { currentUser } = req.currentUser;
-          User.findOne(
+          const { currentUser } = req.decoded;
+          userLists.findOne(
             { _id: currentUser._id },
             (err, currentUser) => {
               if (err) {
+                console.log("======>>>>>>>>>>>>1");
                 return apiResponse(res, 500, 'Internal server error', false);
               }
               currentUser.imageUrl = url;
               currentUser.save((err, updatedUser) => {
                 if (err) {
+                  console.log("======>>>>>>>>>>>>2")
                   return apiResponse(res, 500, 'Internal server error', false);
                 }
                 return apiResponse(
@@ -314,7 +343,9 @@ export default class UserControllers {
             }
           );
         });
-    }).catch(() => {
+    }).catch((err) => {
+      
+      console.log(err, "======>>>>>>>>>>>>3")
       apiResponse(
         res, 500,
         'An error occured while uploading image', false
@@ -335,7 +366,7 @@ export default class UserControllers {
     if (!isValidName(req.query.searchParam)) {
       return apiResponse(res, 400, 'Invalid query parameter', false);
     }
-    User.find({
+    userLists.find({
       userName: {
         $regex: `.*${req.query.searchParam}.*`
       }
@@ -343,7 +374,45 @@ export default class UserControllers {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
-      return apiResponse(res, 200, null, true, users);
+      return apiResponse(res, 200, 'users', true, users);
+    });
+  }
+
+  /**
+ * @description: end point for sending mails
+ *
+ * @param {Object} req request object
+ * @param {Object} res response object
+ *
+ * @return {Object} response
+ */
+  static sendMail(req, res) {
+    console.log(req.body.feedback);
+    const transporter = nodemailer.createTransport({
+      service: process.env.SERVICE,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.GMAIL_PASSWORD
+      }
+    });
+    const mailOptions = {
+      from: `Worklist <${process.env.EMAIL}`,
+      to: req.body.email,
+      subject: req.body.name,
+      text: req.body.feedback
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        return apiResponse(
+          res, 500,
+          'An error occured while sending mail', false
+        );
+      }
+      return apiResponse(res, 200, 'message', true, {
+        success: true,
+        message: 'email sent successfully'
+      });
     });
   }
 }

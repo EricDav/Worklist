@@ -37,4 +37,6 @@ user.get(
   ReminderControllers.getReminders
 );
 
+user.post('/api/v1/users/send-email', UserControllers.sendMail);
+
 export default user;

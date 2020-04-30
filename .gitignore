@@ -8,3 +8,4 @@ server/uploads
 dist
 bin
 reports
+selenium-debug.log

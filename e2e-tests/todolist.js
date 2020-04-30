@@ -10,7 +10,8 @@ module.exports = {
       .click('#foot')
       .waitForElementVisible('[name=name', 5000)
       .setValue('input[name=name]', 'postIt')
-      .click('.btn')
+      .waitForElementVisible('#foot', 5000)
+      .click('#foot')
       .end(),
   'Add member to todolist': browser =>
     browser
@@ -25,8 +26,9 @@ module.exports = {
       .click('[data-activates=dropdown2]')
       .waitForElementVisible('[name=task]', 5000)
       .click('[name=add]')
-      .setValue('input[id=icon_prefix]', 'a')
+      .setValue('input[id=icon_prefix]', 'p')
       .waitForElementVisible('#but', 5000)
       .click('[name=addUserButton')
-      .setValue('input[id=test2]', true)
+      .assert.containsText('.toast-success', 'Collaborator added!')
+      .end(),
 };

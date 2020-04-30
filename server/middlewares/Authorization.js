@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
+import { apiResponse } from '../helpers';
+
 dotenv.load();
 const secret = process.env.secretKey;
 
@@ -27,19 +29,13 @@ export default class Authorization {
       token = token.split(' ')[1];
       jwt.verify(token, secret, (err, decoded) => {
         if (err) {
-          return res.status(401).json({
-            success: false,
-            message: 'Failed to authenticate token.'
-          });
+          return apiResponse(res, 401, 'Failed to authenticate token.', false);
         }
-        req.currentUser = decoded;
+        req.decoded = decoded;
         next();
       });
     } else {
-      return res.status(401).send({
-        success: false,
-        message: 'No token provided.'
-      });
+      return apiResponse(res, 401, 'No token provided', false);
     }
   }
 }

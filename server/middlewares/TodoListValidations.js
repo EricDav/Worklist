@@ -2,8 +2,8 @@ import moment from 'moment';
 
 import { isInValidField, isText, apiResponse,
   isValidName } from '../helpers';
-import todoList from '../models/todoList';
-import user from '../models/User';
+import todoLists from '../models/todoLists';
+import userLists from '../models/userLists';
 
 /**
  * class TodoListValidations: controlls all todo list validation
@@ -21,7 +21,7 @@ export default class TodoListValidations {
    */
   static createTodoListValidation(req, res, next) {
     const error = {};
-    const { currentUser } = req.currentUser;
+    const { currentUser } = req.decoded;
     if (isInValidField(req.body.name)) {
       error.name = 'name field is required';
     } else if (!isValidName(req.body.name)) {
@@ -32,7 +32,7 @@ export default class TodoListValidations {
     if (error.name) {
       return apiResponse(res, 400, error.name, false);
     }
-    todoList.findOne({
+    todoLists.findOne({
       $and:
         [{
           internalName: req.body.name.toUpperCase(),
@@ -57,7 +57,7 @@ export default class TodoListValidations {
    * @return {object} response object
    */
   static validateAddCaontributorToTodolist(req, res, next) {
-    const { currentUser } = req.currentUser;
+    const { currentUser } = req.decoded;
     if (isInValidField(req.body.username)) {
       return apiResponse(
         res, 400,
@@ -69,7 +69,7 @@ export default class TodoListValidations {
     } else if (!moment(req.body.reminder).isValid()) {
       return apiResponse(res, 400, 'Invalid date for reminder', false);
     }
-    todoList.findOne({ _id: req.params.todoId }, (err, todolist) => {
+    todoLists.findOne({ _id: req.params.todoId }, (err, todolist) => {
       if (todolist) {
         if (todolist.creatorId !== currentUser._id) {
           return apiResponse(
@@ -80,13 +80,14 @@ export default class TodoListValidations {
           .includes(req.body.username)) {
           return apiResponse(res, 409, 'user already a contributor', false);
         }
-        user.findOne({ userName: req.body.username }, (err, contributor) => {
-          if (contributor) {
-            next();
-          } else {
-            return apiResponse(res, 404, 'User not found', false);
-          }
-        });
+        userLists.findOne({ userName: req.body.username },
+          (err, contributor) => {
+            if (contributor) {
+              next();
+            } else {
+              return apiResponse(res, 404, 'User not found', false);
+            }
+          });
       } else {
         return apiResponse(res, 404, 'todolist not found', false);
       }
@@ -103,7 +104,7 @@ export default class TodoListValidations {
    */
   static validateCreateTaskForTodolist(req, res, next) {
     const error = {};
-    const { currentUser } = req.currentUser;
+    const { currentUser } = req.decoded;
     if (isInValidField(req.body.name)) {
       error.name = 'Task name field is required';
     } else if (!isValidName(req.body.name)) {
@@ -124,7 +125,7 @@ export default class TodoListValidations {
     if (error.name) {
       return apiResponse(res, 400, error.name, false);
     }
-    todoList.findOne({ _id: req.params.todoId }, (err, todolist) => {
+    todoLists.findOne({ _id: req.params.todoId }, (err, todolist) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
@@ -162,7 +163,7 @@ export default class TodoListValidations {
    */
   static validateUpdateTaskInTodolist(req, res, next) {
     const error = {};
-    const { currentUser } = req.currentUser;
+    const { currentUser } = req.decoded;
     if (isInValidField(req.params.todoId) ||
       req.params.todoId.length !== 24) {
       error.name = 'Invalid todoId';
@@ -173,7 +174,7 @@ export default class TodoListValidations {
     if (error.name) {
       return apiResponse(res, 400, error.name, false);
     }
-    todoList.findOne({ _id: req.params.todoId }, (err, todolist) => {
+    todoLists.findOne({ _id: req.params.todoId }, (err, todolist) => {
       if (err) {
         return apiResponse(res, 500, 'Internal server error', false);
       }
@@ -189,7 +190,7 @@ export default class TodoListValidations {
         if (!hasValidTaskId) {
           return apiResponse(res, 404, 'task not found', false);
         }
-        if (currentUser._id !== todolist.creatorId ||
+        if (
           taskToBeUpdated.assignTo !== currentUser.userName) {
           return apiResponse(
             res, 403,

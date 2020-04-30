@@ -7,26 +7,39 @@ const Task = props =>
     <li>
       <div className="collapsible-header">
         <i className={props.colorCode}>work</i>
-    { !props.showComplete && <strike>{props.name}</strike>}
-    { props.showComplete && props.name}
-    </div>
+        { (props.status === 'completed' ||
+        props.status === 'This task was completed after the due date')
+         && <strike>{props.name}</strike>}
+        {(props.status !== 'completed' &&
+        props.status !== 'This task was completed after the due date')
+         && props.name}
+      </div>
       <div className="wid collapsible-body"><span>
-        <b>Assign To: </b>{props.assignTo}</span></div>
+        <b>Assign To: </b>{props.assignTo}
+      </span>
+      </div>
       <div className="wid collapsible-body">
         <span className="smallDate">
-          <b>Due Date: </b>{moment(props.dueDate).format('LLLL')}</span>
-        </div>
+          <b>Due Date: </b>{moment(props.dueDate).format('LLLL')}
+        </span>
+      </div>
       <div className="wid collapsible-body"><span className="smallStatus">
         <b>Status: {props.status}
-        </b></span></div>
-     {props.showComplete && <div className="wid collapsible-body">
-       <div id="button">
-        <button value={props.name}
-        name="complete" id={props.taskId}
-        onClick={props.handleOnclick}
-        className={props.buttonClass}>complete</button>
+        </b>
+      </span>
       </div>
-    </div>}
+      {props.showComplete && <div className="wid collapsible-body">
+        <div id="button">
+          <button
+            value={props.name}
+            name="complete"
+            id={props.taskId}
+            onClick={props.handleOnclick}
+            className={props.buttonClass}
+          >complete
+          </button>
+        </div>
+      </div>}
     </li>
   );
 

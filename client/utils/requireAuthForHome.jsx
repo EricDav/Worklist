@@ -50,7 +50,7 @@ export default function (ComposedComponent) {
  */
   function mapStateToProps(state) {
     return {
-      isAuthenticated: state.user.isAuthenticated
+      isAuthenticated: state.currentUser.isAuthenticated
     };
   }
   return connect(mapStateToProps)(AuthenticateHome);

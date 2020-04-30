@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 
-import SignupForm from '../presentation/SignupForm.jsx';
-import LoginForm from '../presentation/LoginForm.jsx';
-import GoogleSignupForm from '../presentation/GoogleSignupForm.jsx';
+import SignupForm from '../presentation/SignupForm';
+import LoginForm from '../presentation/LoginForm';
+import GoogleSignupForm from '../presentation/GoogleSignupForm';
 import ForgetPasswordVerificationForm from
-  '../presentation/ForgetPasswordVerificationForm.jsx';
+  '../presentation/ForgetPasswordVerificationForm';
 import ForgetPasswordConfirmationForm from
-  '../presentation/ForgetPasswordConfirmationForm.jsx';
-import HomeNavbar from '../presentation/HomeNavbar.jsx';
+  '../presentation/ForgetPasswordConfirmationForm';
+import HomeNavbar from '../presentation/HomeNavbar';
 import * as AuthActions from '../../../actions/AuthActions';
 import * as UserActions from '../../../actions/UserActions';
 
@@ -46,60 +46,60 @@ export class HomePage extends React.Component {
   render() {
     const { formNumber } = this.props;
     return (
-    <div className="image">
+      <div className="image">
         <HomeNavbar
-          handleOnclick={this.handleOnclickForNavbar}
-        />
+        handleOnclick={this.handleOnclickForNavbar}
+      />
         <div className="container">
-         { formNumber === 2 &&
-         <SignupForm
-           setError = {this.props.actions.setError}
-           homePageFormNumber = {this.props.actions.showHomePageForm}
-           userSignupRequest = {this.props.actions.userSignupRequest}
-           errorMessage = {this.props.errorMessage}
-           apiCallInProgress = {this.props.apiCallInProgress}
-           setIsApiCall ={this.props.actions.setIsApiCall}
+        { formNumber === 2 &&
+          <SignupForm
+           setError={this.props.actions.setError}
+           homePageFormNumber={this.props.actions.showHomePageForm}
+           userSignupRequest={this.props.actions.userSignupRequest}
+           errorMessage={this.props.errorMessage}
+           apiCallInProgress={this.props.apiCallInProgress}
+           setIsApiCall={this.props.actions.setIsApiCall}
          /> }
 
         { formNumber === 1 &&
-        <LoginForm
+          <LoginForm
           googleSignin={this.props.UserActions.googleSignin}
-          setError = {this.props.actions.setError}
-          homePageFormNumber = {this.props.actions.showHomePageForm}
-          userSigninRequest = {this.props.actions.userSigninRequest}
-          errorMessage = {this.props.errorMessage}
-          apiCallInProgress = {this.props.apiCallInProgress}
+          setError={this.props.actions.setError}
+          homePageFormNumber={this.props.actions.showHomePageForm}
+          userSigninRequest={this.props.actions.userSigninRequest}
+          errorMessage={this.props.errorMessage}
+          apiCallInProgress={this.props.apiCallInProgress}
           setIsApiCall={this.props.actions.setIsApiCall}
         /> }
         { formNumber === 3 &&
-         <ForgetPasswordVerificationForm
-          setError = {this.props.actions.setError}
+          <ForgetPasswordVerificationForm
+          setError={this.props.actions.setError}
           sendSecretCode={this.props.UserActions.sendSecretCode}
-          errorMessage = {this.props.errorMessage}
-          apiCallInProgress = {this.props.apiCallInProgress}
-         />
+          errorMessage={this.props.errorMessage}
+          apiCallInProgress={this.props.apiCallInProgress}
+        />
         }
         { formNumber === 4 &&
           <ForgetPasswordConfirmationForm
-           setError = {this.props.actions.setError}
-            resetPasswordUser = {this.props.resetPasswordUser}
-            errorMessage = {this.props.errorMessage}
+            setError={this.props.actions.setError}
+            resetPasswordUser={this.props.resetPasswordUser}
+            errorMessage={this.props.errorMessage}
             resetPassword={this.props.UserActions.resetPassword}
-            apiCallInProgress = {this.props.apiCallInProgress}
+            apiCallInProgress={this.props.apiCallInProgress}
           />
         }
-       { formNumber === 5 &&
-         <GoogleSignupForm
+        { formNumber === 5 &&
+          <GoogleSignupForm
            googleUser={this.props.googleUser}
-           setError = {this.props.actions.setError}
-           userSignupRequest = {this.props.actions.userSignupRequest}
-           errorMessage = {this.props.errorMessage}
-           apiCallInProgress = {this.props.apiCallInProgress}
+           setError={this.props.actions.setError}
+           userSignupRequest={this.props.actions.userSignupRequest}
+           errorMessage={this.props.errorMessage}
+           apiCallInProgress={this.props.apiCallInProgress}
          />
        }
 
-        </div>
-    </div>
+      </div>
+      </div>
     );
   }
 }
@@ -129,7 +129,7 @@ function mapStateToProps(state) {
     apiCallInProgress: state.apiCallInProgress,
     formNumber: state.homePageFormNumber,
     resetPasswordUser: state.resetPasswordUser,
-    googleUser: state.googleUser
+    googleUser: state.googleData
   };
 }
 

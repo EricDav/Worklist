@@ -30,16 +30,22 @@ export function setForgetPasswordUser(resetPasswordUser) {
  * @return {Object} returns object
  */
 export function sendSecretCode(payload) {
+  // setTimeout( () => {
+  // } )
   return (dispatch) => {
     dispatch(setIsApiCall(true));
     return axios.post('/api/v1/users/send-secret-code', payload).then((res) => {
-      dispatch(setForgetPasswordUser(res.data.data));
+      dispatch(setForgetPasswordUser(res.data.message));
       dispatch(setIsApiCall(false));
       dispatch(showHomePageForm(4));
       Materialize.toast('A code has been sent to your mail', 2500, 'green');
     }).catch(({ response }) => {
       const { message } = response.data.error;
       if (message) {
+        if (['Failed to authenticate token.', 'No token provided']
+          .includes(message)) {
+          window.location = '/';
+        }
         dispatch(setError(message));
       } else {
         dispatch(setError(`An unexpected error occured.
@@ -86,6 +92,7 @@ export function resetPassword(payload) {
  * @return {object} returns dispatch object
  */
 export function updateProfilePicture(payload) {
+  setAuthorizationToken(localStorage.jwtToken);
   const data = new FormData();
   data.append('file', payload, payload.name);
   return (dispatch) => {
@@ -105,10 +112,17 @@ export function updateProfilePicture(payload) {
     }).catch(({ response }) => {
       const { message } = response.data.error;
       if (message) {
-        Materialize.toast(message, 300, red);
+        if (['Failed to authenticate token.', 'No token provided']
+          .includes(message)) {
+          Materialize.toast('Your session has expired');
+          window.location = '/';
+          localStorage.removeItem('jwtToken');
+          return;
+        }
+        Materialize.toast(message, 300, 'red');
       } else {
         Materialize.toast(`Could not upload image. An unexpected 
-        error occured`, 300, red);
+        error occured`, 300, 'red');
       }
       dispatch(setIsApiCall(false));
     });
@@ -124,16 +138,25 @@ export function updateProfilePicture(payload) {
  * @return {object} returns dispatch object
  */
 export function getUsers(parameter, isValidParam) {
+  setAuthorizationToken(localStorage.jwtToken);
   if (isValidParam) {
     return dispatch => axios.get(`/api/v1/users/?searchParam=${parameter}`)
       .then((res) => {
-        const { data } = res.data;
+        const { users } = res.data;
         dispatch({
           type: SET_USERS,
-          users: data
+          users
         });
-      }).catch(() => {
-        Materialize.toast('An error occured. Could not add user', 2000, red);
+      }).catch(({ response }) => {
+        const { message } = response;
+        if (['Failed to authenticate token.', 'No token provided']
+          .includes(message)) {
+          Materialize.toast('Your session has expired');
+          window.location = '/';
+          localStorage.removeItem('jwtToken');
+          return;
+        }
+        Materialize.toast('An error occured. Could not add user', 2000, 'red');
       });
   }
   return dispatch => dispatch({
@@ -151,6 +174,7 @@ export function getUsers(parameter, isValidParam) {
  * @return {object} returns dispatch object
  */
 export function updateUserProfile(payload) {
+  setAuthorizationToken(localStorage.jwtToken);
   return (dispatch) => {
     dispatch(setIsApiCall(true));
     return axios.put('/api/v1/users', payload)
@@ -165,6 +189,13 @@ export function updateUserProfile(payload) {
       .catch(({ response }) => {
         const { message } = response.data.error;
         if (message) {
+          if (['Failed to authenticate token.', 'No token provided']
+            .includes(message)) {
+            Materialize.toast('Your session has expired');
+            window.location = '/';
+            localStorage.removeItem('jwtToken');
+            return;
+          }
           dispatch(setError(message));
         } else {
           Materialize.toast('An unexpected error occured retry', 300, 'red');
@@ -200,7 +231,7 @@ export function smallScreenSize(screenSize) {
 export function googleSignin(userData) {
   return dispatch =>
     axios.post('/api/v1/users/google-signin', userData).then((res) => {
-      if (res.data.data === 'New user') {
+      if (res.data.message === 'New user') {
         dispatch({
           type: SET_GOOGLE_USER,
           userData
@@ -224,12 +255,13 @@ export function googleSignin(userData) {
  * @return {Object} returns object
  */
 export function getReminders() {
+  setAuthorizationToken(localStorage.jwtToken);
   return dispatch =>
     axios.get('/api/v1/users/reminders').then((res) => {
-      const { data } = res.data;
+      const { reminders } = res.data;
       dispatch({
         type: SET_REMINDERS,
-        reminders: data
+        reminders
       });
     });
 }

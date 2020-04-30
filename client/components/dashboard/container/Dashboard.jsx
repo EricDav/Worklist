@@ -4,24 +4,24 @@ import propTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
 
-import DashboardSidebar from '../presentation/DashboardSidebar.jsx';
-import CreateTodolistModal from '../presentation/CreateTodolistModal.jsx';
+import DashboardSidebar from '../presentation/DashboardSidebar';
+import CreateTodolistModal from '../presentation/CreateTodolistModal';
 import * as TodolistActions from '../../../actions/TodolistActions';
 import * as UserActions from '../../../actions/UserActions';
 import { setError, setIsApiCall,
   logout } from '../../../actions/AuthActions';
-import UploadImageModal from '../presentation/UploadImageModal.jsx';
-import Todolist from '../presentation/Todolist.jsx';
-import CreateTaskForm from '../presentation/CreateTaskForm.jsx';
-import TaskBoard from '../presentation/TaskBoard.jsx';
-import Task from '../presentation/Task.jsx';
-import RightSideNav from '../presentation/RightSideNav.jsx';
-import Collaborator from '../presentation/Collaborator.jsx';
-import User from '../presentation/User.jsx';
-import UpdateUserProfile from '../presentation/UpdateUserProfile.jsx';
+import UploadImageModal from '../presentation/UploadImageModal';
+import Todolist from '../presentation/Todolist';
+import CreateTaskForm from '../presentation/CreateTaskForm';
+import TaskBoard from '../presentation/TaskBoard';
+import Task from '../presentation/Task';
+import RightSideNav from '../presentation/RightSideNav';
+import Collaborator from '../presentation/Collaborator';
+import User from '../presentation/User';
+import UpdateUserProfile from '../presentation/UpdateUserProfile';
 import { isValidName } from '../../../helpers';
-import Intro from '../presentation/Intro.jsx';
-import Reminders from '../presentation/Reminders.jsx';
+import Intro from '../presentation/Intro';
+import Reminder from '../presentation/Reminder';
 
 /** @class Dashboard
  * @classdesc component for Dashboard
@@ -95,9 +95,9 @@ class Dashboard extends React.Component {
      */
   getTodolists() {
     return this.props.todolists.map(todolist => (
-        <Todolist
+      <Todolist
           rightSideNav={this.props.actions.showRightSideNav}
-          setCurrentTodolist ={this.props.actions.setCurrentTodolist}
+          setCurrentTodolist={this.props.actions.setCurrentTodolist}
           name={todolist.name}
           key={todolist._id}
           id={todolist._id}
@@ -206,17 +206,17 @@ class Dashboard extends React.Component {
         }
       }
       return (<Task
-            handleOnclick={this.handleOnclick}
-            buttonClass={buttonClass}
-            status={status}
-            taskId={task._id}
-            showComplete={showComplete}
-            key={task._id}
-            colorCode={colorCode}
-            name={task.taskName}
-            dueDate={task.dueDate}
-            assignTo={task.assignTo}
-           />);
+        handleOnclick={this.handleOnclick}
+        buttonClass={buttonClass}
+        status={status}
+        taskId={task._id}
+        showComplete={showComplete}
+        key={task._id}
+        colorCode={colorCode}
+        name={task.taskName}
+        dueDate={task.dueDate}
+        assignTo={task.assignTo}
+      />);
     });
   }
   /**
@@ -226,10 +226,10 @@ class Dashboard extends React.Component {
      */
   getCollaborators() {
     return this.props.currentTodolist.collaborators.map(collaborator =>
-      <Collaborator
+      (<Collaborator
         key={Math.random()}
         userName={collaborator}
-      />);
+      />));
   }
   /**
      * @description - retrieve all the reminders
@@ -238,14 +238,14 @@ class Dashboard extends React.Component {
      */
   getReminders() {
     return this.props.reminders.map(reminder =>
-      <Reminders
+      (<Reminder
        dueDate={reminder.dueDate}
-       taskName={reminder.taskName}
+        taskName={reminder.taskName}
        todoName={reminder.todoName}
        key={reminder._id}
        time={reminder.time}
        message={reminder.message}
-      />);
+      />));
   }
 
   /**
@@ -255,13 +255,13 @@ class Dashboard extends React.Component {
      */
   getUsers() {
     return this.props.users.map(user =>
-      <User
+      (<User
        handleOnclick={this.handleOnclick}
        userName={user.userName}
        fullName={user.fullName}
        key={user._id}
        collaborators={this.props.currentTodolist.collaborators}
-      />);
+      />));
   }
   /**
    *@description render - renders the Dashboard component
@@ -278,38 +278,38 @@ class Dashboard extends React.Component {
       todoBoardStyles = 'col s12 m8 l6 offset-l3 card-panel  valign height';
     }
     return (
-        <div>
-            <DashboardSidebar
-             imageUrl={this.props.imageUrl}
-             todolists={this.getTodolists}
-             handleOnclick={this.handleOnclick}
-             fullName={this.props.currentUserFullName}
+      <div>
+          <DashboardSidebar
+              imageUrl={this.props.imageUrl}
+              todolists={this.getTodolists}
+              handleOnclick={this.handleOnclick}
+              fullName={this.props.currentUserFullName}
             />
-            <UploadImageModal
+          <UploadImageModal
               updateProfilePicture={this.props.UserActions.updateProfilePicture}
               imageUrl={this.props.imageUrl}
               apiCallInProgress={this.props.apiCallInProgress}
             />
-            <CreateTodolistModal
-             setIsApiCall={this.props.setIsApiCall}
-             createTodolist={this.props.actions.createTodolist}
-             setError={this.props.setError}
-             errorMessage={this.props.errorMessage}
-             apiCallInProgress={this.props.apiCallInProgress}
+          <CreateTodolistModal
+              setIsApiCall={this.props.setIsApiCall}
+              createTodolist={this.props.actions.createTodolist}
+              setError={this.props.setError}
+              errorMessage={this.props.errorMessage}
+              apiCallInProgress={this.props.apiCallInProgress}
             />
-            {((this.props.isSmallScreenSize && this.props.rightSideNav === 1)
+          {((this.props.isSmallScreenSize && this.props.rightSideNav === 1)
              || (!this.props.isSmallScreenSize &&
              this.props.currentTodolist.name)) &&
-            <TaskBoard
+             <TaskBoard
               currentUserId={this.props.currentUserId}
               currentUser={this.props.currentUser}
               todolist={this.props.currentTodolist}
               handleOnclick={this.handleOnclick}
-              width = {width}
+              width={width}
               styles={todoBoardStyles}
               tasks={this.getTasks}
-             />}
-            { this.props.rightSideNav === 2 &&
+            />}
+          { this.props.rightSideNav === 2 &&
             <CreateTaskForm
               rightSideNav={this.props.actions.showRightSideNav}
               apiCallInProgress={this.props.apiCallInProgress}
@@ -318,36 +318,36 @@ class Dashboard extends React.Component {
               errorMessage={this.props.errorMessage}
               createTask={this.props.actions.createTaskForTodolist}
             /> }
-           {((this.props.isSmallScreenSize && this.props.rightSideNav === 0)
+          {((this.props.isSmallScreenSize && this.props.rightSideNav === 0)
              || (!this.props.isSmallScreenSize &&
              !this.props.currentTodolist.name)) &&
-            <Intro
+             <Intro
               currentUser={this.props.currentUser}
-              width = {width}
+              width ={width}
               styles={todoBoardStyles}
-             />}
-            { (this.props.rightSideNav === 3 ||
+            />}
+          { (this.props.rightSideNav === 3 ||
             this.props.rightSideNav === 4 || this.props.rightSideNav === 6) &&
-             <RightSideNav
+            <RightSideNav
                rightSideNav={this.props.rightSideNav}
                collaborators={this.getCollaborators}
                users={this.getUsers}
                reminders={this.getReminders}
                handleOnclick={this.handleOnclick}
                handleOnchange={this.handleOnchange}
-          /> }
-        { this.props.rightSideNav === 5 &&
+             /> }
+          { this.props.rightSideNav === 5 &&
           <UpdateUserProfile
-           currentTodolist={this.props.currentTodolist}
-           rightSideNav={this.props.actions.showRightSideNav}
-           errorMessage={this.props.errorMessage}
-           setError={this.props.setError}
-           userName={this.props.currentUser}
-           email={this.props.currentUserEmail}
-           fullName={this.props.currentUserFullName}
-           imageUrl={this.props.imageUrl}
-           updateUserProfile={this.props.UserActions.updateUserProfile}
-           apiCallInProgress={this.props.apiCallInProgress}
+            currentTodolist={this.props.currentTodolist}
+            rightSideNav={this.props.actions.showRightSideNav}
+            errorMessage={this.props.errorMessage}
+            setError={this.props.setError}
+            userName={this.props.currentUser}
+            email={this.props.currentUserEmail}
+            fullName={this.props.currentUserFullName}
+            imageUrl={this.props.imageUrl}
+            updateUserProfile={this.props.UserActions.updateUserProfile}
+            apiCallInProgress={this.props.apiCallInProgress}
           />
         }
         </div>
@@ -385,11 +385,11 @@ function mapStateToProps(state) {
     apiCallInProgress: state.apiCallInProgress,
     todolists: state.todolists,
     currentTodolist: state.currentTodolist,
-    imageUrl: state.user.user.currentUser.imageUrl,
-    currentUser: state.user.user.currentUser.userName,
-    currentUserEmail: state.user.user.currentUser.email,
-    currentUserFullName: state.user.user.currentUser.fullName,
-    currentUserId: state.user.user.currentUser._id,
+    imageUrl: state.currentUser.user.currentUser.imageUrl,
+    currentUser: state.currentUser.user.currentUser.userName,
+    currentUserEmail: state.currentUser.user.currentUser.email,
+    currentUserFullName: state.currentUser.user.currentUser.fullName,
+    currentUserId: state.currentUser.user.currentUser._id,
     rightSideNav: state.rightSideNav,
     users: state.users,
     isSmallScreenSize: state.isSmallScreenSize,

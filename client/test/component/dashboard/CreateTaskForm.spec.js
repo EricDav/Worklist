@@ -4,17 +4,19 @@ import expect from 'expect';
 import Adapter from 'enzyme-adapter-react-16';
 
 import CreateTaskForm
-  from '../../../components/dashboard/presentation/CreateTaskForm.jsx';
+  from '../../../components/dashboard/presentation/CreateTaskForm';
 import mockData from '../../mockData';
 
 const setup = () => {
   const wrapper = mount(<CreateTaskForm
-  {...mockData.createTaskForm.props}/>);
+    {...mockData.createTaskForm.props}
+  />);
   return {
     wrapper,
     ...mockData.createTaskForm.props
   };
 };
+
 configure({ adapter: new Adapter() });
 describe('CreateTodolistModal Component', () => {
   beforeEach(() => {
