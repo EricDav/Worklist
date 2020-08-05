@@ -59,7 +59,7 @@
     "eslint-plugin-react": "^7.4.0",
     "expect": "^21.2.1",
     "express": "^4.16.2",
-    "express-fileupload": "^0.3.0",
+    "express-fileupload": "^1.1.9",
     "extract-text-webpack-plugin": "^3.0.2",
     "form-data": "^2.3.1",
     "history": "^4.7.2",
